@@ -1,0 +1,27 @@
+<!doctype html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - sign in</title>
+    </head>
+    <body>
+        <div layout:fragment="content" class="container">
+            <h3 class="mb-3" th:text="#{auth.signin.header}"></h3>
+            <div class="alert alert-danger" th:if="${param.failure}" th:text="#{auth.signin.form.invalid_credentials}"></div>
+            <form th:action="@{/auth/signin}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label" for="email" th:text="#{auth.signin.form.email}"></label>
+                    <input class="form-control" id="email" name="username" type="email" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password" th:text="#{auth.signin.form.password}"></label>
+                    <input class="form-control" id="password" name="password" type="password" required>
+                </div>
+                <button class="btn btn-primary" type="submit" th:text="#{auth.signin.form.submit}"></button>
+            </form>
+        </div>
+    </body>
+</html>
