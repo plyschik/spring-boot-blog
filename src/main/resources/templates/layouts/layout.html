@@ -19,15 +19,18 @@
                 </button>
                 <div class="collapse navbar-collapse ml-auto" id="navbar">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link #1</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link #2</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link #3</a>
-                        </li>
+                        <div sec:authorize="isAnonymous()">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/auth/signin}" th:text="#{navbar.signin}"></a>
+                            </li>
+                        </div>
+                        <div sec:authorize="isAuthenticated()">
+                            <li class="nav-item">
+                                <form th:action="@{/auth/signout}" method="POST">
+                                    <button class="nav-link btn btn-link p-0" type="submit" th:text="#{navbar.signout}"></button>
+                                </form>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>
