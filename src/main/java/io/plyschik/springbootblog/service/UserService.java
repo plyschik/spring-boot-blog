@@ -1,17 +1,23 @@
 package io.plyschik.springbootblog.service;
 
+import io.plyschik.springbootblog.dto.UserDto;
+import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTaken;
 import io.plyschik.springbootblog.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -19,5 +25,23 @@ public class UserService implements UserDetailsService {
         return userRepository
             .findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+    }
+
+    public void signUp(UserDto userDto) throws EmailAddressIsAlreadyTaken {
+        if (!isAccountEmailUnique(userDto.getEmail())) {
+            throw new EmailAddressIsAlreadyTaken();
+        }
+
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        userRepository.save(user);
+    }
+
+    public boolean isAccountEmailUnique(String email) {
+        return !userRepository.existsByEmail(email);
     }
 }

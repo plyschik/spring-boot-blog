@@ -1,0 +1,38 @@
+<!doctype html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - sign up</title>
+    </head>
+    <body>
+        <div layout:fragment="content" class="container">
+            <h3 class="mb-3" th:text="#{auth.signup.header}"></h3>
+            <form th:action="@{/auth/signup}" th:object="${user}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label" for="email" th:text="#{auth.signup.form.email}"></label>
+                    <input class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" id="email" th:field="*{email}" type="email">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')[0]}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password" th:text="#{auth.signup.form.password}"></label>
+                    <input class="form-control" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}" id="password" th:field="*{password}" type="password">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:text="${#fields.errors('password')[0]}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="firstName" th:text="#{auth.signup.form.first_name}"></label>
+                    <input class="form-control" th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}" id="firstName" th:field="*{firstName}" type="text">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:text="${#fields.errors('firstName')[0]}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="lastName" th:text="#{auth.signup.form.last_name}"></label>
+                    <input class="form-control" th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}" id="lastName" th:field="*{lastName}" type="text">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:text="${#fields.errors('lastName')[0]}"></div>
+                </div>
+                <button class="btn btn-primary" type="submit" th:text="#{auth.signup.form.submit}"></button>
+            </form>
+        </div>
+    </body>
+</html>
