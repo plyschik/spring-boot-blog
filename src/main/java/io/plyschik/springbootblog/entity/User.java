@@ -1,6 +1,5 @@
 package io.plyschik.springbootblog.entity;
 
-import io.plyschik.springbootblog.validation.UniqueEmail;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Length;
@@ -30,7 +29,6 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     @NotBlank
     @Email
-    @UniqueEmail
     private String email;
 
     @Column(nullable = false)

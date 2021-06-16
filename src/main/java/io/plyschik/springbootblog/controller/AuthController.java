@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.UserDto;
+import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTaken;
 import io.plyschik.springbootblog.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +38,13 @@ public class AuthController {
             return "auth/signup";
         }
 
-        userService.signUp(userDto);
+        try {
+            userService.signUp(userDto);
+        } catch (EmailAddressIsAlreadyTaken exception) {
+            bindingResult.rejectValue("email", "error.email", exception.getMessage());
+
+            return "auth/signup";
+        }
 
         redirectAttributes.addFlashAttribute(
             "message",

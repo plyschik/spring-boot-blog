@@ -2,6 +2,7 @@ package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.UserDto;
 import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTaken;
 import io.plyschik.springbootblog.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +27,11 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
     }
 
-    public void signUp(UserDto userDto) {
+    public void signUp(UserDto userDto) throws EmailAddressIsAlreadyTaken {
+        if (!isAccountEmailUnique(userDto.getEmail())) {
+            throw new EmailAddressIsAlreadyTaken();
+        }
+
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
