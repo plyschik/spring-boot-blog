@@ -37,4 +37,12 @@
                              constraintName="UC_USERS_EMAIL"
                              tableName="users" />
     </changeSet>
+    <changeSet id="2" author="plyschik">
+        <addColumn tableName="users">
+            <column name="role"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

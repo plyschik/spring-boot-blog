@@ -5,3 +5,6 @@ spring:
     password: ${MYSQL_PASSWORD}
   liquibase:
     change-log: classpath:liquibase-migrations.xml
+  h2:
+    console:
+      enabled: false

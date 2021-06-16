@@ -45,9 +45,13 @@ public class User implements UserDetails {
     @Length(min = 2, max = 30)
     private String lastName;
 
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.toString()));
     }
 
     @Override
