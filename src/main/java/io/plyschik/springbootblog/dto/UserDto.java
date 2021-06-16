@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.dto;
 
+import io.plyschik.springbootblog.validation.UniqueEmail;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class UserDto {
     @NotBlank
     @Email
+    @UniqueEmail
     private String email;
 
     @NotBlank

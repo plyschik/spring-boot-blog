@@ -35,4 +35,8 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
     }
+
+    public boolean isAccountEmailUnique(String email) {
+        return !userRepository.existsByEmail(email);
+    }
 }
