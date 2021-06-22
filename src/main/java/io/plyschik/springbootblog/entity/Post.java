@@ -28,11 +28,10 @@ public class Post {
     private String title;
 
     @NotBlank
-    @Length(min = 4)
+    @Length(min = 4, max = 65535)
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, name = "created_at")
     private Date createdAt;

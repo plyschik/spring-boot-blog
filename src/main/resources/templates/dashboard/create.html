@@ -1,0 +1,30 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboard/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - create post</title>
+    </head>
+    <body>
+        <div layout:fragment="column">
+            <h3 class="mb-3" th:text="#{dashboard.post.create.header}"></h3>
+            <form th:action="@{/dashboard/posts/create}" th:object="${post}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label" for="title" th:text="#{dashboard.post.create.title}"></label>
+                    <input class="form-control" th:classappend="${#fields.hasErrors('title') ? 'is-invalid' : ''}" id="title" type="text" th:field="*{title}" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:text="${#fields.errors('title')[0]}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="content" th:text="#{dashboard.post.create.content}"></label>
+                    <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="8" required></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:text="${#fields.errors('content')[0]}"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" type="submit" th:text="#{dashboard.post.create.submit}"></button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
