@@ -28,7 +28,7 @@
                     </ul>
                     <ul sec:authorize="isAuthenticated()" class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item" sec:authorize="hasRole('ADMINISTRATOR')">
-                            <a class="nav-link" th:href="@{/dashboard/posts/create}" th:text="#{navbar.dashboard}"></a>
+                            <a class="nav-link" th:href="@{/dashboard/posts}" th:text="#{navbar.dashboard}"></a>
                         </li>
                         <li class="nav-item">
                             <form th:action="@{/auth/signout}" method="POST">

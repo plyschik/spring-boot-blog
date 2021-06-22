@@ -15,7 +15,7 @@
                         <div class="card-header" th:text="#{dashboard.side.post.header}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <a href="#" th:text="#{dashboard.side.post.list}"></a>
+                                <a th:href="@{/dashboard/posts}" th:text="#{dashboard.side.post.list}"></a>
                             </li>
                             <li class="list-group-item">
                                 <a th:href="@{/dashboard/posts/create}" th:text="#{dashboard.side.post.create}"></a>
