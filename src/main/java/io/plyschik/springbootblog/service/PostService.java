@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -17,6 +18,24 @@ public class PostService {
 
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
+    }
+
+    public Optional<Post> getById(long id) {
+        return postRepository.findById(id);
+    }
+
+    public Page<Post> list(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    public void createPost(PostDto postDto, User user) {
+        Post post = new Post();
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        post.setCreatedAt(new Date());
+        post.setUser(user);
+
+        postRepository.save(post);
     }
 
     public PostDto getPostForEdit(long id) throws PostNotFound {
@@ -37,17 +56,9 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public Page<Post> list(Pageable pageable) {
-        return postRepository.findAll(pageable);
-    }
+    public void delete(long id) throws PostNotFound {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
 
-    public void createPost(PostDto postDto, User user) {
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        postRepository.delete(post);
     }
 }

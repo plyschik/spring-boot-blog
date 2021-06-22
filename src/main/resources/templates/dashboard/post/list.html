@@ -33,6 +33,7 @@
                         <td th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
                         <td>
                             <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{dashboard.post.list.actions.edit}"></a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{dashboard.post.list.actions.delete}"></a>
                         </td>
                     </tr>
                 </tbody>

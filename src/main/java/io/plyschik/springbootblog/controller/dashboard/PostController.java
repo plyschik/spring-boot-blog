@@ -4,7 +4,6 @@ import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.PostNotFound;
-import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +30,7 @@ public class PostController {
     public ModelAndView showList(@RequestParam(defaultValue = "0") int page) {
         Page<Post> posts = postService.list(PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id")));
 
-        ModelAndView modelAndView = new ModelAndView("dashboard/list");
+        ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
         modelAndView.addObject("posts", posts);
 
         return modelAndView;
@@ -39,7 +38,7 @@ public class PostController {
 
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
-        return new ModelAndView("dashboard/create", "post", new PostDto());
+        return new ModelAndView("dashboard/post/create", "post", new PostDto());
     }
 
     @PostMapping("/dashboard/posts/create")
@@ -49,7 +48,7 @@ public class PostController {
         BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("dashboard/create");
+            return new ModelAndView("dashboard/post/create");
         }
 
         postService.createPost(postDto, (User) authentication.getPrincipal());
@@ -60,7 +59,7 @@ public class PostController {
     @GetMapping("/dashboard/posts/{id}/edit")
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            ModelAndView modelAndView = new ModelAndView("dashboard/edit");
+            ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
             modelAndView.addObject("id", id);
             modelAndView.addObject("post", postService.getPostForEdit(id));
 
@@ -81,7 +80,7 @@ public class PostController {
     ) {
         try {
             if (bindingResult.hasErrors()) {
-                return new ModelAndView("dashboard/edit");
+                return new ModelAndView("dashboard/post/edit");
             }
 
             postService.updatePost(id, postDto);
@@ -89,6 +88,32 @@ public class PostController {
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (PostNotFound exception) {
             redirectAttributes.addFlashAttribute("alert", exception.getMessage());
+
+            return new ModelAndView("redirect:/dashboard/posts");
+        }
+    }
+
+    @GetMapping("/dashboard/posts/{id}/delete")
+    public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        Optional<Post> post = postService.getById(id);
+
+        if (post.isEmpty()) {
+            redirectAttributes.addFlashAttribute("alert", "Post not found.");
+
+            return new ModelAndView("redirect:/dashboard/posts");
+        }
+
+        return new ModelAndView("dashboard/post/delete", "post", post.get());
+    }
+
+    @PostMapping("/dashboard/posts/{id}/delete")
+    public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        try {
+            postService.delete(id);
+
+            return new ModelAndView("redirect:/dashboard/posts");
+        } catch (PostNotFound postNotFound) {
+            redirectAttributes.addFlashAttribute("alert", "Post not found.");
 
             return new ModelAndView("redirect:/dashboard/posts");
         }
