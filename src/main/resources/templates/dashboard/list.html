@@ -15,12 +15,15 @@
                 Posts list is empty. You can create first post <a th:href="@{/dashboard/posts/create}">here</a>!
             </div>
 
+            <div class="alert alert-danger" th:if="${alert}" th:text="${alert}"></div>
+
             <table class="table table-bordered table-striped" th:if="${!posts.isEmpty}">
                 <thead class="table-dark">
                     <tr>
                         <th th:text="#{dashboard.post.list.headers.id}"></th>
                         <th th:text="#{dashboard.post.list.headers.title}"></th>
                         <th th:text="#{dashboard.post.list.headers.created_at}"></th>
+                        <th th:text="#{dashboard.post.list.headers.actions}"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,6 +31,9 @@
                         <td th:text="${post.id}"></td>
                         <td th:text="${post.title}"></td>
                         <td th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{dashboard.post.list.actions.edit}"></a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
