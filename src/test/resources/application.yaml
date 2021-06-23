@@ -8,3 +8,5 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
   liquibase:
     enabled: false
+pagination:
+  items-per-page: 10

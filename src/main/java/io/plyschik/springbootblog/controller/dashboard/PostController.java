@@ -3,13 +3,12 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
-import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.PostNotFound;
 import io.plyschik.springbootblog.service.PostService;
+import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +16,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
@@ -45,14 +46,14 @@ public class PostController {
     public ModelAndView processCreateForm(
         @ModelAttribute("post") @Valid PostDto postDto,
         BindingResult bindingResult,
-        Authentication authentication,
+        Principal principal,
         RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("dashboard/post/create");
         }
 
-        postService.createPost(postDto, (User) authentication.getPrincipal());
+        postService.createPost(postDto, userService.getUserByEmail(principal.getName()));
 
         redirectAttributes.addFlashAttribute(
             "alert",
