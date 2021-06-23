@@ -1,13 +1,14 @@
 package io.plyschik.springbootblog.controller.dashboard;
 
+import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.PostNotFound;
 import io.plyschik.springbootblog.service.PostService;
-import org.springframework.data.domain.Page;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,21 +20,20 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
-
     @GetMapping("/dashboard/posts")
-    public ModelAndView showList(@RequestParam(defaultValue = "0") int page) {
-        Page<Post> posts = postService.list(PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id")));
-
-        ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
-        modelAndView.addObject("posts", posts);
-
-        return modelAndView;
+    public ModelAndView showList(
+        @RequestParam(defaultValue = "0") int page,
+        @Value("${pagination.items-per-page}") int itemsPerPage
+    ) {
+        return new ModelAndView(
+            "dashboard/post/list",
+            "posts",
+            postService.getPaginatedPosts(PageRequest.of(page, itemsPerPage))
+        );
     }
 
     @GetMapping("/dashboard/posts/create")
@@ -43,15 +43,21 @@ public class PostController {
 
     @PostMapping("/dashboard/posts/create")
     public ModelAndView processCreateForm(
-        Authentication authentication,
         @ModelAttribute("post") @Valid PostDto postDto,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+        Authentication authentication,
+        RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("dashboard/post/create");
         }
 
         postService.createPost(postDto, (User) authentication.getPrincipal());
+
+        redirectAttributes.addFlashAttribute(
+            "alert",
+            new Alert("success", "Post has been successfully created.")
+        );
 
         return new ModelAndView("redirect:/dashboard/posts");
     }
@@ -65,7 +71,7 @@ public class PostController {
 
             return modelAndView;
         } catch (PostNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", exception.getMessage());
+            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
 
             return new ModelAndView("redirect:/dashboard/posts");
         }
@@ -85,9 +91,14 @@ public class PostController {
 
             postService.updatePost(id, postDto);
 
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("success", "Post has been successfully updated.")
+            );
+
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (PostNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", exception.getMessage());
+            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
 
             return new ModelAndView("redirect:/dashboard/posts");
         }
@@ -98,7 +109,10 @@ public class PostController {
         Optional<Post> post = postService.getById(id);
 
         if (post.isEmpty()) {
-            redirectAttributes.addFlashAttribute("alert", "Post not found.");
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Post not found.")
+            );
 
             return new ModelAndView("redirect:/dashboard/posts");
         }
@@ -111,9 +125,17 @@ public class PostController {
         try {
             postService.delete(id);
 
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("success", "Post has been successfully deleted.")
+            );
+
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (PostNotFound postNotFound) {
-            redirectAttributes.addFlashAttribute("alert", "Post not found.");
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Post not found.")
+            );
 
             return new ModelAndView("redirect:/dashboard/posts");
         }

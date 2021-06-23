@@ -15,8 +15,6 @@
                 Posts list is empty. You can create first post <a th:href="@{/dashboard/posts/create}">here</a>!
             </div>
 
-            <div class="alert alert-danger" th:if="${alert}" th:text="${alert}"></div>
-
             <table class="table table-bordered table-striped" th:if="${!posts.isEmpty}">
                 <thead class="table-dark">
                     <tr>

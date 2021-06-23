@@ -9,6 +9,7 @@
     </head>
     <body>
         <div layout:fragment="content" class="container">
+            <div th:class="'mb-4 alert alert-' + ${alert.type}" th:if="${alert}" th:text="${alert.message}"></div>
             <div class="row">
                 <div class="col-3">
                     <div class="card">

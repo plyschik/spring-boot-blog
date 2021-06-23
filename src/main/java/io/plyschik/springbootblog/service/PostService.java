@@ -24,8 +24,8 @@ public class PostService {
         return postRepository.findById(id);
     }
 
-    public Page<Post> list(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<Post> getPaginatedPosts(Pageable pageable) {
+        return postRepository.findAllByOrderByIdDesc(pageable);
     }
 
     public void createPost(PostDto postDto, User user) {

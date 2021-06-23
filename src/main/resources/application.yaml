@@ -13,3 +13,5 @@ spring:
   h2:
     console:
       enabled: false
+pagination:
+  items-per-page: 10
