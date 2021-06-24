@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.UserDto;
+import io.plyschik.springbootblog.entity.Role;
 import io.plyschik.springbootblog.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,10 @@ class AuthControllerIntegrationTest {
 
     @Test
     public void shouldReturnEmailValidationErrorWhenEmailIsAlreadyTaken() throws Exception {
-        userService.signUp(new UserDto("john.doe@sbb.net", "password", "John", "Doe"));
+        userService.signUp(
+            new UserDto("john.doe@sbb.net", "password", "John", "Doe"),
+            Role.USER
+        );
 
         mockMvc.perform(post("/auth/signup")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)

@@ -1,0 +1,58 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboard/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - posts list</title>
+    </head>
+    <body>
+        <div layout:fragment="column">
+            <h3 class="mb-3" th:text="#{dashboard.post.list.header}"></h3>
+
+            <div class="alert alert-info" th:if="${posts.isEmpty}">
+                Posts list is empty. You can create first post <a th:href="@{/dashboard/posts/create}">here</a>!
+            </div>
+
+            <table class="table table-bordered table-striped" th:if="${!posts.isEmpty}">
+                <thead class="table-dark">
+                    <tr>
+                        <th th:text="#{dashboard.post.list.headers.id}"></th>
+                        <th th:text="#{dashboard.post.list.headers.title}"></th>
+                        <th th:text="#{dashboard.post.list.headers.created_at}"></th>
+                        <th th:text="#{dashboard.post.list.headers.actions}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="post: ${posts}">
+                        <td th:text="${post.id}"></td>
+                        <td th:text="${post.title}"></td>
+                        <td th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{dashboard.post.list.actions.edit}"></a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{dashboard.post.list.actions.delete}"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav th:if="${posts.totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/posts(page=0)}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/posts(page=${posts.number - 1})}">&lsaquo;</a>
+                    </li>
+                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (posts.number + 1) + ' of ' + posts.totalPages}"></span>
+                    <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/posts(page=${posts.number + 1})}">&rsaquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${posts.number == (posts.totalPages - 1) ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/posts(page=${posts.totalPages - 1})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>
