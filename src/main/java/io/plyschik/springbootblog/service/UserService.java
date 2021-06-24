@@ -5,14 +5,12 @@ import io.plyschik.springbootblog.entity.Role;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTaken;
 import io.plyschik.springbootblog.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -21,11 +19,9 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository
-            .findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found.", email)));
     }
 
     public void signUp(UserDto userDto, Role role) throws EmailAddressIsAlreadyTaken {

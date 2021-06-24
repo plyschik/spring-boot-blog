@@ -1,0 +1,31 @@
+<!doctype html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - dashboard</title>
+    </head>
+    <body>
+        <div layout:fragment="content" class="container">
+            <div th:class="'mb-4 alert alert-' + ${alert.type}" th:if="${alert}" th:text="${alert.message}"></div>
+            <div class="row">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-header" th:text="#{dashboard.side.post.header}"></div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/posts}" th:text="#{dashboard.side.post.list}"></a>
+                            </li>
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/posts/create}" th:text="#{dashboard.side.post.create}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div layout:fragment="column" class="col-9"></div>
+            </div>
+        </div>
+    </body>
+</html>
