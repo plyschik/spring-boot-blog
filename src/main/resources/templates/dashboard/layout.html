@@ -27,6 +27,9 @@
                         <div class="card-header" th:text="#{dashboard.side.category.header}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
+                                <a th:href="@{/dashboard/categories}" th:text="#{dashboard.side.category.list}"></a>
+                            </li>
+                            <li class="list-group-item">
                                 <a th:href="@{/dashboard/categories/create}" th:text="#{dashboard.side.category.create}"></a>
                             </li>
                         </ul>
