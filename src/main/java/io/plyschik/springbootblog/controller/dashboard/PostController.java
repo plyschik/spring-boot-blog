@@ -3,7 +3,9 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
+import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class PostController {
     private final PostService postService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
@@ -39,7 +42,11 @@ public class PostController {
 
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
-        return new ModelAndView("dashboard/post/create", "post", new PostDto());
+        ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
+        modelAndView.addObject("post", new PostDto());
+        modelAndView.addObject("categories", categoryService.getCategories());
+
+        return modelAndView;
     }
 
     @PostMapping("/dashboard/posts/create")
@@ -53,7 +60,13 @@ public class PostController {
             return new ModelAndView("dashboard/post/create");
         }
 
-        postService.createPost(postDto, userService.getUserByEmail(principal.getName()));
+        try {
+            postService.createPost(postDto, userService.getUserByEmail(principal.getName()));
+        } catch (CategoryNotFound exception) {
+            bindingResult.rejectValue("categoryId", "error.categoryId", exception.getMessage());
+
+            return new ModelAndView("dashboard/post/create");
+        }
 
         redirectAttributes.addFlashAttribute(
             "alert",
@@ -69,6 +82,7 @@ public class PostController {
             ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
             modelAndView.addObject("id", id);
             modelAndView.addObject("post", postService.getPostForEdit(id));
+            modelAndView.addObject("categories", categoryService.getCategories());
 
             return modelAndView;
         } catch (PostNotFound exception) {
@@ -102,6 +116,10 @@ public class PostController {
             redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
 
             return new ModelAndView("redirect:/dashboard/posts");
+        } catch (CategoryNotFound exception) {
+            bindingResult.rejectValue("categoryId", "error.categoryId", exception.getMessage());
+
+            return new ModelAndView("dashboard/post/edit");
         }
     }
 
