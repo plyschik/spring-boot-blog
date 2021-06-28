@@ -12,7 +12,7 @@
             <div th:class="'mb-4 alert alert-' + ${alert.type}" th:if="${alert}" th:text="${alert.message}"></div>
             <div class="row">
                 <div class="col-3">
-                    <div class="card">
+                    <div class="mb-4 card">
                         <div class="card-header" th:text="#{dashboard.side.post.header}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
@@ -20,6 +20,14 @@
                             </li>
                             <li class="list-group-item">
                                 <a th:href="@{/dashboard/posts/create}" th:text="#{dashboard.side.post.create}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" th:text="#{dashboard.side.category.header}"></div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/categories/create}" th:text="#{dashboard.side.category.create}"></a>
                             </li>
                         </ul>
                     </div>
