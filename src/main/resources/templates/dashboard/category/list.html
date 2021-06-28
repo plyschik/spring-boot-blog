@@ -15,25 +15,28 @@
                 Categories list is empty. You can create first post <a th:href="@{/dashboard/categories/create}">here</a>!
             </div>
 
-            <table class="table table-bordered table-striped" th:if="${!categories.isEmpty}">
-                <thead class="table-dark">
-                    <tr>
-                        <th th:text="#{dashboard.category.list.headers.id}"></th>
-                        <th th:text="#{dashboard.category.list.headers.name}"></th>
-                        <th th:text="#{dashboard.category.list.headers.actions}"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="category: ${categories}">
-                        <td th:text="${category.id}"></td>
-                        <td th:text="${category.name}"></td>
-                        <td>
-                            <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{dashboard.category.list.actions.edit}"></a>
-                            <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{dashboard.category.list.actions.delete}"></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped text-nowrap" th:if="${!categories.isEmpty}">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 5%;" th:text="#{dashboard.category.list.headers.id}"></th>
+                            <th style="width: 80%;" th:text="#{dashboard.category.list.headers.name}"></th>
+                            <th class="text-center" style="width: 15%;" th:text="#{dashboard.category.list.headers.actions}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="category: ${categories}">
+                            <td class="text-center align-middle" th:text="${category.id}"></td>
+                            <td class="align-middle" th:text="${category.name}"></td>
+                            <td class="text-center align-middle">
+                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{dashboard.category.list.actions.edit}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{dashboard.category.list.actions.delete}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <nav th:if="${categories.totalPages > 1}">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${categories.number == 0 ? 'disabled' : ''}">
