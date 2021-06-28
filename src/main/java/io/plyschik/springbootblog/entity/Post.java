@@ -1,24 +1,24 @@
 package io.plyschik.springbootblog.entity;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "posts")
 @Getter
 @Setter
-@RequiredArgsConstructor
-@ToString
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     @Setter(AccessLevel.NONE)
     private Long id;
 
@@ -40,17 +40,37 @@ public class Post {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Post post = (Post) o;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-        return id != null && id.equals(post.id);
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        Post post = (Post) object;
+
+        return id.equals(post.id) && title.equals(post.title) && content.equals(post.content) && createdAt.equals(post.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return 949848249;
+        return Objects.hash(id, title, content, createdAt);
     }
 }

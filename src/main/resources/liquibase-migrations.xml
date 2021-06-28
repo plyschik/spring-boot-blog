@@ -78,4 +78,31 @@
                                  referencedColumnNames="id"
                                  referencedTableName="users" />
     </changeSet>
+    <changeSet id="4" author="plyschik">
+        <createTable tableName="categories">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="PK_CATEGORIES" />
+            </column>
+            <column name="name"
+                    type="VARCHAR(30)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name"
+                             constraintName="UC_CATEGORIES_NAME"
+                             tableName="categories" />
+        <addColumn tableName="posts">
+            <column name="category_id"
+                    type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="category_id"
+                                 baseTableName="posts"
+                                 constraintName="FK_POSTS_ON_CATEGORY"
+                                 referencedColumnNames="id"
+                                 referencedTableName="categories" />
+    </changeSet>
 </databaseChangeLog>
