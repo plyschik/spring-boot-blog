@@ -103,6 +103,7 @@
                                  baseTableName="posts"
                                  constraintName="FK_POSTS_ON_CATEGORY"
                                  referencedColumnNames="id"
-                                 referencedTableName="categories" />
+                                 referencedTableName="categories"
+                                 onDelete="SET NULL" />
     </changeSet>
 </databaseChangeLog>

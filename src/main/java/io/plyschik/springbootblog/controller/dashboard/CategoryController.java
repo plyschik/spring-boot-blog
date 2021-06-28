@@ -3,6 +3,8 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.dto.PostDto;
+import io.plyschik.springbootblog.entity.Category;
+import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
 import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -109,6 +112,43 @@ public class CategoryController {
             bindingResult.rejectValue("name", "error.name", exception.getMessage());
 
             return new ModelAndView("dashboard/category/edit");
+        }
+    }
+
+    @GetMapping("/dashboard/categories/{id}/delete")
+    public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        Optional<Category> category = categoryService.getById(id);
+
+        if (category.isEmpty()) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Category not found.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/categories");
+        }
+
+        return new ModelAndView("dashboard/category/delete", "category", category.get());
+    }
+
+    @PostMapping("/dashboard/categories/{id}/delete")
+    public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        try {
+            categoryService.delete(id);
+
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("success", "Category has been successfully deleted.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/categories");
+        } catch (CategoryNotFound postNotFound) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Category not found.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/categories");
         }
     }
 }
