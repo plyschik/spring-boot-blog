@@ -28,7 +28,7 @@
                         <td th:text="${category.id}"></td>
                         <td th:text="${category.name}"></td>
                         <td>
-                            <a class="btn btn-sm btn-primary" href="#" th:text="#{dashboard.category.list.actions.edit}"></a>
+                            <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{dashboard.category.list.actions.edit}"></a>
                             <a class="btn btn-sm btn-danger" href="#" th:text="#{dashboard.category.list.actions.delete}"></a>
                         </td>
                     </tr>

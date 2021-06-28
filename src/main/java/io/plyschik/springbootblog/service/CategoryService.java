@@ -3,6 +3,7 @@ package io.plyschik.springbootblog.service;
 import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
+import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,26 @@ public class CategoryService {
         }
 
         Category category = new Category();
+        category.setName(categoryDto.getName());
+
+        categoryRepository.save(category);
+    }
+
+    public CategoryDto getCategoryForEdit(long id) throws CategoryNotFound {
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFound::new);
+
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setName(category.getName());
+
+        return categoryDto;
+    }
+
+    public void updateCategory(long id, CategoryDto categoryDto) throws CategoryAlreadyExists, CategoryNotFound {
+        if (categoryRepository.existsByName(categoryDto.getName())) {
+            throw new CategoryAlreadyExists();
+        }
+
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFound::new);
         category.setName(categoryDto.getName());
 
         categoryRepository.save(category);
