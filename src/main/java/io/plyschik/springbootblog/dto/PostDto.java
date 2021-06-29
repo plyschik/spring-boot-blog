@@ -18,4 +18,6 @@ public class PostDto {
     @NotBlank
     @Length(min = 4, max = 65535)
     private String content;
+    
+    private Long categoryId;
 }
