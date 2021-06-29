@@ -11,8 +11,8 @@
         <div layout:fragment="content" class="container">
             <div th:class="'mb-4 alert alert-' + ${alert.type}" th:if="${alert}" th:text="${alert.message}"></div>
             <div class="row">
-                <div class="col-3">
-                    <div class="card">
+                <div class="mb-3 mb-md-0 col-12 col-md-4 col-lg-3">
+                    <div class="mb-4 card">
                         <div class="card-header" th:text="#{dashboard.side.post.header}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
@@ -23,8 +23,19 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="card">
+                        <div class="card-header" th:text="#{dashboard.side.category.header}"></div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/categories}" th:text="#{dashboard.side.category.list}"></a>
+                            </li>
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/categories/create}" th:text="#{dashboard.side.category.create}"></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div layout:fragment="column" class="col-9"></div>
+                <div layout:fragment="column" class="col-12 col-md-8 col-lg-9"></div>
             </div>
         </div>
     </body>
