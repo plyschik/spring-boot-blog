@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,10 @@ public class TagService {
 
     public Optional<Tag> getById(long id) {
         return tagRepository.findById(id);
+    }
+
+    public List<Tag> getAll() {
+        return tagRepository.findAll();
     }
 
     public Page<Tag> getPaginatedTags(Pageable pageable) {

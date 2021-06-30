@@ -76,7 +76,8 @@
                                  baseTableName="posts"
                                  constraintName="FK_POSTS_ON_USER"
                                  referencedColumnNames="id"
-                                 referencedTableName="users" />
+                                 referencedTableName="users"
+                                 onDelete="CASCADE" />
     </changeSet>
     <changeSet id="4" author="plyschik">
         <createTable tableName="categories">
@@ -141,11 +142,13 @@
                                  baseTableName="posts_tags"
                                  constraintName="FK_POSTAG_ON_POST"
                                  referencedColumnNames="id"
-                                 referencedTableName="posts" />
+                                 referencedTableName="posts"
+                                 onDelete="CASCADE" />
         <addForeignKeyConstraint baseColumnNames="tag_id"
                                  baseTableName="posts_tags"
                                  constraintName="FK_POSTAG_ON_TAG"
                                  referencedColumnNames="id"
-                                 referencedTableName="tags" />
+                                 referencedTableName="tags"
+                                 onDelete="CASCADE" />
     </changeSet>
 </databaseChangeLog>
