@@ -1,8 +1,8 @@
 <!doctype html>
 <html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/layout}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}"
 >
     <head>
         <title>Spring Boot Blog - dashboard</title>
@@ -23,7 +23,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="card">
+                    <div class="mb-4 card">
                         <div class="card-header" th:text="#{dashboard.side.category.header}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
@@ -31,6 +31,14 @@
                             </li>
                             <li class="list-group-item">
                                 <a th:href="@{/dashboard/categories/create}" th:text="#{dashboard.side.category.create}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" th:text="#{dashboard.side.tag.header}"></div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a th:href="@{/dashboard/tags}" th:text="#{dashboard.side.tag.list}"></a>
                             </li>
                         </ul>
                     </div>
