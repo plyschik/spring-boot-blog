@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Page<Tag> findAllByOrderByIdDesc(Pageable pageable);
+    boolean existsByName(String name);
 }
