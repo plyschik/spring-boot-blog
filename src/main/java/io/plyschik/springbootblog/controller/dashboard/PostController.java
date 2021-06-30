@@ -5,8 +5,10 @@ import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
+import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
+import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final TagService tagService;
 
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
@@ -45,6 +48,7 @@ public class PostController {
         ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
         modelAndView.addObject("post", new PostDto());
         modelAndView.addObject("categories", categoryService.getCategories());
+        modelAndView.addObject("tags", tagService.getAll());
 
         return modelAndView;
     }
@@ -66,6 +70,10 @@ public class PostController {
             bindingResult.rejectValue("categoryId", "error.categoryId", exception.getMessage());
 
             return new ModelAndView("dashboard/post/create");
+        } catch (TagNotFound exception) {
+            bindingResult.rejectValue("tagIds", "error.tagIds", exception.getMessage());
+
+            return new ModelAndView("dashboard/post/create");
         }
 
         redirectAttributes.addFlashAttribute(
@@ -83,6 +91,7 @@ public class PostController {
             modelAndView.addObject("id", id);
             modelAndView.addObject("post", postService.getPostForEdit(id));
             modelAndView.addObject("categories", categoryService.getCategories());
+            modelAndView.addObject("tags", tagService.getAll());
 
             return modelAndView;
         } catch (PostNotFound exception) {

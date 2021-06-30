@@ -76,7 +76,8 @@
                                  baseTableName="posts"
                                  constraintName="FK_POSTS_ON_USER"
                                  referencedColumnNames="id"
-                                 referencedTableName="users" />
+                                 referencedTableName="users"
+                                 onDelete="CASCADE" />
     </changeSet>
     <changeSet id="4" author="plyschik">
         <createTable tableName="categories">
@@ -105,5 +106,49 @@
                                  referencedColumnNames="id"
                                  referencedTableName="categories"
                                  onDelete="SET NULL" />
+    </changeSet>
+    <changeSet id="5" author="plyschik">
+        <createTable tableName="tags">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="PK_TAGS" />
+            </column>
+            <column name="name"
+                    type="VARCHAR(30)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name"
+                             constraintName="UC_TAGS_NAME"
+                             tableName="tags" />
+        <createTable tableName="posts_tags">
+            <column name="post_id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="PK_POSTS_TAGS" />
+            </column>
+            <column name="tag_id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="PK_POSTS_TAGS" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="post_id"
+                                 baseTableName="posts_tags"
+                                 constraintName="FK_POSTAG_ON_POST"
+                                 referencedColumnNames="id"
+                                 referencedTableName="posts"
+                                 onDelete="CASCADE" />
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="posts_tags"
+                                 constraintName="FK_POSTAG_ON_TAG"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tags"
+                                 onDelete="CASCADE" />
     </changeSet>
 </databaseChangeLog>
