@@ -10,10 +10,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TagService {
     private final TagRepository tagRepository;
+
+    public Optional<Tag> getById(long id) {
+        return tagRepository.findById(id);
+    }
 
     public Page<Tag> getPaginatedTags(Pageable pageable) {
         return tagRepository.findAllByOrderByIdDesc(pageable);
@@ -48,5 +54,11 @@ public class TagService {
         tag.setName(tagDto.getName());
 
         tagRepository.save(tag);
+    }
+
+    public void deleteById(long id) throws TagNotFound {
+        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFound::new);
+
+        tagRepository.delete(tag);
     }
 }

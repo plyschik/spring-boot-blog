@@ -2,6 +2,7 @@ package io.plyschik.springbootblog.controller.dashboard;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.TagDto;
+import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagAlreadyExists;
 import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.service.TagService;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -107,6 +109,43 @@ public class TagController {
             bindingResult.rejectValue("name", "error.name", exception.getMessage());
 
             return new ModelAndView("dashboard/tag/edit");
+        }
+    }
+
+    @GetMapping("/dashboard/tags/{id}/delete")
+    public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        Optional<Tag> tag = tagService.getById(id);
+
+        if (tag.isEmpty()) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Tag not found.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/tags");
+        }
+
+        return new ModelAndView("dashboard/tag/delete", "tag", tag.get());
+    }
+
+    @PostMapping("/dashboard/tags/{id}/delete")
+    public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        try {
+            tagService.deleteById(id);
+
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("success", "Tag has been successfully deleted.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/tags");
+        } catch (TagNotFound exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", "Tag not found.")
+            );
+
+            return new ModelAndView("redirect:/dashboard/tags");
         }
     }
 }

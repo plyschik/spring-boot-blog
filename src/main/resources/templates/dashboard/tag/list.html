@@ -30,7 +30,7 @@
                             <td class="align-middle" th:text="${tag.name}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.edit}"></a>
-                                <a class="btn btn-sm btn-danger" href="#" th:text="#{dashboard.tag.list.actions.delete}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.delete}"></a>
                             </td>
                         </tr>
                     </tbody>
