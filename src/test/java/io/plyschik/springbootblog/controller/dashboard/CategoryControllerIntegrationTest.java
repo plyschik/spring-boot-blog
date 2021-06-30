@@ -126,10 +126,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnFormValidationErrorWhenCategoryNameIsNotUnique() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-
-        categoryRepository.save(category);
+        Category category = createCategory("Category name");
 
         mockMvc.perform(post("/dashboard/categories/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -162,10 +159,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnFilledEditFormWhenCategoryExists() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-
-        categoryRepository.save(category);
+        Category category = createCategory("Category name");
 
         mockMvc.perform(get("/dashboard/categories/{id}/edit", category.getId()))
             .andExpect(status().isOk())
@@ -183,10 +177,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenNameFieldIsInvalid() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-
-        categoryRepository.save(category);
+        Category category = createCategory("Category name");
 
         mockMvc.perform(post("/dashboard/categories/{id}/edit", category.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -219,13 +210,8 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenCategoryNameIsNotUnique() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-        categoryRepository.save(category);
-
-        Category secondCategory = new Category();
-        secondCategory.setName("Not unique");
-        categoryRepository.save(secondCategory);
+        Category category = createCategory("Category name");
+        Category secondCategory = createCategory("Not unique");
 
         mockMvc.perform(post("/dashboard/categories/{id}/edit", category.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -240,10 +226,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldUpdateCategoryWhenFormFieldsAreValid() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-
-        categoryRepository.save(category);
+        Category category = createCategory("Category name");
 
         mockMvc.perform(post("/dashboard/categories/{id}/edit", category.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -261,10 +244,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnDeleteConfirmViewWhenCategoryExists() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
-
-        categoryRepository.save(category);
+        Category category = createCategory("Category name");
 
         mockMvc.perform(get("/dashboard/categories/{id}/delete", category.getId()))
             .andExpect(status().isOk())
@@ -283,9 +263,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldRedirectToCategoriesListWhenCategoryNotExistsAfterConfirmation() throws Exception {
-        mockMvc.perform(post("/dashboard/categories/{id}/delete", 1)
-            .with(csrf())
-        )
+        mockMvc.perform(post("/dashboard/categories/{id}/delete", 1).with(csrf()))
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/categories"));
     }
@@ -293,17 +271,19 @@ class CategoryControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldDeletePostWhenConfirmed() throws Exception {
-        Category category = new Category();
-        category.setName("Category name");
+        Category category = createCategory("Category name");
 
-        categoryRepository.save(category);
-
-        mockMvc.perform(post("/dashboard/categories/{id}/delete", category.getId())
-            .with(csrf())
-        )
+        mockMvc.perform(post("/dashboard/categories/{id}/delete", category.getId()).with(csrf()))
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/categories"));
 
         assertFalse(categoryRepository.existsById(category.getId()));
+    }
+
+    private Category createCategory(String name) {
+        Category category = new Category();
+        category.setName(name);
+
+        return categoryRepository.save(category);
     }
 }
