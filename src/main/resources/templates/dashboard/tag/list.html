@@ -1,0 +1,59 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboard/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - tags list</title>
+    </head>
+    <body>
+        <div layout:fragment="column">
+            <h3 class="mb-3" th:text="#{dashboard.tag.list.header}"></h3>
+
+            <div class="alert alert-info" th:if="${tags.isEmpty}">
+                Tags list is empty. You can create first tag <a href="#">here</a>!
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped text-nowrap" th:if="${!tags.isEmpty}">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 5%;" th:text="#{dashboard.tag.list.headers.id}"></th>
+                            <th style="width: 80%;" th:text="#{dashboard.tag.list.headers.name}"></th>
+                            <th class="text-center" style="width: 15%;" th:text="#{dashboard.tag.list.headers.actions}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tag: ${tags}">
+                            <td class="text-center align-middle" th:text="${tag.id}"></td>
+                            <td class="align-middle" th:text="${tag.name}"></td>
+                            <td class="text-center align-middle">
+                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.edit}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.delete}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav th:if="${tags.totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${tags.number == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/tags(page=0)}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${!tags.hasPrevious() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number - 1})}">&lsaquo;</a>
+                    </li>
+                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (tags.number + 1) + ' of ' + tags.totalPages}"></span>
+                    <li class="page-item" th:classappend="${!tags.hasNext() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number + 1})}">&rsaquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${tags.number == (tags.totalPages - 1) ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.totalPages - 1})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

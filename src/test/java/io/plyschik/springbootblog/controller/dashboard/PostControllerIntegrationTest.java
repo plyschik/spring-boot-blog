@@ -33,10 +33,10 @@ class PostControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PostRepository postRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private PostRepository postRepository;
 
     @Test
     @WithMockUser
@@ -168,14 +168,13 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldPersistPostWhenFormFieldsAreValid() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
-
-        userRepository.save(user);
+        createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
         mockMvc.perform(post("/dashboard/posts/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -196,22 +195,15 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldReturnFilledEditFormWhenPostExists() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
-
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        Post post = createPost("Title", "Content", new Date(), user);
 
         mockMvc.perform(get("/dashboard/posts/{id}/edit", post.getId()))
             .andExpect(status().isOk())
@@ -229,22 +221,15 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "test", roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenTitleFieldIsInvalid() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
-
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        Post post = createPost("Title", "Content", new Date(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -277,22 +262,15 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "test", roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenContentFieldIsInvalid() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
-
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        Post post = createPost("Title", "Content", new Date(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -325,22 +303,15 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldUpdatePostWhenFormFieldsAreValid() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
-
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        Post post = createPost("Title", "Content", new Date(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -360,22 +331,15 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldReturnDeleteConfirmViewWhenPostExists() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
-
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
+        Post post = createPost("Title", "Content", new Date(), user);
 
         mockMvc.perform(get("/dashboard/posts/{id}/delete", post.getId()))
             .andExpect(status().isOk())
@@ -394,9 +358,7 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldRedirectToPostsListWhenPostNotExistsAfterConfirmation() throws Exception {
-        mockMvc.perform(post("/dashboard/posts/{id}/delete", 1)
-            .with(csrf())
-        )
+        mockMvc.perform(post("/dashboard/posts/{id}/delete", 1).with(csrf()))
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/posts"));
     }
@@ -404,29 +366,41 @@ class PostControllerIntegrationTest {
     @Test
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldDeletePostWhenConfirmed() throws Exception {
-        User user = new User();
-        user.setEmail("administrator@sbb.net");
-        user.setPassword("password");
-        user.setFirstName("Administrator");
-        user.setLastName("Administrator");
-        user.setRole(Role.ADMINISTRATOR);
+        User user = createUser(
+            "administrator@sbb.net",
+            "password",
+            "John",
+            "Doe",
+            Role.ADMINISTRATOR
+        );
 
-        userRepository.save(user);
+        Post post = createPost("Title", "Content", new Date(), user);
 
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setCreatedAt(new Date());
-        post.setUser(user);
-
-        postRepository.save(post);
-
-        mockMvc.perform(post("/dashboard/posts/{id}/delete", post.getId())
-            .with(csrf())
-        )
+        mockMvc.perform(post("/dashboard/posts/{id}/delete", post.getId()).with(csrf()))
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/posts"));
 
         assertFalse(postRepository.existsById(post.getId()));
+    }
+
+    private User createUser(String email, String password, String firstName, String lastName, Role role) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setRole(role);
+
+        return userRepository.save(user);
+    }
+
+    private Post createPost(String title, String content, Date date, User user) {
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
+        post.setCreatedAt(date);
+        post.setUser(user);
+
+        return postRepository.save(post);
     }
 }

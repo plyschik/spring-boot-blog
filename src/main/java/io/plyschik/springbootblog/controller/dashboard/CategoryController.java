@@ -2,12 +2,9 @@ package io.plyschik.springbootblog.controller.dashboard;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryDto;
-import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Category;
-import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
 import io.plyschik.springbootblog.exception.CategoryNotFound;
-import io.plyschik.springbootblog.exception.PostNotFound;
 import io.plyschik.springbootblog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

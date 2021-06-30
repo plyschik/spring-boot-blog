@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +22,6 @@ public class PostDto {
     private String content;
     
     private Long categoryId;
+
+    private Set<Long> tagIds = new HashSet<>();
 }

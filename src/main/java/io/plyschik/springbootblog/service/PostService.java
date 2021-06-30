@@ -3,24 +3,31 @@ package io.plyschik.springbootblog.service;
 import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
+import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import io.plyschik.springbootblog.repository.PostRepository;
+import io.plyschik.springbootblog.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
 
     public Optional<Post> getById(long id) {
         return postRepository.findById(id);
@@ -30,7 +37,7 @@ public class PostService {
         return postRepository.findAllByOrderByIdDesc(pageable);
     }
 
-    public void createPost(PostDto postDto, User user) throws CategoryNotFound {
+    public void createPost(PostDto postDto, User user) throws CategoryNotFound, TagNotFound {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
@@ -42,6 +49,12 @@ public class PostService {
                 .orElseThrow(CategoryNotFound::new);
 
             post.setCategory(category);
+        }
+
+        for (Long tagId : postDto.getTagIds()) {
+            Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFound::new);
+
+            post.addTag(tag);
         }
 
         postRepository.save(post);
@@ -58,6 +71,8 @@ public class PostService {
             postDto.setCategoryId(post.getCategory().getId());
         }
 
+        post.getTags().forEach(tag -> postDto.getTagIds().add(tag.getId()));
+
         return postDto;
     }
 
@@ -71,6 +86,25 @@ public class PostService {
         } else {
             Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFound::new);
             post.setCategory(category);
+        }
+
+        Set<Tag> currentTags = post.getTags();
+        List<Tag> selectedTags = tagRepository.findAllById(postDto.getTagIds());
+
+        List<Tag> tagsToAdd = selectedTags.stream()
+            .filter(tag -> !currentTags.contains(tag))
+            .collect(Collectors.toList());
+
+        for (Tag tag: tagsToAdd) {
+            post.addTag(tag);
+        }
+
+        List<Tag> tagsToRemove = currentTags.stream()
+            .filter(tag -> !selectedTags.contains(tag))
+            .collect(Collectors.toList());
+
+        for (Tag tag: tagsToRemove) {
+            post.removeTag(tag);
         }
 
         postRepository.save(post);

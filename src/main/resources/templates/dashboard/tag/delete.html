@@ -1,0 +1,18 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}"
+>
+    <head>
+        <title>Spring Boot Blog - confirm delete</title>
+    </head>
+    <body>
+        <div layout:fragment="content" class="container">
+            <h3 class="mb-3" th:text="#{dashboard.tag.delete.header(${tag.name})}"></h3>
+            <form th:action="@{/dashboard/tags/{id}/delete(id=${tag.id})}" method="POST">
+                <button class="btn btn-danger" type="submit" th:text="#{dashboard.tag.delete.submit}"></button>
+            </form>
+        </div>
+    </body>
+</html>
