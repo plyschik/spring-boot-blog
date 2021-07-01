@@ -4,20 +4,17 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{dashboard/layout}"
 >
-    <head>
-        <title>Spring Boot Blog - category edit</title>
-    </head>
     <body>
         <div layout:fragment="column">
-            <h3 class="mb-3" th:text="#{dashboard.category.edit.header}"></h3>
+            <h3 class="mb-3" th:text="#{header.category.edit}"></h3>
             <form th:action="@{/dashboard/categories/{id}/edit(id=${id})}" th:object="${category}" method="POST">
                 <div class="mb-3">
-                    <label class="form-label" for="name" th:text="#{dashboard.category.edit.name}"></label>
+                    <label class="form-label" for="name" th:text="#{label.name}"></label>
                     <input class="form-control" th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}" id="name" type="text" th:field="*{name}" required>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')[0]}"></div>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary" type="submit" th:text="#{dashboard.category.edit.submit}"></button>
+                    <button class="btn btn-primary" type="submit" th:text="#{label.update}"></button>
                 </div>
             </form>
         </div>

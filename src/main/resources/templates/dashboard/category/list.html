@@ -4,12 +4,9 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{dashboard/layout}"
 >
-    <head>
-        <title>Spring Boot Blog - categories list</title>
-    </head>
     <body>
         <div layout:fragment="column">
-            <h3 class="mb-3" th:text="#{dashboard.category.list.header}"></h3>
+            <h3 class="mb-3" th:text="#{header.category.list}"></h3>
 
             <div class="alert alert-info" th:if="${categories.isEmpty}">
                 Categories list is empty. You can create first post <a th:href="@{/dashboard/categories/create}">here</a>!
@@ -19,9 +16,9 @@
                 <table class="table table-bordered table-striped text-nowrap" th:if="${!categories.isEmpty}">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 5%;" th:text="#{dashboard.category.list.headers.id}"></th>
-                            <th style="width: 80%;" th:text="#{dashboard.category.list.headers.name}"></th>
-                            <th class="text-center" style="width: 15%;" th:text="#{dashboard.category.list.headers.actions}"></th>
+                            <th class="text-center" style="width: 5%;" th:text="#{label.id}"></th>
+                            <th style="width: 80%;" th:text="#{label.name}"></th>
+                            <th class="text-center" style="width: 15%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,8 +26,8 @@
                             <td class="text-center align-middle" th:text="${category.id}"></td>
                             <td class="align-middle" th:text="${category.name}"></td>
                             <td class="text-center align-middle">
-                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{dashboard.category.list.actions.edit}"></a>
-                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{dashboard.category.list.actions.delete}"></a>
+                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{label.edit}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{label.delete}"></a>
                             </td>
                         </tr>
                     </tbody>

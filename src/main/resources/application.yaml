@@ -13,5 +13,7 @@ spring:
   h2:
     console:
       enabled: false
+  messages:
+    fallback-to-system-locale: false
 pagination:
   items-per-page: 10

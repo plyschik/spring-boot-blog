@@ -4,12 +4,9 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{dashboard/layout}"
 >
-    <head>
-        <title>Spring Boot Blog - posts list</title>
-    </head>
     <body>
         <div layout:fragment="column">
-            <h3 class="mb-3" th:text="#{dashboard.post.list.header}"></h3>
+            <h3 class="mb-3" th:text="#{header.post.list}"></h3>
 
             <div class="alert alert-info" th:if="${posts.isEmpty}">
                 Posts list is empty. You can create first post <a th:href="@{/dashboard/posts/create}">here</a>!
@@ -19,11 +16,11 @@
                 <table class="table table-bordered table-striped text-nowrap" th:if="${!posts.isEmpty}">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 5%;" th:text="#{dashboard.post.list.headers.id}"></th>
-                            <th style="width: 40%;" th:text="#{dashboard.post.list.headers.title}"></th>
-                            <th style="width: 20%;" th:text="#{dashboard.post.list.headers.created_at}"></th>
-                            <th style="width: 20%;" th:text="#{dashboard.post.list.headers.category}"></th>
-                            <th class="text-center" style="width: 15%;" th:text="#{dashboard.post.list.headers.actions}"></th>
+                            <th class="text-center" style="width: 5%;" th:text="#{label.id}"></th>
+                            <th style="width: 40%;" th:text="#{label.title}"></th>
+                            <th style="width: 20%;" th:text="#{label.created_at}"></th>
+                            <th style="width: 20%;" th:text="#{label.category}"></th>
+                            <th class="text-center" style="width: 15%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,8 +30,8 @@
                             <td class="text-center align-middle" th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
                             <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category?.name, '-')}"></td>
                             <td class="text-center align-middle">
-                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{dashboard.post.list.actions.edit}"></a>
-                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{dashboard.post.list.actions.delete}"></a>
+                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{label.edit}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{label.delete}"></a>
                             </td>
                         </tr>
                     </tbody>
