@@ -13,6 +13,7 @@ import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,10 @@ public class PostService {
 
     public Optional<Post> getById(long id) {
         return postRepository.findById(id);
+    }
+
+    public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
+        return postRepository.findAllWithUserCategoryAndTags(pageable);
     }
 
     public Page<Post> getPaginatedPosts(Pageable pageable) {

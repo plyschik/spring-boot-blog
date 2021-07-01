@@ -1,12 +1,14 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.CategoryDto;
+import io.plyschik.springbootblog.dto.CategoryWithPostsCountDto;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
 import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class CategoryService {
 
     public List<Category> getCategories() {
         return categoryRepository.findAll();
+    }
+
+    public List<CategoryWithPostsCountDto> getCategoriesWithPostsCount() {
+        return categoryRepository.findCategoriesWithPostsCountOrderedByPostsCount(PageRequest.of(0, 5));
     }
 
     public Page<Category> getPaginatedCategories(Pageable pageable) {

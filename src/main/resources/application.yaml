@@ -16,4 +16,6 @@ spring:
   messages:
     fallback-to-system-locale: false
 pagination:
+  post:
+    blog: 5
   items-per-page: 10
