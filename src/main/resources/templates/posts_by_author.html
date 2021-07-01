@@ -25,7 +25,7 @@
                                 </a>
                                 <th:block th:if="${post.category != null}">
                                     <span>&bull;</span>
-                                    <a class="text-decoration-none" href="#">
+                                    <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${post.category.id})}">
                                         <span th:text="${post.category.name}"></span>
                                     </a>
                                 </th:block>
@@ -61,7 +61,7 @@
                         <div class="card-header" th:text="#{label.most_popular_categories}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item" th:each="category: ${categories}">
-                                <a class="text-decoration-none" href="#" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
+                                <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
                             </li>
                         </ul>
                     </div>

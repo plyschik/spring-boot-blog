@@ -18,7 +18,7 @@
                 </a>
                 <th:block th:if="${post.category != null}">
                     <span>&bull;</span>
-                    <a class="text-decoration-none" href="#">
+                    <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${post.category.id})}">
                         <span th:text="${post.category.name}"></span>
                     </a>
                 </th:block>

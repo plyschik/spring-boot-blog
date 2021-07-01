@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.controller;
 
+import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.service.CategoryService;
@@ -68,6 +69,27 @@ class HomeController {
 
         ModelAndView modelAndView = new ModelAndView("posts_by_author");
         modelAndView.addObject("author", author.get());
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
+
+        return modelAndView;
+    }
+
+    @GetMapping("/categories/{id}/posts")
+    public ModelAndView postsFromCategory(
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0") int page,
+        @Value("${pagination.post.blog}") int itemsPerPage
+    ) {
+        Optional<Category> category = categoryService.getById(id);
+        if (category.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Page<Post> posts = postService.getPostsByCategoryId(id, PageRequest.of(page, itemsPerPage));
+
+        ModelAndView modelAndView = new ModelAndView("posts_by_category");
+        modelAndView.addObject("category", category.get());
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
 
