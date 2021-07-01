@@ -13,7 +13,7 @@
             <h6 class="my-2 card-subtitle text-muted">
                 <span th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
                 <span>&bull;</span>
-                <a class="text-decoration-none" href="#">
+                <a class="text-decoration-none" th:href="@{/authors/{id}/posts(id=${post.user.id})}">
                     <span th:text="${post.user.fullName}"></span>
                 </a>
                 <th:block th:if="${post.category != null}">

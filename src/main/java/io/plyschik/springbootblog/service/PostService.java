@@ -11,6 +11,7 @@ import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.repository.TagRepository;
+import io.plyschik.springbootblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -36,6 +38,10 @@ public class PostService {
 
     public Optional<Post> getSinglePostWithAuthorCategoryAndTags(Long id) {
         return postRepository.findByIdWithUserCategoryAndTags(id);
+    }
+
+    public Page<Post> getPostsByAuthorId(Long authorId, Pageable pageable) {
+        return postRepository.findAllByUserIdOrderByCreatedAtDesc(authorId, pageable);
     }
 
     public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {

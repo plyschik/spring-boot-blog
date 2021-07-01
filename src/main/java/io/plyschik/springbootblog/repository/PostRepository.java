@@ -22,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     @Query("SELECT p FROM Post p WHERE p.id = ?1")
     Optional<Post> findByIdWithUserCategoryAndTags(Long id);
+
+    @EntityGraph(attributePaths = {"user", "category", "tags"})
+    Page<Post> findAllByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 }
