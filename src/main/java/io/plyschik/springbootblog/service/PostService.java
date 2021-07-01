@@ -34,6 +34,10 @@ public class PostService {
         return postRepository.findById(id);
     }
 
+    public Optional<Post> getSinglePostWithAuthorCategoryAndTags(Long id) {
+        return postRepository.findByIdWithUserCategoryAndTags(id);
+    }
+
     public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
         return postRepository.findAllWithUserCategoryAndTags(pageable);
     }

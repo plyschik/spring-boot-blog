@@ -13,7 +13,7 @@
                 <div class="col-9">
                     <div th:each="post: ${posts}" class="mb-4 card">
                         <div class="card-body">
-                            <a class="text-decoration-none" href="#">
+                            <a class="text-decoration-none" th:href="@{/posts/{id}(id=${post.id})}">
                                 <h4 class="card-title" th:text="${post.title}"></h4>
                             </a>
                             <h6 class="my-2 card-subtitle text-muted">

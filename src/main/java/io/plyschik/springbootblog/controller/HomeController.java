@@ -1,14 +1,20 @@
 package io.plyschik.springbootblog.controller;
 
+import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,5 +35,16 @@ class HomeController {
         modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
 
         return modelAndView;
+    }
+
+    @GetMapping("/posts/{id}")
+    public ModelAndView singlePost(@PathVariable Long id) {
+        Optional<Post> post = postService.getSinglePostWithAuthorCategoryAndTags(id);
+
+        if (post.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return new ModelAndView("single", "post", post.get());
     }
 }

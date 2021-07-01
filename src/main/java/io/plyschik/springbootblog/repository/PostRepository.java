@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"category"})
@@ -16,4 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
     Page<Post> findAllWithUserCategoryAndTags(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"user", "category", "tags"})
+    @Query("SELECT p FROM Post p WHERE p.id = ?1")
+    Optional<Post> findByIdWithUserCategoryAndTags(Long id);
 }
