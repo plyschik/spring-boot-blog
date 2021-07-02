@@ -48,12 +48,15 @@ class HomeController {
     @GetMapping("/posts/{id}")
     public ModelAndView singlePost(@PathVariable Long id) {
         Optional<Post> post = postService.getSinglePostWithAuthorCategoryAndTags(id);
-
         if (post.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return new ModelAndView("single", "post", post.get());
+        ModelAndView modelAndView = new ModelAndView("single");
+        modelAndView.addObject("post", post.get());
+        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
+
+        return modelAndView;
     }
 
     @GetMapping("/authors/{id}/posts")

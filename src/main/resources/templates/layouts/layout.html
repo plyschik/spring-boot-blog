@@ -10,8 +10,8 @@
         <title th:text="#{label.application_name}" layout:title-pattern="$CONTENT_TITLE"></title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <body class="bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
             <div class="container">
                 <a class="navbar-brand" th:href="@{/}" th:text="#{label.application_name}"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,11 +19,18 @@
                 </button>
                 <div class="collapse navbar-collapse ml-auto" id="navbar">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item" sec:authorize="isAnonymous()">
-                            <a class="nav-link" th:href="@{/auth/signin}" th:text="#{label.sign_in}"></a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{label.language}"></a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="?lang=en" th:text="#{language.english}"></a></li>
+                                <li><a class="dropdown-item" href="?lang=pl" th:text="#{language.polish}"></a></li>
+                            </ul>
                         </li>
                         <li class="nav-item" sec:authorize="isAnonymous()">
                             <a class="nav-link" th:href="@{/auth/signup}" th:text="#{label.sign_up}"></a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAnonymous()">
+                            <a class="nav-link" th:href="@{/auth/signin}" th:text="#{label.sign_in}"></a>
                         </li>
                         <li class="nav-item" sec:authorize="hasRole('ADMINISTRATOR')">
                             <a class="nav-link" th:href="@{/dashboard/posts}" th:text="#{label.dashboard}"></a>
@@ -32,13 +39,6 @@
                             <form th:action="@{/auth/signout}" method="POST">
                                 <button class="nav-link btn btn-link" type="submit" th:text="#{label.sign_out}"></button>
                             </form>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{label.language}"></a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="?lang=en" th:text="#{language.english}"></a></li>
-                                <li><a class="dropdown-item" href="?lang=pl" th:text="#{language.polish}"></a></li>
-                            </ul>
                         </li>
                     </ul>
                 </div>

@@ -12,6 +12,7 @@
             <div class="row">
                 <div class="col-9">
                     <h3 class="mb-4" th:text="#{header.blog.from_category(${category.name})}"></h3>
+                    <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
                     <div th:each="post: ${posts}" class="mb-4 card">
                         <div class="card-body">
                             <a class="text-decoration-none" th:href="@{/posts/{id}(id=${post.id})}">
@@ -59,7 +60,8 @@
                 <div class="col-3">
                     <div class="card">
                         <div class="card-header" th:text="#{label.most_popular_categories}"></div>
-                        <ul class="list-group list-group-flush">
+                        <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>
+                        <ul class="list-group list-group-flush" th:if="${not categories.isEmpty}">
                             <li class="list-group-item" th:each="category: ${categories}">
                                 <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
                             </li>

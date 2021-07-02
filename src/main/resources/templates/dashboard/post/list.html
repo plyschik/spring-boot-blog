@@ -7,20 +7,16 @@
     <body>
         <div layout:fragment="column">
             <h3 class="mb-3" th:text="#{header.post.list}"></h3>
-
-            <div class="alert alert-info" th:if="${posts.isEmpty}">
-                Posts list is empty. You can create first post <a th:href="@{/dashboard/posts/create}">here</a>!
-            </div>
-
+            <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped text-nowrap" th:if="${!posts.isEmpty}">
+                <table class="table table-bordered bg-white text-nowrap" th:if="${!posts.isEmpty}">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 5%;" th:text="#{label.id}"></th>
-                            <th style="width: 40%;" th:text="#{label.title}"></th>
-                            <th style="width: 20%;" th:text="#{label.created_at}"></th>
-                            <th style="width: 20%;" th:text="#{label.category}"></th>
-                            <th class="text-center" style="width: 15%;" th:text="#{label.actions}"></th>
+                            <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
+                            <th style="width: 70%;" th:text="#{label.title}"></th>
+                            <th style="width: 1%;" th:text="#{label.created_at}"></th>
+                            <th style="width: 30%;" th:text="#{label.category}"></th>
+                            <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +24,7 @@
                             <td class="text-center align-middle" th:text="${post.id}"></td>
                             <td class="align-middle" th:text="${post.title}"></td>
                             <td class="text-center align-middle" th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
-                            <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category?.name, '-')}"></td>
+                            <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category?.name, #messages.msg('label.no_category'))}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{label.delete}"></a>
@@ -37,7 +33,6 @@
                     </tbody>
                 </table>
             </div>
-
             <nav th:if="${posts.totalPages > 1}">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
