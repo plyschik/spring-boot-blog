@@ -2,9 +2,11 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
+import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -27,6 +28,7 @@ class HomeController {
     private final UserService userService;
     private final PostService postService;
     private final CategoryService categoryService;
+    private final TagService tagService;
 
     @GetMapping("/")
     public ModelAndView index(
@@ -90,6 +92,27 @@ class HomeController {
 
         ModelAndView modelAndView = new ModelAndView("posts_by_category");
         modelAndView.addObject("category", category.get());
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
+
+        return modelAndView;
+    }
+
+    @GetMapping("/tags/{id}/posts")
+    public ModelAndView postsFromTag(
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0") int page,
+        @Value("${pagination.post.blog}") int itemsPerPage
+    ) {
+        Optional<Tag> tag = tagService.getById(id);
+        if (tag.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Page<Post> posts = postService.getPostsByTagId(id, PageRequest.of(page, itemsPerPage));
+
+        ModelAndView modelAndView = new ModelAndView("posts_by_tag");
+        modelAndView.addObject("tag", tag.get());
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
 

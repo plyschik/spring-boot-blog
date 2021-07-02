@@ -47,6 +47,10 @@ public class PostService {
         return postRepository.findAllByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
     }
 
+    public Page<Post> getPostsByTagId(Long tagId, Pageable pageable) {
+        return postRepository.findAllByIdInOrderByCreatedAtDesc(postRepository.findPostIdsByTagId(tagId), pageable);
+    }
+
     public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
         return postRepository.findAllWithUserCategoryAndTags(pageable);
     }
