@@ -38,7 +38,7 @@
                     </div>
                     <h3 class="my-3" th:text="#{header.comments}"></h3>
                     <div class="alert alert-info" sec:authorize="isAnonymous()" th:text="#{message.only_authenticated_users_can_create_comments}"></div>
-                    <form sec:authorize="isAuthenticated()" th:action="@{/posts/{id}/comments(id=${post.id})}" th:object="${comment}" method="POST">
+                    <form class="mb-3" sec:authorize="isAuthenticated()" th:action="@{/posts/{id}/comments(id=${post.id})}" th:object="${comment}" method="POST">
                         <div class="mb-3">
                             <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="4" required th:placeholder="#{label.comment}"></textarea>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:text="${#fields.errors('content')[0]}"></div>
@@ -47,6 +47,33 @@
                             <button class="btn btn-primary" type="submit" th:text="#{label.create}"></button>
                         </div>
                     </form>
+                    <div class="mb-3 card" th:each="comment: ${comments}">
+                        <div class="card-body">
+                            <div class="mb-2 card-text" th:text="${comment.content}"></div>
+                            <small class="text-muted">
+                                <span th:text="${comment.user.fullName}"></span>
+                                <span>&bull;</span>
+                                <span th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
+                            </small>
+                        </div>
+                    </div>
+                    <nav th:if="${comments.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${comments.number == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=0)}">&laquo;</a>
+                            </li>
+                            <li class="page-item" th:classappend="${!comments.hasPrevious() ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.number - 1})}">&lsaquo;</a>
+                            </li>
+                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (comments.number + 1) + ' of ' + comments.totalPages}"></span>
+                            <li class="page-item" th:classappend="${!comments.hasNext() ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.number + 1})}">&rsaquo;</a>
+                            </li>
+                            <li class="page-item" th:classappend="${comments.number == (comments.totalPages - 1) ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.totalPages - 1})}">&raquo;</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="col-3">
                     <div class="card">

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -54,7 +55,12 @@ class BlogController {
     }
 
     @GetMapping("/posts/{id}")
-    public ModelAndView singlePost(@PathVariable Long id, Model model) {
+    public ModelAndView singlePost(
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0") int page,
+        @Value("${pagination.comments}") int itemsPerPage,
+        Model model
+    ) {
         Optional<Post> post = postService.getSinglePostWithAuthorCategoryAndTags(id);
         if (post.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -67,6 +73,11 @@ class BlogController {
         if (!model.containsAttribute("comment")) {
             modelAndView.addObject("comment", new CommentDto());
         }
+
+        modelAndView.addObject(
+            "comments",
+            commentService.getCommentsByPost(post.get(), PageRequest.of(page, itemsPerPage))
+        );
 
         return modelAndView;
     }

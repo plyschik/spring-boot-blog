@@ -6,6 +6,8 @@ import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,5 +25,9 @@ public class CommentService {
         comment.setPost(post);
 
         commentRepository.save(comment);
+    }
+
+    public Page<Comment> getCommentsByPost(Post post, Pageable pageable) {
+        return commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
     }
 }
