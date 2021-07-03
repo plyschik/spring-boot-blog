@@ -23,7 +23,7 @@ public class Comment {
     private Long id;
 
     @NotBlank
-    @Length(min = 4, max = 65535)
+    @Length(min = 2, max = 65535)
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
