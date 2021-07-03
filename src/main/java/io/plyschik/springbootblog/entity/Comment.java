@@ -8,23 +8,19 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
-
-    @NotBlank
-    @Length(min = 2, max = 120)
-    @Column(nullable = false, length = 120)
-    private String title;
 
     @NotBlank
     @Length(min = 4, max = 65535)
@@ -36,39 +32,17 @@ public class Post {
     private Date createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-        name = "posts_tags",
-        joinColumns = @JoinColumn(name = "post_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tags = new HashSet<>();
-
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
-
-    public void addTag(Tag tag) {
-        tags.add(tag);
-        tag.getPosts().add(this);
-    }
-
-    public void removeTag(Tag tag) {
-        tags.remove(tag);
-        tag.getPosts().remove(this);
-    }
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @Override
     public String toString() {
-        return "Post{" +
+        return "Comment{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
@@ -84,13 +58,13 @@ public class Post {
             return false;
         }
 
-        Post post = (Post) object;
+        Comment comment = (Comment) object;
 
-        return id.equals(post.id) && title.equals(post.title) && content.equals(post.content) && createdAt.equals(post.createdAt);
+        return id.equals(comment.id) && content.equals(comment.content) && createdAt.equals(comment.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, createdAt);
+        return Objects.hash(id, content, createdAt);
     }
 }
