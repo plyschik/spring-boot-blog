@@ -8,6 +8,8 @@ import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class TagController {
+    private final MessageSource messageSource;
     private final TagService tagService;
 
     @GetMapping("/dashboard/tags")
@@ -53,14 +56,26 @@ public class TagController {
         try {
             tagService.createTag(tagDto);
         } catch (TagAlreadyExists exception) {
-            bindingResult.rejectValue("name", "error.name", exception.getMessage());
+            bindingResult.rejectValue(
+                "name",
+                "error.name",
+                messageSource.getMessage(
+                    "message.tag_already_exists",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/tag/create");
         }
 
         redirectAttributes.addFlashAttribute(
             "alert",
-            new Alert("success", "Tag has been successfully created.")
+            new Alert("success", messageSource.getMessage(
+                "message.tag_has_been_successfully_created",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
         );
 
         return new ModelAndView("redirect:/dashboard/tags");
@@ -75,7 +90,14 @@ public class TagController {
 
             return modelAndView;
         } catch (TagNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.tag_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/tags");
         }
@@ -97,16 +119,35 @@ public class TagController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Tag has been successfully updated.")
+                new Alert("success", messageSource.getMessage(
+                    "message.tag_has_been_successfully_updated",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
         } catch (TagNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.tag_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/tags");
         } catch (TagAlreadyExists exception) {
-            bindingResult.rejectValue("name", "error.name", exception.getMessage());
+            bindingResult.rejectValue(
+                "name",
+                "error.name",
+                messageSource.getMessage(
+                    "message.tag_already_exists",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/tag/edit");
         }
@@ -119,7 +160,11 @@ public class TagController {
         if (tag.isEmpty()) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Tag not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.tag_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
@@ -135,14 +180,22 @@ public class TagController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Tag has been successfully deleted.")
+                new Alert("success", messageSource.getMessage(
+                    "message.tag_has_been_successfully_deleted",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
         } catch (TagNotFound exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Tag not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.tag_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/tags");

@@ -4,24 +4,17 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{dashboard/layout}"
 >
-    <head>
-        <title>Spring Boot Blog - tags list</title>
-    </head>
     <body>
         <div layout:fragment="column">
-            <h3 class="mb-3" th:text="#{dashboard.tag.list.header}"></h3>
-
-            <div class="alert alert-info" th:if="${tags.isEmpty}">
-                Tags list is empty. You can create first tag <a href="#">here</a>!
-            </div>
-
+            <h3 class="mb-3" th:text="#{header.tag.list}"></h3>
+            <div class="alert alert-info" th:if="${tags.isEmpty}" th:text="#{message.tags_list_is_empty}"></div>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped text-nowrap" th:if="${!tags.isEmpty}">
+                <table class="table table-bordered bg-white text-nowrap" th:if="${!tags.isEmpty}">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 5%;" th:text="#{dashboard.tag.list.headers.id}"></th>
-                            <th style="width: 80%;" th:text="#{dashboard.tag.list.headers.name}"></th>
-                            <th class="text-center" style="width: 15%;" th:text="#{dashboard.tag.list.headers.actions}"></th>
+                            <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
+                            <th style="width: 100%;" th:text="#{label.name}"></th>
+                            <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,14 +22,13 @@
                             <td class="text-center align-middle" th:text="${tag.id}"></td>
                             <td class="align-middle" th:text="${tag.name}"></td>
                             <td class="text-center align-middle">
-                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.edit}"></a>
-                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{dashboard.tag.list.actions.delete}"></a>
+                                <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{label.edit}"></a>
+                                <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{label.delete}"></a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
             <nav th:if="${tags.totalPages > 1}">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${tags.number == 0 ? 'disabled' : ''}">

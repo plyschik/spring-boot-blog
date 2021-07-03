@@ -1,29 +1,26 @@
 <!doctype html>
 <html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/layout}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}"
 >
-    <head>
-        <title>Spring Boot Blog - sign in</title>
-    </head>
     <body>
         <div layout:fragment="content" class="container">
-            <h3 class="mb-3" th:text="#{auth.signin.header}"></h3>
-            <div class="alert alert-danger" th:if="${param.failure}" th:text="#{auth.signin.form.invalid_credentials}"></div>
+            <h3 class="mb-3" th:text="#{header.sign_in}"></h3>
+            <div class="alert alert-danger" th:if="${param.failure}" th:text="#{message.invalid_credentials}"></div>
             <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
             <form th:action="@{/auth/signin}" method="POST">
                 <div class="mb-3">
-                    <label class="form-label" for="email" th:text="#{auth.signin.form.email}"></label>
+                    <label class="form-label" for="email" th:text="#{label.email}"></label>
                     <input class="form-control" id="email" name="username" type="email" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="password" th:text="#{auth.signin.form.password}"></label>
+                    <label class="form-label" for="password" th:text="#{label.password}"></label>
                     <input class="form-control" id="password" name="password" type="password" required>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary" type="submit" th:text="#{auth.signin.form.submit}"></button>
-                    <a class="btn btn-link" th:href="@{/auth/signup}" th:text="#{navbar.signup}"></a>
+                    <button class="btn btn-primary" type="submit" th:text="#{label.sign_in}"></button>
+                    <a class="btn btn-link" th:href="@{/auth/signup}" th:text="#{label.sign_up}"></a>
                 </div>
             </form>
         </div>

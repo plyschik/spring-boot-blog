@@ -9,4 +9,6 @@ spring:
   liquibase:
     enabled: false
 pagination:
+  post:
+    blog: 5
   items-per-page: 10

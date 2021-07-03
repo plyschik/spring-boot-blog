@@ -11,6 +11,7 @@ import io.plyschik.springbootblog.exception.TagNotFound;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.repository.TagRepository;
+import io.plyschik.springbootblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +26,33 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
     public Optional<Post> getById(long id) {
         return postRepository.findById(id);
+    }
+
+    public Optional<Post> getSinglePostWithAuthorCategoryAndTags(Long id) {
+        return postRepository.findByIdWithUserCategoryAndTags(id);
+    }
+
+    public Page<Post> getPostsByAuthorId(Long authorId, Pageable pageable) {
+        return postRepository.findAllByUserIdOrderByCreatedAtDesc(authorId, pageable);
+    }
+
+    public Page<Post> getPostsByCategoryId(Long categoryId, Pageable pageable) {
+        return postRepository.findAllByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
+    }
+
+    public Page<Post> getPostsByTagId(Long tagId, Pageable pageable) {
+        return postRepository.findAllByIdInOrderByCreatedAtDesc(postRepository.findPostIdsByTagId(tagId), pageable);
+    }
+
+    public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
+        return postRepository.findAllWithUserCategoryAndTags(pageable);
     }
 
     public Page<Post> getPaginatedPosts(Pageable pageable) {

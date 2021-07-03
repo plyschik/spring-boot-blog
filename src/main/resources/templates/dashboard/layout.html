@@ -5,7 +5,7 @@
     layout:decorate="~{layouts/layout}"
 >
     <head>
-        <title>Spring Boot Blog - dashboard</title>
+        <title th:text="#{label.application_name} + ' - ' + #{label.dashboard}"></title>
     </head>
     <body>
         <div layout:fragment="content" class="container">
@@ -13,35 +13,35 @@
             <div class="row">
                 <div class="mb-3 mb-md-0 col-12 col-md-4 col-lg-3">
                     <div class="mb-4 card">
-                        <div class="card-header" th:text="#{dashboard.side.post.header}"></div>
+                        <div class="card-header" th:text="#{label.posts}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/posts}" th:text="#{dashboard.side.post.list}"></a>
+                                <a th:href="@{/dashboard/posts}" th:text="#{label.list}"></a>
                             </li>
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/posts/create}" th:text="#{dashboard.side.post.create}"></a>
+                                <a th:href="@{/dashboard/posts/create}" th:text="#{label.create_new}"></a>
                             </li>
                         </ul>
                     </div>
                     <div class="mb-4 card">
-                        <div class="card-header" th:text="#{dashboard.side.category.header}"></div>
+                        <div class="card-header" th:text="#{label.categories}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/categories}" th:text="#{dashboard.side.category.list}"></a>
+                                <a th:href="@{/dashboard/categories}" th:text="#{label.list}"></a>
                             </li>
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/categories/create}" th:text="#{dashboard.side.category.create}"></a>
+                                <a th:href="@{/dashboard/categories/create}" th:text="#{label.create_new}"></a>
                             </li>
                         </ul>
                     </div>
                     <div class="card">
-                        <div class="card-header" th:text="#{dashboard.side.tag.header}"></div>
+                        <div class="card-header" th:text="#{label.tags}"></div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/tags}" th:text="#{dashboard.side.tag.list}"></a>
+                                <a th:href="@{/dashboard/tags}" th:text="#{label.list}"></a>
                             </li>
                             <li class="list-group-item">
-                                <a th:href="@{/dashboard/tags/create}" th:text="#{dashboard.side.tag.create}"></a>
+                                <a th:href="@{/dashboard/tags/create}" th:text="#{label.create_new}"></a>
                             </li>
                         </ul>
                     </div>

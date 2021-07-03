@@ -13,5 +13,9 @@ spring:
   h2:
     console:
       enabled: false
+  messages:
+    fallback-to-system-locale: false
 pagination:
+  post:
+    blog: 5
   items-per-page: 10

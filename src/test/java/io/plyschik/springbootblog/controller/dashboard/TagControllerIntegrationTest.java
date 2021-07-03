@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.controller.dashboard;
 
+import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagNotFound;
@@ -29,6 +30,9 @@ class TagControllerIntegrationTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private TestUtils testUtils;
 
     @Test
     @WithMockUser
@@ -126,7 +130,7 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnFormValidationErrorWhenTagNameIsNotUnique() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(post("/dashboard/tags/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -159,7 +163,7 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnFilledEditFormWhenTagExists() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(get("/dashboard/tags/{id}/edit", tag.getId()))
             .andExpect(status().isOk())
@@ -177,7 +181,7 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenNameFieldIsInvalid() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(post("/dashboard/tags/{id}/edit", tag.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -210,8 +214,8 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnEditFormValidationErrorWhenTagNameIsNotUnique() throws Exception {
-        Tag tag = createTag("Tag name");
-        Tag secondTag = createTag("Not unique");
+        Tag tag = testUtils.createTag("Tag name");
+        Tag secondTag = testUtils.createTag("Not unique");
 
         mockMvc.perform(post("/dashboard/tags/{id}/edit", tag.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -226,7 +230,7 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldUpdateCategoryWhenFormFieldsAreValid() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(post("/dashboard/tags/{id}/edit", tag.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -244,7 +248,7 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldReturnDeleteConfirmViewWhenTagExists() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(get("/dashboard/tags/{id}/delete", tag.getId()))
             .andExpect(status().isOk())
@@ -271,19 +275,12 @@ class TagControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldDeleteTagWhenConfirmed() throws Exception {
-        Tag tag = createTag("Tag name");
+        Tag tag = testUtils.createTag("Tag name");
 
         mockMvc.perform(post("/dashboard/tags/{id}/delete", tag.getId()).with(csrf()))
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/tags"));
 
         assertFalse(tagRepository.existsById(tag.getId()));
-    }
-
-    private Tag createTag(String name) {
-        Tag tag = new Tag();
-        tag.setName(name);
-
-        return tagRepository.save(tag);
     }
 }

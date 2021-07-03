@@ -8,6 +8,8 @@ import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class CategoryController {
+    private final MessageSource messageSource;
     private final CategoryService categoryService;
 
     @GetMapping("/dashboard/categories")
@@ -53,14 +56,26 @@ public class CategoryController {
         try {
             categoryService.createCategory(categoryDto);
         } catch (CategoryAlreadyExists exception) {
-            bindingResult.rejectValue("name", "error.name", exception.getMessage());
+            bindingResult.rejectValue(
+                "name",
+                "error.name",
+                messageSource.getMessage(
+                    "message.category_already_exists",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/category/create");
         }
 
         redirectAttributes.addFlashAttribute(
             "alert",
-            new Alert("success", "Category has been successfully created.")
+            new Alert("success", messageSource.getMessage(
+                "message.category_has_been_successfully_created",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
         );
         
         return new ModelAndView("redirect:/dashboard/categories");
@@ -75,7 +90,14 @@ public class CategoryController {
 
             return modelAndView;
         } catch (CategoryNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/categories");
         }
@@ -97,16 +119,35 @@ public class CategoryController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Category has been successfully updated.")
+                new Alert("success", messageSource.getMessage(
+                    "message.category_has_been_successfully_updated",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
         } catch (CategoryNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/categories");
         } catch (CategoryAlreadyExists exception) {
-            bindingResult.rejectValue("name", "error.name", exception.getMessage());
+            bindingResult.rejectValue(
+                "name",
+                "error.name",
+                messageSource.getMessage(
+                    "message.category_already_exists",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/category/edit");
         }
@@ -119,7 +160,11 @@ public class CategoryController {
         if (category.isEmpty()) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Category not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
@@ -135,14 +180,22 @@ public class CategoryController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Category has been successfully deleted.")
+                new Alert("success", messageSource.getMessage(
+                    "message.category_has_been_successfully_deleted",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
         } catch (CategoryNotFound postNotFound) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Category not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/categories");

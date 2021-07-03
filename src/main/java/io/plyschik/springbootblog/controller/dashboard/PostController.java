@@ -12,6 +12,8 @@ import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -26,8 +28,9 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class PostController {
-    private final PostService postService;
+    private final MessageSource messageSource;
     private final UserService userService;
+    private final PostService postService;
     private final CategoryService categoryService;
     private final TagService tagService;
 
@@ -67,18 +70,38 @@ public class PostController {
         try {
             postService.createPost(postDto, userService.getUserByEmail(principal.getName()));
         } catch (CategoryNotFound exception) {
-            bindingResult.rejectValue("categoryId", "error.categoryId", exception.getMessage());
+            bindingResult.rejectValue(
+                "categoryId",
+                "error.categoryId",
+                messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/post/create");
         } catch (TagNotFound exception) {
-            bindingResult.rejectValue("tagIds", "error.tagIds", exception.getMessage());
+            bindingResult.rejectValue(
+                "tagIds",
+                "error.tagIds",
+                messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/post/create");
         }
 
         redirectAttributes.addFlashAttribute(
             "alert",
-            new Alert("success", "Post has been successfully created.")
+            new Alert("success", messageSource.getMessage(
+                "message.post_has_been_successfully_created",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
         );
 
         return new ModelAndView("redirect:/dashboard/posts");
@@ -95,7 +118,14 @@ public class PostController {
 
             return modelAndView;
         } catch (PostNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.post_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/posts");
         }
@@ -117,16 +147,35 @@ public class PostController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Post has been successfully updated.")
+                new Alert("success", messageSource.getMessage(
+                    "message.post_has_been_successfully_updated",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (PostNotFound exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert("danger", exception.getMessage()));
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.post_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
 
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (CategoryNotFound exception) {
-            bindingResult.rejectValue("categoryId", "error.categoryId", exception.getMessage());
+            bindingResult.rejectValue(
+                "categoryId",
+                "error.categoryId",
+                messageSource.getMessage(
+                    "message.category_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
 
             return new ModelAndView("dashboard/post/edit");
         }
@@ -139,7 +188,11 @@ public class PostController {
         if (post.isEmpty()) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Post not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.post_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/posts");
@@ -155,14 +208,22 @@ public class PostController {
 
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("success", "Post has been successfully deleted.")
+                new Alert("success", messageSource.getMessage(
+                    "message.post_has_been_successfully_deleted",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/posts");
         } catch (PostNotFound postNotFound) {
             redirectAttributes.addFlashAttribute(
                 "alert",
-                new Alert("danger", "Post not found.")
+                new Alert("danger", messageSource.getMessage(
+                    "message.post_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
             );
 
             return new ModelAndView("redirect:/dashboard/posts");

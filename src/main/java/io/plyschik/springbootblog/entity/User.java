@@ -48,6 +48,10 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Post> posts;
 
+    public String fullName() {
+        return String.format("%s %s", firstName, lastName);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
