@@ -1,10 +1,7 @@
 package io.plyschik.springbootblog;
 
 import io.plyschik.springbootblog.entity.*;
-import io.plyschik.springbootblog.repository.CategoryRepository;
-import io.plyschik.springbootblog.repository.PostRepository;
-import io.plyschik.springbootblog.repository.TagRepository;
-import io.plyschik.springbootblog.repository.UserRepository;
+import io.plyschik.springbootblog.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +14,7 @@ public class TestUtils {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
     public User createUser(String email, String password, String firstName, String lastName, Role role) {
         User user = new User();
@@ -51,5 +49,15 @@ public class TestUtils {
         tag.setName(name);
 
         return tagRepository.save(tag);
+    }
+
+    public Comment createComment(String content, Date date, User user, Post post) {
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setCreatedAt(date);
+        comment.setUser(user);
+        comment.setPost(post);
+
+        return commentRepository.save(comment);
     }
 }
