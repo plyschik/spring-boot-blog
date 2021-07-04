@@ -2,9 +2,6 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.entity.Category;
-import io.plyschik.springbootblog.entity.Comment;
-import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.CommentNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
 import io.plyschik.springbootblog.exception.UserNotFound;
@@ -27,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
