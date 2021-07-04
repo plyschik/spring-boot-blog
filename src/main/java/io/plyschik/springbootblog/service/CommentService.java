@@ -22,18 +22,16 @@ import java.util.Date;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    public void createComment(CommentDto commentDto, User user, Post post) {
-        Comment comment = new Comment();
-        comment.setContent(commentDto.getContent());
-        comment.setCreatedAt(new Date());
-        comment.setUser(user);
-        comment.setPost(post);
-
-        commentRepository.save(comment);
+    public Comment getById(Long id) throws CommentNotFound {
+        return commentRepository.findById(id).orElseThrow(CommentNotFound::new);
     }
 
     public Page<Comment> getCommentsByPost(Post post, Pageable pageable) {
         return commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
+    }
+
+    public boolean existsById(Long id) {
+        return commentRepository.existsById(id);
     }
 
     public CommentDto getCommentForEdit(Long id) throws CommentNotFound {
@@ -45,10 +43,26 @@ public class CommentService {
         return commentDto;
     }
 
+    public void createComment(CommentDto commentDto, User user, Post post) {
+        Comment comment = new Comment();
+        comment.setContent(commentDto.getContent());
+        comment.setCreatedAt(new Date());
+        comment.setUser(user);
+        comment.setPost(post);
+
+        commentRepository.save(comment);
+    }
+
     public void updateComment(long id, CommentDto commentDto) throws CommentNotFound {
         Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFound::new);
         comment.setContent(commentDto.getContent());
 
         commentRepository.save(comment);
+    }
+
+    public void deleteComment(long id) throws CommentNotFound {
+        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFound::new);
+
+        commentRepository.delete(comment);
     }
 }

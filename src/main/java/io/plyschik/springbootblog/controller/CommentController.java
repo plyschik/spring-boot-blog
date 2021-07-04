@@ -2,6 +2,9 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CommentDto;
+import io.plyschik.springbootblog.entity.Category;
+import io.plyschik.springbootblog.entity.Comment;
+import io.plyschik.springbootblog.exception.CategoryNotFound;
 import io.plyschik.springbootblog.exception.CommentNotFound;
 import io.plyschik.springbootblog.exception.PostNotFound;
 import io.plyschik.springbootblog.exception.UserNotFound;
@@ -24,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -138,6 +142,67 @@ public class CommentController {
                 "alert",
                 new Alert("success", messageSource.getMessage(
                     "message.comment_has_been_successfully_updated",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
+
+            return new ModelAndView(String.format("redirect:/posts/%d", postId));
+        } catch (CommentNotFound exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.comment_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
+
+            return new ModelAndView(String.format("redirect:/posts/%d", postId));
+        }
+    }
+
+    @GetMapping("/posts/{postId}/comments/{commentId}/delete")
+    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserDeleteComment(principal, #commentId)")
+    public ModelAndView deleteConfirmation(
+        @PathVariable long postId,
+        @PathVariable long commentId,
+        RedirectAttributes redirectAttributes
+    ) {
+        try {
+            ModelAndView modelAndView = new ModelAndView("comment/delete");
+            modelAndView.addObject("postId", postId);
+            modelAndView.addObject("comment", commentService.getById(commentId));
+
+            return modelAndView;
+        } catch (CommentNotFound exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("danger", messageSource.getMessage(
+                    "message.comment_not_found",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ))
+            );
+
+            return new ModelAndView(String.format("redirect:/posts/%d", postId));
+        }
+    }
+
+    @PostMapping("/posts/{postId}/comments/{commentId}/delete")
+    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserDeleteComment(principal, #commentId)")
+    public ModelAndView delete(
+        @PathVariable long postId,
+        @PathVariable long commentId,
+        RedirectAttributes redirectAttributes
+    ) {
+        try {
+            commentService.deleteComment(commentId);
+
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert("success", messageSource.getMessage(
+                    "message.comment_has_been_successfully_deleted",
                     null,
                     LocaleContextHolder.getLocale()
                 ))
