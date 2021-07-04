@@ -55,6 +55,9 @@
                                 <span>&bull;</span>
                                 <span th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
                             </small>
+                            <div class="mt-2" th:if="${@AuthorizationComponent.canAuthenticatedUserEditComment(#authentication.principal, comment.id)}">
+                                <a class="btn btn-sm btn-primary" th:href="@{/posts/{postId}/comments/{commentId}/edit(postId=${post.id}, commentId=${comment.id})}" th:text="#{label.edit}"></a>
+                            </div>
                         </div>
                     </div>
                     <nav th:if="${comments.totalPages > 1}">
