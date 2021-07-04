@@ -1,19 +1,19 @@
 package io.plyschik.springbootblog.controller;
 
+import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.service.CategoryService;
-import io.plyschik.springbootblog.service.PostService;
-import io.plyschik.springbootblog.service.TagService;
-import io.plyschik.springbootblog.service.UserService;
+import io.plyschik.springbootblog.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,11 +24,13 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-class HomeController {
+class BlogController {
     private final UserService userService;
     private final PostService postService;
     private final CategoryService categoryService;
     private final TagService tagService;
+    private final CommentService commentService;
+    private final MessageSource messageSource;
 
     @GetMapping("/")
     public ModelAndView index(
@@ -46,7 +48,12 @@ class HomeController {
     }
 
     @GetMapping("/posts/{id}")
-    public ModelAndView singlePost(@PathVariable Long id) {
+    public ModelAndView singlePost(
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0") int page,
+        @Value("${pagination.comments}") int itemsPerPage,
+        Model model
+    ) {
         Optional<Post> post = postService.getSinglePostWithAuthorCategoryAndTags(id);
         if (post.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -55,6 +62,15 @@ class HomeController {
         ModelAndView modelAndView = new ModelAndView("single");
         modelAndView.addObject("post", post.get());
         modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
+
+        if (!model.containsAttribute("comment")) {
+            modelAndView.addObject("comment", new CommentDto());
+        }
+
+        modelAndView.addObject(
+            "comments",
+            commentService.getCommentsByPost(post.get(), PageRequest.of(page, itemsPerPage))
+        );
 
         return modelAndView;
     }

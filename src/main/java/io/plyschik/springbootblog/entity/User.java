@@ -48,6 +48,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Post> posts;
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
+
     public String fullName() {
         return String.format("%s %s", firstName, lastName);
     }
