@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog;
 
 import io.plyschik.springbootblog.entity.*;
+import io.plyschik.springbootblog.entity.User.Role;
 import io.plyschik.springbootblog.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

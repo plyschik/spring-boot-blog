@@ -3,13 +3,14 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.entity.Category;
-import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
-import io.plyschik.springbootblog.exception.CategoryNotFound;
+import io.plyschik.springbootblog.exception.CategoryAlreadyExistsException;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
 import io.plyschik.springbootblog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -31,11 +32,9 @@ public class CategoryController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.items-per-page}") int itemsPerPage
     ) {
-        return new ModelAndView(
-            "dashboard/category/list",
-            "categories",
-            categoryService.getPaginatedCategories(PageRequest.of(page, itemsPerPage))
-        );
+        Page<Category> categories = categoryService.getPaginatedCategories(PageRequest.of(page, itemsPerPage));
+
+        return new ModelAndView("dashboard/category/list", "categories", categories);
     }
 
     @GetMapping("/dashboard/categories/create")
@@ -55,7 +54,7 @@ public class CategoryController {
 
         try {
             categoryService.createCategory(categoryDto);
-        } catch (CategoryAlreadyExists exception) {
+        } catch (CategoryAlreadyExistsException exception) {
             bindingResult.rejectValue(
                 "name",
                 "error.name",
@@ -84,12 +83,14 @@ public class CategoryController {
     @GetMapping("/dashboard/categories/{id}/edit")
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
+            CategoryDto category = categoryService.getCategoryForEdit(id);
+
             ModelAndView modelAndView = new ModelAndView("dashboard/category/edit");
             modelAndView.addObject("id", id);
-            modelAndView.addObject("category", categoryService.getCategoryForEdit(id));
+            modelAndView.addObject("category", category);
 
             return modelAndView;
-        } catch (CategoryNotFound exception) {
+        } catch (CategoryNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -127,7 +128,7 @@ public class CategoryController {
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
-        } catch (CategoryNotFound exception) {
+        } catch (CategoryNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -138,7 +139,7 @@ public class CategoryController {
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
-        } catch (CategoryAlreadyExists exception) {
+        } catch (CategoryAlreadyExistsException exception) {
             bindingResult.rejectValue(
                 "name",
                 "error.name",
@@ -155,9 +156,11 @@ public class CategoryController {
 
     @GetMapping("/dashboard/categories/{id}/delete")
     public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        Optional<Category> category = categoryService.getById(id);
+        try {
+            Category category = categoryService.getById(id);
 
-        if (category.isEmpty()) {
+            return new ModelAndView("dashboard/category/delete", "category", category);
+        } catch (CategoryNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -169,8 +172,6 @@ public class CategoryController {
 
             return new ModelAndView("redirect:/dashboard/categories");
         }
-
-        return new ModelAndView("dashboard/category/delete", "category", category.get());
     }
 
     @PostMapping("/dashboard/categories/{id}/delete")
@@ -188,7 +189,7 @@ public class CategoryController {
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
-        } catch (CategoryNotFound postNotFound) {
+        } catch (CategoryNotFoundException postNotFound) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

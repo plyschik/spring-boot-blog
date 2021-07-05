@@ -5,9 +5,9 @@ import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.exception.CategoryNotFound;
-import io.plyschik.springbootblog.exception.PostNotFound;
-import io.plyschik.springbootblog.exception.TagNotFound;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.repository.TagRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,12 +30,20 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
-    public Optional<Post> getById(long id) {
-        return postRepository.findById(id);
+    public Post getById(long id) {
+        return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public Optional<Post> getSinglePostWithAuthorCategoryAndTags(Long id) {
-        return postRepository.findByIdWithUserCategoryAndTags(id);
+    public Post getSinglePostWithAuthorCategoryAndTags(Long id) {
+        return postRepository.findByIdWithUserCategoryAndTags(id).orElseThrow(PostNotFoundException::new);
+    }
+
+    public Page<Post> getPaginatedPosts(Pageable pageable) {
+        return postRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
+        return postRepository.findAllWithUserCategoryAndTags(pageable);
     }
 
     public Page<Post> getPostsByAuthorId(Long authorId, Pageable pageable) {
@@ -51,15 +58,7 @@ public class PostService {
         return postRepository.findAllByIdInOrderByCreatedAtDesc(postRepository.findPostIdsByTagId(tagId), pageable);
     }
 
-    public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
-        return postRepository.findAllWithUserCategoryAndTags(pageable);
-    }
-
-    public Page<Post> getPaginatedPosts(Pageable pageable) {
-        return postRepository.findAllByOrderByIdDesc(pageable);
-    }
-
-    public void createPost(PostDto postDto, User user) throws CategoryNotFound, TagNotFound {
+    public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
@@ -67,14 +66,13 @@ public class PostService {
         post.setUser(user);
 
         if (postDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(postDto.getCategoryId())
-                .orElseThrow(CategoryNotFound::new);
+            Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
             post.setCategory(category);
         }
 
         for (Long tagId : postDto.getTagIds()) {
-            Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFound::new);
+            Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
 
             post.addTag(tag);
         }
@@ -82,8 +80,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostDto getPostForEdit(long id) throws PostNotFound {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
+    public PostDto getPostForEdit(long id) throws PostNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 
         PostDto postDto = new PostDto();
         postDto.setTitle(post.getTitle());
@@ -98,15 +96,15 @@ public class PostService {
         return postDto;
     }
 
-    public void updatePost(long id, PostDto postDto) throws PostNotFound, CategoryNotFound {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
+    public void updatePost(long id, PostDto postDto) throws PostNotFoundException, CategoryNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
 
         if (postDto.getCategoryId() == null) {
             post.setCategory(null);
         } else {
-            Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFound::new);
+            Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
             post.setCategory(category);
         }
 
@@ -132,8 +130,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void delete(long id) throws PostNotFound {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
+    public void delete(long id) throws PostNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 
         postRepository.delete(post);
     }

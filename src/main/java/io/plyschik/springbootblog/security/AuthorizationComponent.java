@@ -1,9 +1,8 @@
 package io.plyschik.springbootblog.security;
 
 import io.plyschik.springbootblog.entity.Comment;
-import io.plyschik.springbootblog.exception.CommentNotFound;
+import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.repository.CommentRepository;
-import io.plyschik.springbootblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 @Component("AuthorizationComponent")
 @RequiredArgsConstructor
 public class AuthorizationComponent {
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
     public boolean canAuthenticatedUserEditComment(
@@ -30,10 +28,10 @@ public class AuthorizationComponent {
         }
 
         try {
-            Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFound::new);
+            Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
             return comment.getUser().getEmail().equals(principal.getUsername());
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             return false;
         }
     }
@@ -51,7 +49,7 @@ public class AuthorizationComponent {
         }
 
         try {
-            Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFound::new);
+            Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
             long differenceBetweenCurrentDateAndCommentCreatedDate = TimeUnit.MILLISECONDS.toMinutes(
                 new Date().getTime() - comment.getCreatedAt().getTime()
@@ -64,7 +62,7 @@ public class AuthorizationComponent {
             }
 
             return false;
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             return false;
         }
     }

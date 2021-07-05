@@ -3,9 +3,9 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.PostDto;
 import io.plyschik.springbootblog.entity.Post;
-import io.plyschik.springbootblog.entity.Role;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.exception.PostNotFound;
+import io.plyschik.springbootblog.entity.User.Role;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -322,7 +322,7 @@ class PostControllerIntegrationTest {
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/posts"));
 
-        Post updatedPost = postRepository.findById(1L).orElseThrow(PostNotFound::new);
+        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
 
         assertEquals("Updated title", updatedPost.getTitle());
         assertEquals("Updated content", updatedPost.getContent());

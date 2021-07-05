@@ -1,14 +1,10 @@
 package io.plyschik.springbootblog.service;
 
-import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Comment;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.exception.CategoryAlreadyExists;
-import io.plyschik.springbootblog.exception.CategoryNotFound;
-import io.plyschik.springbootblog.exception.CommentNotFound;
+import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,20 +18,16 @@ import java.util.Date;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    public Comment getById(Long id) throws CommentNotFound {
-        return commentRepository.findById(id).orElseThrow(CommentNotFound::new);
+    public Comment getById(Long id) throws CommentNotFoundException {
+        return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 
     public Page<Comment> getCommentsByPost(Post post, Pageable pageable) {
         return commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
     }
 
-    public boolean existsById(Long id) {
-        return commentRepository.existsById(id);
-    }
-
-    public CommentDto getCommentForEdit(Long id) throws CommentNotFound {
-        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFound::new);
+    public CommentDto getCommentForEdit(Long id) throws CommentNotFoundException {
+        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
 
         CommentDto commentDto = new CommentDto();
         commentDto.setContent(comment.getContent());
@@ -53,15 +45,15 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(long id, CommentDto commentDto) throws CommentNotFound {
-        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFound::new);
+    public void updateComment(long id, CommentDto commentDto) throws CommentNotFoundException {
+        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
         comment.setContent(commentDto.getContent());
 
         commentRepository.save(comment);
     }
 
-    public void deleteComment(long id) throws CommentNotFound {
-        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFound::new);
+    public void deleteComment(long id) throws CommentNotFoundException {
+        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
 
         commentRepository.delete(comment);
     }

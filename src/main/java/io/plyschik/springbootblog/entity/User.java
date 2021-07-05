@@ -16,6 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @ToString(exclude = {"posts"})
 public class User {
+    public enum Role {
+        USER, MODERATOR, ADMINISTRATOR;
+
+        @Override
+        public String toString() {
+            return "ROLE_" + name();
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

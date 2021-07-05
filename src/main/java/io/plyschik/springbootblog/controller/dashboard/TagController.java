@@ -3,13 +3,14 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.entity.Tag;
-import io.plyschik.springbootblog.exception.TagAlreadyExists;
-import io.plyschik.springbootblog.exception.TagNotFound;
+import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,11 +31,9 @@ public class TagController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.items-per-page}") int itemsPerPage
     ) {
-        return new ModelAndView(
-            "dashboard/tag/list",
-            "tags",
-            tagService.getPaginatedTags(PageRequest.of(page, itemsPerPage))
-        );
+        Page<Tag> tags = tagService.getPaginatedTags(PageRequest.of(page, itemsPerPage));
+
+        return new ModelAndView("dashboard/tag/list", "tags", tags);
     }
 
     @GetMapping("/dashboard/tags/create")
@@ -55,7 +53,7 @@ public class TagController {
 
         try {
             tagService.createTag(tagDto);
-        } catch (TagAlreadyExists exception) {
+        } catch (TagAlreadyExistsException exception) {
             bindingResult.rejectValue(
                 "name",
                 "error.name",
@@ -84,12 +82,14 @@ public class TagController {
     @GetMapping("/dashboard/tags/{id}/edit")
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
+            TagDto tag = tagService.getTagForEdit(id);
+
             ModelAndView modelAndView = new ModelAndView("dashboard/tag/edit");
             modelAndView.addObject("id", id);
-            modelAndView.addObject("tag", tagService.getTagForEdit(id));
+            modelAndView.addObject("tag", tag);
 
             return modelAndView;
-        } catch (TagNotFound exception) {
+        } catch (TagNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -127,7 +127,7 @@ public class TagController {
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
-        } catch (TagNotFound exception) {
+        } catch (TagNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -138,7 +138,7 @@ public class TagController {
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
-        } catch (TagAlreadyExists exception) {
+        } catch (TagAlreadyExistsException exception) {
             bindingResult.rejectValue(
                 "name",
                 "error.name",
@@ -155,9 +155,11 @@ public class TagController {
 
     @GetMapping("/dashboard/tags/{id}/delete")
     public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        Optional<Tag> tag = tagService.getById(id);
+        try {
+            Tag tag = tagService.getById(id);
 
-        if (tag.isEmpty()) {
+            return new ModelAndView("dashboard/tag/delete", "tag", tag);
+        } catch (TagNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -169,8 +171,6 @@ public class TagController {
 
             return new ModelAndView("redirect:/dashboard/tags");
         }
-
-        return new ModelAndView("dashboard/tag/delete", "tag", tag.get());
     }
 
     @PostMapping("/dashboard/tags/{id}/delete")
@@ -188,7 +188,7 @@ public class TagController {
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
-        } catch (TagNotFound exception) {
+        } catch (TagNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

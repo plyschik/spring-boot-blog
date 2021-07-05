@@ -2,8 +2,11 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.entity.*;
-import io.plyschik.springbootblog.exception.CommentNotFound;
+import io.plyschik.springbootblog.entity.Comment;
+import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.entity.User.Role;
+import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,8 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -285,7 +289,7 @@ class CommentControllerIntegrationTest {
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrlTemplate("/posts/{postId}", post.getId()));
 
-        Comment updatedComment = commentRepository.findById(comment.getId()).orElseThrow(CommentNotFound::new);
+        Comment updatedComment = commentRepository.findById(comment.getId()).orElseThrow(CommentNotFoundException::new);
 
         assertEquals("Updated comment", updatedComment.getContent());
     }

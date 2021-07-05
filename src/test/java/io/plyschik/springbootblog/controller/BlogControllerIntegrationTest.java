@@ -1,7 +1,11 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.TestUtils;
-import io.plyschik.springbootblog.entity.*;
+import io.plyschik.springbootblog.entity.Category;
+import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.entity.Tag;
+import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.entity.User.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
