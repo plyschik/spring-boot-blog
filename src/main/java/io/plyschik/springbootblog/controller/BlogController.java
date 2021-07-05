@@ -1,14 +1,15 @@
 package io.plyschik.springbootblog.controller;
 
+import io.plyschik.springbootblog.dto.CategoryWithPostsCountDto;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.entity.Category;
-import io.plyschik.springbootblog.entity.Post;
-import io.plyschik.springbootblog.entity.Tag;
-import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.entity.*;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
+import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,19 +31,18 @@ class BlogController {
     private final CategoryService categoryService;
     private final TagService tagService;
     private final CommentService commentService;
-    private final MessageSource messageSource;
 
     @GetMapping("/")
     public ModelAndView index(
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
+        Page<Post> posts = postService.getPaginatedPostsWithAuthorCategoryAndTags(PageRequest.of(page, itemsPerPage));
+        List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+
         ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject(
-            "posts",
-            postService.getPaginatedPostsWithAuthorCategoryAndTags(PageRequest.of(page, itemsPerPage))
-        );
-        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("categories", categories);
 
         return modelAndView;
     }
@@ -54,25 +54,24 @@ class BlogController {
         @Value("${pagination.comments}") int itemsPerPage,
         Model model
     ) {
-        Optional<Post> post = postService.getSinglePostWithAuthorCategoryAndTags(id);
-        if (post.isEmpty()) {
+        try {
+            Post post = postService.getSinglePostWithAuthorCategoryAndTags(id);
+            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+            Page<Comment> comments = commentService.getCommentsByPost(post, PageRequest.of(page, itemsPerPage));
+
+            ModelAndView modelAndView = new ModelAndView("single");
+            modelAndView.addObject("post", post);
+            modelAndView.addObject("categories", categories);
+            modelAndView.addObject("comments", comments);
+
+            if (!model.containsAttribute("comment")) {
+                modelAndView.addObject("comment", new CommentDto());
+            }
+
+            return modelAndView;
+        } catch (PostNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        ModelAndView modelAndView = new ModelAndView("single");
-        modelAndView.addObject("post", post.get());
-        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
-
-        if (!model.containsAttribute("comment")) {
-            modelAndView.addObject("comment", new CommentDto());
-        }
-
-        modelAndView.addObject(
-            "comments",
-            commentService.getCommentsByPost(post.get(), PageRequest.of(page, itemsPerPage))
-        );
-
-        return modelAndView;
     }
 
     @GetMapping("/authors/{id}/posts")
@@ -81,19 +80,20 @@ class BlogController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
-        Optional<User> author = userService.getUserById(id);
-        if (author.isEmpty()) {
+        try {
+            User author = userService.getUserById(id);
+            Page<Post> posts = postService.getPostsByAuthorId(id, PageRequest.of(page, itemsPerPage));
+            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+
+            ModelAndView modelAndView = new ModelAndView("posts_by_author");
+            modelAndView.addObject("author", author);
+            modelAndView.addObject("posts", posts);
+            modelAndView.addObject("categories", categories);
+
+            return modelAndView;
+        } catch (UserNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Page<Post> posts = postService.getPostsByAuthorId(id, PageRequest.of(page, itemsPerPage));
-
-        ModelAndView modelAndView = new ModelAndView("posts_by_author");
-        modelAndView.addObject("author", author.get());
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
-
-        return modelAndView;
     }
 
     @GetMapping("/categories/{id}/posts")
@@ -102,19 +102,20 @@ class BlogController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
-        Optional<Category> category = categoryService.getById(id);
-        if (category.isEmpty()) {
+        try {
+            Category category = categoryService.getById(id);
+            Page<Post> posts = postService.getPostsByCategoryId(id, PageRequest.of(page, itemsPerPage));
+            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+
+            ModelAndView modelAndView = new ModelAndView("posts_by_category");
+            modelAndView.addObject("category", category);
+            modelAndView.addObject("posts", posts);
+            modelAndView.addObject("categories", categories);
+
+            return modelAndView;
+        } catch (CategoryNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Page<Post> posts = postService.getPostsByCategoryId(id, PageRequest.of(page, itemsPerPage));
-
-        ModelAndView modelAndView = new ModelAndView("posts_by_category");
-        modelAndView.addObject("category", category.get());
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
-
-        return modelAndView;
     }
 
     @GetMapping("/tags/{id}/posts")
@@ -123,18 +124,19 @@ class BlogController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
-        Optional<Tag> tag = tagService.getById(id);
-        if (tag.isEmpty()) {
+        try {
+            Tag tag = tagService.getById(id);
+            Page<Post> posts = postService.getPostsByTagId(id, PageRequest.of(page, itemsPerPage));
+            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+
+            ModelAndView modelAndView = new ModelAndView("posts_by_tag");
+            modelAndView.addObject("tag", tag);
+            modelAndView.addObject("posts", posts);
+            modelAndView.addObject("categories", categories);
+
+            return modelAndView;
+        } catch (TagNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Page<Post> posts = postService.getPostsByTagId(id, PageRequest.of(page, itemsPerPage));
-
-        ModelAndView modelAndView = new ModelAndView("posts_by_tag");
-        modelAndView.addObject("tag", tag.get());
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categoryService.getCategoriesWithPostsCount());
-
-        return modelAndView;
     }
 }

@@ -2,9 +2,9 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.exception.CommentNotFound;
-import io.plyschik.springbootblog.exception.PostNotFound;
-import io.plyschik.springbootblog.exception.UserNotFound;
+import io.plyschik.springbootblog.exception.CommentNotFoundException;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
+import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.service.CommentService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.UserService;
@@ -55,8 +55,8 @@ public class CommentController {
         try {
             commentService.createComment(
                 commentDto,
-                userService.getByEmail(principal.getName()).orElseThrow(UserNotFound::new),
-                postService.getById(postId).orElseThrow(PostNotFound::new)
+                userService.getByEmail(principal.getName()).orElseThrow(UserNotFoundException::new),
+                postService.getById(postId)
             );
 
             redirectAttributes.addFlashAttribute("alert", new Alert(
@@ -69,7 +69,7 @@ public class CommentController {
             ));
 
             return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (UserNotFound exception) {
+        } catch (UserNotFoundException exception) {
             redirectAttributes.addFlashAttribute("alert", new Alert(
                 "danger",
                 messageSource.getMessage(
@@ -80,7 +80,7 @@ public class CommentController {
             ));
 
             return new ModelAndView("redirect:/");
-        } catch (PostNotFound exception) {
+        } catch (PostNotFoundException exception) {
             redirectAttributes.addFlashAttribute("alert", new Alert(
                 "danger",
                 messageSource.getMessage(
@@ -107,7 +107,7 @@ public class CommentController {
             }
 
             return modelAndView;
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             return new ModelAndView(String.format("redirect:/posts/%d", postId));
         }
     }
@@ -144,7 +144,7 @@ public class CommentController {
             );
 
             return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -171,7 +171,7 @@ public class CommentController {
             modelAndView.addObject("comment", commentService.getById(commentId));
 
             return modelAndView;
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
@@ -205,7 +205,7 @@ public class CommentController {
             );
 
             return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (CommentNotFound exception) {
+        } catch (CommentNotFoundException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

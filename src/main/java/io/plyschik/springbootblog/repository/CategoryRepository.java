@@ -15,10 +15,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Page<Category> findAllByOrderByIdDesc(Pageable pageable);
     boolean existsByName(String name);
 
-    @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCountDto(c.id, c.name, COUNT(p.id)) " +
+    @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCountDto(c.id, c.name, COUNT(p.id) AS postsCount) " +
            "FROM Category c " +
            "LEFT JOIN c.posts p " +
            "GROUP BY c.id " +
-           "ORDER BY COUNT(p.id) DESC")
+           "ORDER BY postsCount DESC")
     List<CategoryWithPostsCountDto> findCategoriesWithPostsCountOrderedByPostsCount(Pageable pageable);
 }

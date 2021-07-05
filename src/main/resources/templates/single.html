@@ -16,7 +16,7 @@
                         <div class="card-body">
                             <h4 class="card-title" th:text="${post.title}"></h4>
                             <h6 class="my-2 card-subtitle text-muted">
-                                <span th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
+                                <span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
                                 <span>&bull;</span>
                                 <a class="text-decoration-none" th:href="@{/authors/{id}/posts(id=${post.user.id})}">
                                     <span th:text="${post.user.fullName}"></span>
@@ -53,7 +53,7 @@
                             <small class="text-muted">
                                 <span th:text="${comment.user.fullName}"></span>
                                 <span>&bull;</span>
-                                <span th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
+                                <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
                             </small>
                             <div class="mt-2" sec:authorize="isAuthenticated()">
                                 <a class="btn btn-sm btn-success" th:if="${@AuthorizationComponent.canAuthenticatedUserEditComment(#authentication.principal, comment.id)}" th:href="@{/posts/{postId}/comments/{commentId}/edit(postId=${post.id}, commentId=${comment.id})}" th:text="#{label.edit}"></a>

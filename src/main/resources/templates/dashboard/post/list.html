@@ -23,7 +23,7 @@
                         <tr th:each="post: ${posts}">
                             <td class="text-center align-middle" th:text="${post.id}"></td>
                             <td class="align-middle" th:text="${post.title}"></td>
-                            <td class="text-center align-middle" th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
+                            <td class="text-center align-middle" th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
                             <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category?.name, #messages.msg('label.no_category'))}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{label.edit}"></a>

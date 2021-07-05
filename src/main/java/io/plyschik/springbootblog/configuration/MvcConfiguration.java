@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.configuration;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -37,5 +38,10 @@ public class MvcConfiguration implements WebMvcConfigurer {
         localeChangeInterceptor.setParamName("lang");
 
         return localeChangeInterceptor;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }

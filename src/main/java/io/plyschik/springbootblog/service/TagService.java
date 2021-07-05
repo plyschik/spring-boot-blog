@@ -2,24 +2,25 @@ package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.entity.Tag;
-import io.plyschik.springbootblog.exception.TagAlreadyExists;
-import io.plyschik.springbootblog.exception.TagNotFound;
+import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TagService {
+    private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
 
-    public Optional<Tag> getById(long id) {
-        return tagRepository.findById(id);
+    public Tag getById(long id) {
+        return tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
     }
 
     public List<Tag> getAll() {
@@ -30,39 +31,35 @@ public class TagService {
         return tagRepository.findAllByOrderByIdDesc(pageable);
     }
 
-    public void createTag(TagDto tagDto) throws TagAlreadyExists {
+    public void createTag(TagDto tagDto) throws TagAlreadyExistsException {
         if (tagRepository.existsByName(tagDto.getName())) {
-            throw new TagAlreadyExists();
+            throw new TagAlreadyExistsException();
         }
 
-        Tag tag = new Tag();
-        tag.setName(tagDto.getName());
+        Tag tag = modelMapper.map(tagDto, Tag.class);
 
         tagRepository.save(tag);
     }
 
-    public TagDto getTagForEdit(long id) throws TagNotFound {
-        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFound::new);
+    public TagDto getTagForEdit(long id) throws TagNotFoundException {
+        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
 
-        TagDto tagDto = new TagDto();
-        tagDto.setName(tag.getName());
-
-        return tagDto;
+        return modelMapper.map(tag, TagDto.class);
     }
 
-    public void updateTag(long id, TagDto tagDto) throws TagNotFound, TagAlreadyExists {
+    public void updateTag(long id, TagDto tagDto) throws TagNotFoundException, TagAlreadyExistsException {
         if (tagRepository.existsByName(tagDto.getName())) {
-            throw new TagAlreadyExists();
+            throw new TagAlreadyExistsException();
         }
 
-        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFound::new);
-        tag.setName(tagDto.getName());
+        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
+        modelMapper.map(tagDto, tag);
 
         tagRepository.save(tag);
     }
 
-    public void deleteById(long id) throws TagNotFound {
-        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFound::new);
+    public void deleteById(long id) throws TagNotFoundException {
+        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
 
         tagRepository.delete(tag);
     }

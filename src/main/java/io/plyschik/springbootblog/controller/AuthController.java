@@ -1,8 +1,9 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.UserDto;
-import io.plyschik.springbootblog.entity.Role;
-import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTaken;
+import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.entity.User.Role;
+import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTakenException;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -42,7 +43,7 @@ public class AuthController {
 
         try {
             userService.signUp(userDto, Role.USER);
-        } catch (EmailAddressIsAlreadyTaken exception) {
+        } catch (EmailAddressIsAlreadyTakenException exception) {
             bindingResult.rejectValue(
                 "email",
                 "error.email",

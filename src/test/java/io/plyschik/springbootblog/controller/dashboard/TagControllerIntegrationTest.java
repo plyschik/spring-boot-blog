@@ -3,7 +3,7 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.entity.Tag;
-import io.plyschik.springbootblog.exception.TagNotFound;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,7 +240,7 @@ class TagControllerIntegrationTest {
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/tags"));
 
-        Tag updatedTag = tagRepository.findById(tag.getId()).orElseThrow(TagNotFound::new);
+        Tag updatedTag = tagRepository.findById(tag.getId()).orElseThrow(TagNotFoundException::new);
 
         assertEquals("Updated name", updatedTag.getName());
     }

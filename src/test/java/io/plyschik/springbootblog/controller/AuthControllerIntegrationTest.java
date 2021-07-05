@@ -2,7 +2,7 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.UserDto;
-import io.plyschik.springbootblog.entity.Role;
+import io.plyschik.springbootblog.entity.User.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

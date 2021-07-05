@@ -3,7 +3,7 @@ package io.plyschik.springbootblog.controller.dashboard;
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.entity.Category;
-import io.plyschik.springbootblog.exception.CategoryNotFound;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,7 +240,7 @@ class CategoryControllerIntegrationTest {
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/categories"));
 
-        Category updatedCategory = categoryRepository.findById(category.getId()).orElseThrow(CategoryNotFound::new);
+        Category updatedCategory = categoryRepository.findById(category.getId()).orElseThrow(CategoryNotFoundException::new);
 
         assertEquals("Updated name", updatedCategory.getName());
     }
