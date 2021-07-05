@@ -6,6 +6,8 @@ import io.plyschik.springbootblog.entity.User.Role;
 import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTakenException;
 import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,14 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -40,11 +39,8 @@ public class UserService {
             throw new EmailAddressIsAlreadyTakenException();
         }
 
-        User user = new User();
-        user.setEmail(userDto.getEmail());
+        User user = modelMapper.map(userDto, User.class);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
         user.setRole(role);
 
         userRepository.save(user);

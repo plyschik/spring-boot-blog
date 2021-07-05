@@ -11,8 +11,8 @@ import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import io.plyschik.springbootblog.repository.PostRepository;
 import io.plyschik.springbootblog.repository.TagRepository;
-import io.plyschik.springbootblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -59,9 +59,7 @@ public class PostService {
     }
 
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
+        Post post = modelMapper.map(postDto, Post.class);
         post.setCreatedAt(new Date());
         post.setUser(user);
 
@@ -83,9 +81,7 @@ public class PostService {
     public PostDto getPostForEdit(long id) throws PostNotFoundException {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 
-        PostDto postDto = new PostDto();
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
+        PostDto postDto = modelMapper.map(post, PostDto.class);;
 
         if (post.getCategory() != null) {
             postDto.setCategoryId(post.getCategory().getId());
@@ -98,8 +94,7 @@ public class PostService {
 
     public void updatePost(long id, PostDto postDto) throws PostNotFoundException, CategoryNotFoundException {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
+        modelMapper.map(postDto, post);
 
         if (postDto.getCategoryId() == null) {
             post.setCategory(null);

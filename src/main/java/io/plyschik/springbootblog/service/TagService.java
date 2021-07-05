@@ -6,6 +6,7 @@ import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TagService {
+    private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
 
     public Tag getById(long id) {
@@ -34,8 +36,7 @@ public class TagService {
             throw new TagAlreadyExistsException();
         }
 
-        Tag tag = new Tag();
-        tag.setName(tagDto.getName());
+        Tag tag = modelMapper.map(tagDto, Tag.class);
 
         tagRepository.save(tag);
     }
@@ -43,10 +44,7 @@ public class TagService {
     public TagDto getTagForEdit(long id) throws TagNotFoundException {
         Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
 
-        TagDto tagDto = new TagDto();
-        tagDto.setName(tag.getName());
-
-        return tagDto;
+        return modelMapper.map(tag, TagDto.class);
     }
 
     public void updateTag(long id, TagDto tagDto) throws TagNotFoundException, TagAlreadyExistsException {
@@ -55,7 +53,7 @@ public class TagService {
         }
 
         Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
-        tag.setName(tagDto.getName());
+        modelMapper.map(tagDto, tag);
 
         tagRepository.save(tag);
     }

@@ -1,6 +1,5 @@
 package io.plyschik.springbootblog.service;
 
-import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.dto.CategoryWithPostsCountDto;
 import io.plyschik.springbootblog.entity.Category;
@@ -8,6 +7,7 @@ import io.plyschik.springbootblog.exception.CategoryAlreadyExistsException;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
+    private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
 
     public Category getById(long id) {
@@ -41,8 +42,7 @@ public class CategoryService {
             throw new CategoryAlreadyExistsException();
         }
 
-        Category category = new Category();
-        category.setName(categoryDto.getName());
+        Category category = modelMapper.map(categoryDto, Category.class);
 
         categoryRepository.save(category);
     }
@@ -50,10 +50,7 @@ public class CategoryService {
     public CategoryDto getCategoryForEdit(long id) throws CategoryNotFoundException {
         Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
 
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setName(category.getName());
-
-        return categoryDto;
+        return modelMapper.map(category, CategoryDto.class);
     }
 
     public void updateCategory(long id, CategoryDto categoryDto) throws CategoryAlreadyExistsException, CategoryNotFoundException {
@@ -62,7 +59,7 @@ public class CategoryService {
         }
 
         Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        category.setName(categoryDto.getName());
+        modelMapper.map(categoryDto, category);
 
         categoryRepository.save(category);
     }
