@@ -32,7 +32,7 @@ public class TestUtils {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
-        post.setCreatedAt(date);
+//        post.setCreatedAt(date);
         post.setUser(user);
 
         return postRepository.save(post);
@@ -55,7 +55,7 @@ public class TestUtils {
     public Comment createComment(String content, Date date, User user, Post post) {
         Comment comment = new Comment();
         comment.setContent(content);
-        comment.setCreatedAt(date);
+//        comment.setCreatedAt(date);
         comment.setUser(user);
         comment.setPost(post);
 

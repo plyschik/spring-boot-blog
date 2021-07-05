@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ public class PostService {
     }
 
     public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
-        return postRepository.findAllWithUserCategoryAndTags(pageable);
+        return postRepository.findAllWithAuthorCategoryAndTagsByOrderByCreatedAtDesc(pageable);
     }
 
     public Page<Post> getPostsByAuthorId(Long authorId, Pageable pageable) {
@@ -60,7 +59,6 @@ public class PostService {
 
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
         Post post = modelMapper.map(postDto, Post.class);
-        post.setCreatedAt(new Date());
         post.setUser(user);
 
         if (postDto.getCategoryId() != null) {

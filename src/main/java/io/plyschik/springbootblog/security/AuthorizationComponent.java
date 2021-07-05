@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Component("AuthorizationComponent")
 @RequiredArgsConstructor
@@ -51,8 +51,9 @@ public class AuthorizationComponent {
         try {
             Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
-            long differenceBetweenCurrentDateAndCommentCreatedDate = TimeUnit.MILLISECONDS.toMinutes(
-                new Date().getTime() - comment.getCreatedAt().getTime()
+            long differenceBetweenCurrentDateAndCommentCreatedDate = ChronoUnit.MINUTES.between(
+                LocalDateTime.now(),
+                comment.getCreatedAt()
             );
 
             if (comment.getUser().getEmail().equals(principal.getUsername())) {
