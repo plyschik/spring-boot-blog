@@ -1,7 +1,7 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.CategoryDto;
-import io.plyschik.springbootblog.dto.CategoryWithPostsCountDto;
+import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExistsException;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
@@ -21,19 +21,19 @@ public class CategoryService {
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
 
-    public Category getById(long id) {
+    public Category getCategoryById(long id) {
         return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 
     public List<Category> getCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByOrderByName();
     }
 
-    public Page<Category> getPaginatedCategories(Pageable pageable) {
+    public Page<Category> getCategories(Pageable pageable) {
         return categoryRepository.findAllByOrderByIdDesc(pageable);
     }
 
-    public List<CategoryWithPostsCountDto> getCategoriesWithPostsCount() {
+    public List<CategoryWithPostsCount> getCategoriesWithPostsCount() {
         return categoryRepository.findCategoriesWithPostsCountOrderedByPostsCount(PageRequest.of(0, 5));
     }
 
@@ -64,9 +64,7 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public void delete(long id) throws CategoryNotFoundException {
-        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-
-        categoryRepository.delete(category);
+    public void deleteCategory(long id) {
+        categoryRepository.deleteById(id);
     }
 }

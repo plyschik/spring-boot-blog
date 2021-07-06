@@ -19,15 +19,15 @@ public class TagService {
     private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
 
-    public Tag getById(long id) {
+    public Tag getTagById(long id) {
         return tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
     }
 
-    public List<Tag> getAll() {
-        return tagRepository.findAll();
+    public List<Tag> getTags() {
+        return tagRepository.findAllByOrderByName();
     }
 
-    public Page<Tag> getPaginatedTags(Pageable pageable) {
+    public Page<Tag> getTags(Pageable pageable) {
         return tagRepository.findAllByOrderByIdDesc(pageable);
     }
 
@@ -58,9 +58,7 @@ public class TagService {
         tagRepository.save(tag);
     }
 
-    public void deleteById(long id) throws TagNotFoundException {
-        Tag tag = tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
-
-        tagRepository.delete(tag);
+    public void deleteTag(long id) {
+        tagRepository.deleteById(id);
     }
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class TagController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.items-per-page}") int itemsPerPage
     ) {
-        Page<Tag> tags = tagService.getPaginatedTags(PageRequest.of(page, itemsPerPage));
+        Page<Tag> tags = tagService.getTags(PageRequest.of(page, itemsPerPage));
 
         return new ModelAndView("dashboard/tag/list", "tags", tags);
     }
@@ -156,7 +157,7 @@ public class TagController {
     @GetMapping("/dashboard/tags/{id}/delete")
     public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            Tag tag = tagService.getById(id);
+            Tag tag = tagService.getTagById(id);
 
             return new ModelAndView("dashboard/tag/delete", "tag", tag);
         } catch (TagNotFoundException exception) {
@@ -176,7 +177,7 @@ public class TagController {
     @PostMapping("/dashboard/tags/{id}/delete")
     public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            tagService.deleteById(id);
+            tagService.deleteTag(id);
 
             redirectAttributes.addFlashAttribute(
                 "alert",
@@ -188,7 +189,7 @@ public class TagController {
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
-        } catch (TagNotFoundException exception) {
+        } catch (EmptyResultDataAccessException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

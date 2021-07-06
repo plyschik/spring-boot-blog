@@ -1,6 +1,6 @@
 package io.plyschik.springbootblog.controller;
 
-import io.plyschik.springbootblog.dto.CategoryWithPostsCountDto;
+import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.entity.*;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
@@ -37,8 +37,8 @@ class BlogController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
-        Page<Post> posts = postService.getPaginatedPostsWithAuthorCategoryAndTags(PageRequest.of(page, itemsPerPage));
-        List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTags(PageRequest.of(page, itemsPerPage));
+        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
 
         ModelAndView modelAndView = new ModelAndView("blog/index");
         modelAndView.addObject("posts", posts);
@@ -55,8 +55,8 @@ class BlogController {
         Model model
     ) {
         try {
-            Post post = postService.getSinglePostWithAuthorCategoryAndTags(id);
-            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+            Post post = postService.getPostByIdWithAuthorCategoryAndTags(id);
+            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
             Page<Comment> comments = commentService.getCommentsByPost(post, PageRequest.of(page, itemsPerPage));
 
             ModelAndView modelAndView = new ModelAndView("blog/single");
@@ -82,8 +82,8 @@ class BlogController {
     ) {
         try {
             User author = userService.getUserById(id);
-            Page<Post> posts = postService.getPostsByAuthorId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+            Page<Post> posts = postService.getPostsByUserId(id, PageRequest.of(page, itemsPerPage));
+            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("blog/posts_by_author");
             modelAndView.addObject("author", author);
@@ -103,9 +103,9 @@ class BlogController {
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
         try {
-            Category category = categoryService.getById(id);
+            Category category = categoryService.getCategoryById(id);
             Page<Post> posts = postService.getPostsByCategoryId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("blog/posts_by_category");
             modelAndView.addObject("category", category);
@@ -125,9 +125,9 @@ class BlogController {
         @Value("${pagination.post.blog}") int itemsPerPage
     ) {
         try {
-            Tag tag = tagService.getById(id);
+            Tag tag = tagService.getTagById(id);
             Page<Post> posts = postService.getPostsByTagId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCountDto> categories = categoryService.getCategoriesWithPostsCount();
+            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("blog/posts_by_tag");
             modelAndView.addObject("tag", tag);

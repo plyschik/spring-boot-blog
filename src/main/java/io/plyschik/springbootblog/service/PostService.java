@@ -29,32 +29,35 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
-    public Post getById(long id) {
+    public Post getPostById(long id) {
         return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public Post getSinglePostWithAuthorCategoryAndTags(Long id) {
-        return postRepository.findByIdWithUserCategoryAndTags(id).orElseThrow(PostNotFoundException::new);
+    public Post getPostByIdWithAuthorCategoryAndTags(long id) {
+        return postRepository.findWithUserCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public Page<Post> getPaginatedPosts(Pageable pageable) {
-        return postRepository.findAllByOrderByIdDesc(pageable);
+    public Page<Post> getPostsWithCategory(Pageable pageable) {
+        return postRepository.findAllWithCategoryByOrderByCreatedAtDesc(pageable);
     }
 
-    public Page<Post> getPaginatedPostsWithAuthorCategoryAndTags(Pageable pageable) {
+    public Page<Post> getPostsWithAuthorCategoryAndTags(Pageable pageable) {
         return postRepository.findAllWithAuthorCategoryAndTagsByOrderByCreatedAtDesc(pageable);
     }
 
-    public Page<Post> getPostsByAuthorId(Long authorId, Pageable pageable) {
-        return postRepository.findAllByUserIdOrderByCreatedAtDesc(authorId, pageable);
+    public Page<Post> getPostsByUserId(long userId, Pageable pageable) {
+        return postRepository.findAllWithAuthorCategoryAndTagsByUserIdOrderByCreatedAtDesc(userId, pageable);
     }
 
-    public Page<Post> getPostsByCategoryId(Long categoryId, Pageable pageable) {
-        return postRepository.findAllByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
+    public Page<Post> getPostsByCategoryId(long categoryId, Pageable pageable) {
+        return postRepository.findAllWithAuthorCategoryAndTagsByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
     }
 
-    public Page<Post> getPostsByTagId(Long tagId, Pageable pageable) {
-        return postRepository.findAllByIdInOrderByCreatedAtDesc(postRepository.findPostIdsByTagId(tagId), pageable);
+    public Page<Post> getPostsByTagId(long tagId, Pageable pageable) {
+        return postRepository.findAllWithAuthorCategoryAndTagsByIdInOrderByCreatedAtDesc(
+            postRepository.findPostIdsByTagId(tagId),
+            pageable
+        );
     }
 
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
@@ -62,12 +65,13 @@ public class PostService {
         post.setUser(user);
 
         if (postDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+            Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(CategoryNotFoundException::new);
 
             post.setCategory(category);
         }
 
-        for (Long tagId : postDto.getTagIds()) {
+        for (Long tagId: postDto.getTagIds()) {
             Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
 
             post.addTag(tag);
@@ -76,9 +80,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostDto getPostForEdit(long id) throws PostNotFoundException {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-
+    public PostDto getPostByIdForEdit(long id) throws PostNotFoundException {
+        Post post = postRepository.findWithCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
         PostDto postDto = modelMapper.map(post, PostDto.class);;
 
         if (post.getCategory() != null) {
@@ -91,14 +94,16 @@ public class PostService {
     }
 
     public void updatePost(long id, PostDto postDto) throws PostNotFoundException, CategoryNotFoundException {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findWithCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
         modelMapper.map(postDto, post);
 
-        if (postDto.getCategoryId() == null) {
-            post.setCategory(null);
-        } else {
-            Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+        if (postDto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(CategoryNotFoundException::new);
+
             post.setCategory(category);
+        } else {
+            post.setCategory(null);
         }
 
         Set<Tag> currentTags = post.getTags();
@@ -123,9 +128,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void delete(long id) throws PostNotFoundException {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-
-        postRepository.delete(post);
+    public void deletePost(long id) {
+        postRepository.deleteById(id);
     }
 }

@@ -18,7 +18,7 @@ public class CommentService {
     private final ModelMapper modelMapper;
     private final CommentRepository commentRepository;
 
-    public Comment getById(Long id) throws CommentNotFoundException {
+    public Comment getComment(long id) throws CommentNotFoundException {
         return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 
@@ -26,7 +26,7 @@ public class CommentService {
         return commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
     }
 
-    public CommentDto getCommentForEdit(Long id) throws CommentNotFoundException {
+    public CommentDto getCommentForEdit(long id) throws CommentNotFoundException {
         Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
 
         return modelMapper.map(comment, CommentDto.class);
@@ -47,9 +47,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void deleteComment(long id) throws CommentNotFoundException {
-        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
-
-        commentRepository.delete(comment);
+    public void deleteComment(long id) {
+        commentRepository.deleteById(id);
     }
 }

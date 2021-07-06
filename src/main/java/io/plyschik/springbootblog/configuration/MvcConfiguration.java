@@ -17,6 +17,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/auth/signin").setViewName("auth/signin");
+        registry.addRedirectViewController("/dashboard", "/dashboard/posts");
     }
 
     @Override

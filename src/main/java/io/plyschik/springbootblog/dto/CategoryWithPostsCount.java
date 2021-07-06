@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryWithPostsCountDto {
+public class CategoryWithPostsCount {
     private Long id;
     private String name;
-    Long postsCount;
+    private Long postsCount;
 }

@@ -1,7 +1,6 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.UserDto;
-import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.entity.User.Role;
 import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTakenException;
 import io.plyschik.springbootblog.service.UserService;
@@ -9,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -25,20 +24,18 @@ public class AuthController {
     private final MessageSource messageSource;
 
     @GetMapping("/auth/signup")
-    public String signUpForm(Model model) {
-        model.addAttribute("user", new UserDto());
-
-        return "auth/signup";
+    public ModelAndView signUpForm() {
+        return new ModelAndView("auth/signup", "user", new UserDto());
     }
 
     @PostMapping("/auth/signup")
-    public String signUpFormProcess(
+    public ModelAndView signUpFormProcess(
         @ModelAttribute("user") @Valid UserDto userDto,
         BindingResult bindingResult,
         RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            return "auth/signup";
+            return new ModelAndView("auth/signup");
         }
 
         try {
@@ -54,7 +51,7 @@ public class AuthController {
                 )
             );
 
-            return "auth/signup";
+            return new ModelAndView("auth/signup");
         }
 
         redirectAttributes.addFlashAttribute(
@@ -66,6 +63,6 @@ public class AuthController {
             )
         );
 
-        return "redirect:/auth/signin";
+        return new ModelAndView("redirect:/auth/signin");
     }
 }

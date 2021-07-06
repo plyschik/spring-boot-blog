@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -25,17 +23,14 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public Optional<User> getByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found.", email)));
+        return userRepository.findByEmail(email).orElseThrow(() ->
+            new UsernameNotFoundException(String.format("Username %s not found.", email))
+        );
     }
 
     public void signUp(UserDto userDto, Role role) throws EmailAddressIsAlreadyTakenException {
-        if (!isAccountEmailUnique(userDto.getEmail())) {
+        if (!isUserEmailUnique(userDto.getEmail())) {
             throw new EmailAddressIsAlreadyTakenException();
         }
 
@@ -46,7 +41,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean isAccountEmailUnique(String email) {
+    public boolean isUserEmailUnique(String email) {
         return !userRepository.existsByEmail(email);
     }
 }

@@ -11,6 +11,7 @@ import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,8 +56,8 @@ public class CommentController {
         try {
             commentService.createComment(
                 commentDto,
-                userService.getByEmail(principal.getName()).orElseThrow(UserNotFoundException::new),
-                postService.getById(postId)
+                userService.getUserByEmail(principal.getName()),
+                postService.getPostById(postId)
             );
 
             redirectAttributes.addFlashAttribute("alert", new Alert(
@@ -168,7 +169,7 @@ public class CommentController {
         try {
             ModelAndView modelAndView = new ModelAndView("comment/delete");
             modelAndView.addObject("postId", postId);
-            modelAndView.addObject("comment", commentService.getById(commentId));
+            modelAndView.addObject("comment", commentService.getComment(commentId));
 
             return modelAndView;
         } catch (CommentNotFoundException exception) {
@@ -205,7 +206,7 @@ public class CommentController {
             );
 
             return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (CommentNotFoundException exception) {
+        } catch (EmptyResultDataAccessException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(
