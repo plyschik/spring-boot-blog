@@ -2,16 +2,15 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/layout}"
+    layout:decorate="~{layouts/main}"
 >
     <head>
         <title>Spring Boot Blog</title>
     </head>
     <body>
-        <div layout:fragment="content" class="container">
+        <div layout:fragment="container">
             <div class="row">
                 <div class="col-9">
-                    <h3 class="mb-4" th:text="#{header.blog.from_author(${author.fullName})}"></h3>
                     <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
                     <div th:each="post: ${posts}" class="mb-4 card">
                         <div class="card-body">
@@ -42,17 +41,17 @@
                     <nav th:if="${posts.totalPages > 1}">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=0)}">&laquo;</a>
+                                <a class="page-link" th:href="@{/(page=0)}">&laquo;</a>
                             </li>
                             <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number - 1})}">&lsaquo;</a>
+                                <a class="page-link" th:href="@{/(page=${posts.number - 1})}">&lsaquo;</a>
                             </li>
                             <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (posts.number + 1) + ' of ' + posts.totalPages}"></span>
                             <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number + 1})}">&rsaquo;</a>
+                                <a class="page-link" th:href="@{/(page=${posts.number + 1})}">&rsaquo;</a>
                             </li>
                             <li class="page-item" th:classappend="${posts.number == (posts.totalPages - 1) ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.totalPages - 1})}">&raquo;</a>
+                                <a class="page-link" th:href="@{/(page=${posts.totalPages - 1})}">&raquo;</a>
                             </li>
                         </ul>
                     </nav>

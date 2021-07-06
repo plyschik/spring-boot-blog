@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{dashboard/layout}"
+    layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="column">
+        <div layout:fragment="content">
             <h3 class="mb-3" th:text="#{header.category.create}"></h3>
             <form th:action="@{/dashboard/categories/create}" th:object="${category}" method="POST">
                 <div class="mb-3">

@@ -2,13 +2,13 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/layout}"
+    layout:decorate="~{layouts/main}"
 >
     <head>
         <title>Spring Boot Blog</title>
     </head>
     <body>
-        <div layout:fragment="content" class="container">
+        <div layout:fragment="container">
             <div th:class="'mb-4 alert alert-' + ${alert.type}" th:if="${alert}" th:text="${alert.message}"></div>
             <div class="row">
                 <div class="col-9">

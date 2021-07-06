@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/layout}"
+    layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content" class="container">
+        <div layout:fragment="content">
             <h3 class="mb-3" th:text="#{header.post.delete(${post.title})}"></h3>
             <form th:action="@{/dashboard/posts/{id}/delete(id=${post.id})}" method="POST">
                 <button class="btn btn-danger" type="submit" th:text="#{label.delete}"></button>
