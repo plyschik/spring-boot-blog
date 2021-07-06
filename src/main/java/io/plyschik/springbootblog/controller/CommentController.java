@@ -95,8 +95,8 @@ public class CommentController {
         }
     }
 
+    @PreAuthorize("hasPermission(#commentId, 'Comment', 'edit')")
     @GetMapping("/posts/{postId}/comments/{commentId}/edit")
-    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserEditComment(principal, #commentId)")
     public ModelAndView commentEditForm(@PathVariable Long postId, @PathVariable Long commentId, Model model) {
         try {
             ModelAndView modelAndView = new ModelAndView("comment/edit");
@@ -113,8 +113,8 @@ public class CommentController {
         }
     }
 
+    @PreAuthorize("hasPermission(#commentId, 'Comment', 'edit')")
     @PostMapping("/posts/{postId}/comments/{commentId}/edit")
-    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserEditComment(principal, #commentId)")
     public ModelAndView processEditForm(
         @PathVariable Long postId,
         @PathVariable Long commentId,
@@ -159,8 +159,8 @@ public class CommentController {
         }
     }
 
+    @PreAuthorize("hasPermission(#commentId, 'Comment', 'delete')")
     @GetMapping("/posts/{postId}/comments/{commentId}/delete")
-    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserDeleteComment(principal, #commentId)")
     public ModelAndView deleteConfirmation(
         @PathVariable long postId,
         @PathVariable long commentId,
@@ -186,8 +186,8 @@ public class CommentController {
         }
     }
 
+    @PreAuthorize("hasPermission(#commentId, 'Comment', 'delete')")
     @PostMapping("/posts/{postId}/comments/{commentId}/delete")
-    @PreAuthorize("@AuthorizationComponent.canAuthenticatedUserDeleteComment(principal, #commentId)")
     public ModelAndView delete(
         @PathVariable long postId,
         @PathVariable long commentId,
