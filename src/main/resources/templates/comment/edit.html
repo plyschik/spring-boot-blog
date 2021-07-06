@@ -2,13 +2,13 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/layout}"
+        layout:decorate="~{layouts/main}"
 >
     <head>
         <title>Spring Boot Blog</title>
     </head>
     <body>
-        <div layout:fragment="content" class="container">
+        <div layout:fragment="container">
             <h3 class="mb-4" th:text="#{header.comment_edit}"></h3>
             <form th:action="@{/posts/{postId}/comments/{commentId}/edit(postId=${postId}, commentId=${commentId})}" th:object="${comment}" method="POST">
                 <div class="mb-3">

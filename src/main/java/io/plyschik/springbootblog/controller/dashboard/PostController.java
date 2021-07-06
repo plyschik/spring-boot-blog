@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class PostController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.items-per-page}") int itemsPerPage
     ) {
-        Page<Post> posts = postService.getPaginatedPosts(PageRequest.of(page, itemsPerPage));
+        Page<Post> posts = postService.getPostsWithCategory(PageRequest.of(page, itemsPerPage));
 
         return new ModelAndView("dashboard/post/list", "posts", posts);
     }
@@ -51,7 +51,7 @@ public class PostController {
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
         List<Category> categories = categoryService.getCategories();
-        List<Tag> tags = tagService.getAll();
+        List<Tag> tags = tagService.getTags();
 
         ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
         modelAndView.addObject("post", new PostDto());
@@ -115,9 +115,9 @@ public class PostController {
     @GetMapping("/dashboard/posts/{id}/edit")
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            PostDto post = postService.getPostForEdit(id);
+            PostDto post = postService.getPostByIdForEdit(id);
             List<Category> categories = categoryService.getCategories();
-            List<Tag> tags = tagService.getAll();
+            List<Tag> tags = tagService.getTags();
 
             ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
             modelAndView.addObject("id", id);
@@ -193,7 +193,7 @@ public class PostController {
     @GetMapping("/dashboard/posts/{id}/delete")
     public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            Post post = postService.getById(id);
+            Post post = postService.getPostById(id);
 
             return new ModelAndView("dashboard/post/delete", "post", post);
         } catch (PostNotFoundException exception) {
@@ -213,7 +213,7 @@ public class PostController {
     @PostMapping("/dashboard/posts/{id}/delete")
     public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            postService.delete(id);
+            postService.deletePost(id);
 
             redirectAttributes.addFlashAttribute(
                 "alert",
@@ -225,7 +225,7 @@ public class PostController {
             );
 
             return new ModelAndView("redirect:/dashboard/posts");
-        } catch (PostNotFoundException postNotFound) {
+        } catch (EmptyResultDataAccessException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

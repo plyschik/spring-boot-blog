@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class CategoryController {
         @RequestParam(defaultValue = "0") int page,
         @Value("${pagination.items-per-page}") int itemsPerPage
     ) {
-        Page<Category> categories = categoryService.getPaginatedCategories(PageRequest.of(page, itemsPerPage));
+        Page<Category> categories = categoryService.getCategories(PageRequest.of(page, itemsPerPage));
 
         return new ModelAndView("dashboard/category/list", "categories", categories);
     }
@@ -157,7 +157,7 @@ public class CategoryController {
     @GetMapping("/dashboard/categories/{id}/delete")
     public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            Category category = categoryService.getById(id);
+            Category category = categoryService.getCategoryById(id);
 
             return new ModelAndView("dashboard/category/delete", "category", category);
         } catch (CategoryNotFoundException exception) {
@@ -177,7 +177,7 @@ public class CategoryController {
     @PostMapping("/dashboard/categories/{id}/delete")
     public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            categoryService.delete(id);
+            categoryService.deleteCategory(id);
 
             redirectAttributes.addFlashAttribute(
                 "alert",
@@ -189,7 +189,7 @@ public class CategoryController {
             );
 
             return new ModelAndView("redirect:/dashboard/categories");
-        } catch (CategoryNotFoundException postNotFound) {
+        } catch (EmptyResultDataAccessException exception) {
             redirectAttributes.addFlashAttribute(
                 "alert",
                 new Alert("danger", messageSource.getMessage(

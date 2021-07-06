@@ -33,7 +33,7 @@ class BlogControllerIntegrationTest {
     public void shouldReturnPostsList() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk())
-            .andExpect(view().name("index"))
+            .andExpect(view().name("blog/index"))
             .andExpect(model().attributeExists("posts", "categories"));
     }
 
@@ -62,7 +62,7 @@ class BlogControllerIntegrationTest {
 
         mockMvc.perform(get("/posts/{id}", post.getId()))
             .andExpect(status().isOk())
-            .andExpect(view().name("single"))
+            .andExpect(view().name("blog/single"))
             .andExpect(model().attributeExists("post", "categories"))
             .andExpect(content().string(containsString(post.getTitle())))
             .andExpect(content().string(containsString(post.getContent())));
@@ -80,7 +80,7 @@ class BlogControllerIntegrationTest {
 
         mockMvc.perform(get("/authors/{id}/posts", user.getId()))
             .andExpect(status().isOk())
-            .andExpect(view().name("posts_by_author"))
+            .andExpect(view().name("blog/posts_by_author"))
             .andExpect(model().attributeExists("author", "posts", "categories"));
     }
 
@@ -96,7 +96,7 @@ class BlogControllerIntegrationTest {
 
         mockMvc.perform(get("/categories/{id}/posts", category.getId()))
             .andExpect(status().isOk())
-            .andExpect(view().name("posts_by_category"))
+            .andExpect(view().name("blog/posts_by_category"))
             .andExpect(model().attributeExists("category", "posts", "categories"));
     }
 
@@ -112,7 +112,7 @@ class BlogControllerIntegrationTest {
 
         mockMvc.perform(get("/tags/{id}/posts", tag.getId()))
             .andExpect(status().isOk())
-            .andExpect(view().name("posts_by_tag"))
+            .andExpect(view().name("blog/posts_by_tag"))
             .andExpect(model().attributeExists("tag", "posts", "categories"));
     }
 

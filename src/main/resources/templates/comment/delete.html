@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/layout}"
+    layout:decorate="~{layouts/main}"
 >
     <body>
-        <div layout:fragment="content" class="container">
+        <div layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.comment.delete}"></h3>
             <div class="mb-3 card">
                 <div class="card-body">
@@ -13,7 +13,7 @@
                     <small class="text-muted">
                         <span th:text="${comment.user.fullName}"></span>
                         <span>&bull;</span>
-                        <span th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
+                        <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
                     </small>
                 </div>
             </div>

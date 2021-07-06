@@ -13,24 +13,26 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+    @EntityGraph(attributePaths = {"category", "tags"})
+    Optional<Post> findWithCategoryAndTagsById(Long id);
+
+    @EntityGraph(attributePaths = {"user", "category", "tags"})
+    Optional<Post> findWithUserCategoryAndTagsById(Long id);
+
     @EntityGraph(attributePaths = {"category"})
-    Page<Post> findAllByOrderByIdDesc(Pageable pageable);
+    Page<Post> findAllWithCategoryByOrderByCreatedAtDesc(Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     Page<Post> findAllWithAuthorCategoryAndTagsByOrderByCreatedAtDesc(Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "category", "tags"})
-    @Query("SELECT p FROM Post p WHERE p.id = ?1")
-    Optional<Post> findByIdWithUserCategoryAndTags(Long id);
+    Page<Post> findAllWithAuthorCategoryAndTagsByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "category", "tags"})
-    Page<Post> findAllByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+    Page<Post> findAllWithAuthorCategoryAndTagsByCategoryIdOrderByCreatedAtDesc(Long categoryId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "category", "tags"})
-    Page<Post> findAllByCategoryIdOrderByCreatedAtDesc(Long categoryId, Pageable pageable);
-
-    @EntityGraph(attributePaths = {"user", "category", "tags"})
-    Page<Post> findAllByIdInOrderByCreatedAtDesc(List<Long> ids, Pageable pageable);
+    Page<Post> findAllWithAuthorCategoryAndTagsByIdInOrderByCreatedAtDesc(List<Long> postIds, Pageable pageable);
 
     @Query("SELECT p.id " +
            "FROM Post p " +
