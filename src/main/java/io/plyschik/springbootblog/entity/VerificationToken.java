@@ -26,11 +26,21 @@ public class VerificationToken {
     private String token;
 
     @Column(nullable = false, name = "expiry_date")
+    @Setter(AccessLevel.PRIVATE)
     private LocalDateTime expiryDate;
 
     @OneToOne(targetEntity = User.class)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
+
+    @PrePersist
+    public void calculateExpiryDate() {
+        setExpiryDate(LocalDateTime.now().plusMinutes(EXPIRATION));
+    }
+
+    public boolean isNotExpired() {
+        return LocalDateTime.now().isBefore(getExpiryDate());
+    }
 
     @Override
     public String toString() {

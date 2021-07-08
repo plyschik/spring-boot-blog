@@ -15,6 +15,17 @@ spring:
       enabled: false
   messages:
     fallback-to-system-locale: false
+  mail:
+    host: ${SMTP_HOST}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    port: ${SMTP_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 pagination:
   post:
     blog: 5
