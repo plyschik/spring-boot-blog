@@ -22,6 +22,10 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
             user.getPassword(),
+            user.isActivated(),
+            true,
+            true,
+            true,
             Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()))
         );
     }

@@ -224,6 +224,7 @@
                                  baseTableName="verification_tokens"
                                  constraintName="FK_VERIFICATION_TOKENS_ON_USER"
                                  referencedColumnNames="id"
-                                 referencedTableName="users" />
+                                 referencedTableName="users"
+                                 onDelete="CASCADE" />
     </changeSet>
 </databaseChangeLog>

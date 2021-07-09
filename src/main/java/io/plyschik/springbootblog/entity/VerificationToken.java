@@ -38,8 +38,8 @@ public class VerificationToken {
         setExpiryDate(LocalDateTime.now().plusMinutes(EXPIRATION));
     }
 
-    public boolean isNotExpired() {
-        return LocalDateTime.now().isBefore(getExpiryDate());
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(getExpiryDate());
     }
 
     @Override

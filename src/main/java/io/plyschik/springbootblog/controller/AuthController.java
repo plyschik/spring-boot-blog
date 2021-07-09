@@ -1,8 +1,11 @@
 package io.plyschik.springbootblog.controller;
 
+import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.UserDto;
 import io.plyschik.springbootblog.entity.User.Role;
 import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTakenException;
+import io.plyschik.springbootblog.exception.VerificationTokenExpiredException;
+import io.plyschik.springbootblog.exception.VerificationTokenNotFoundException;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -11,12 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,6 +57,17 @@ public class AuthController {
             );
 
             return new ModelAndView("auth/signup");
+        } catch (MessagingException exception) {
+            redirectAttributes.addFlashAttribute("alert", new Alert(
+                "danger",
+                messageSource.getMessage(
+                    "message.something_went_wrong_try_again",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            ));
+
+            return new ModelAndView("auth/signup");
         }
 
         redirectAttributes.addFlashAttribute(
@@ -65,5 +80,54 @@ public class AuthController {
         );
 
         return new ModelAndView("redirect:/auth/signin");
+    }
+
+    @GetMapping("/verification/{token}")
+    public ModelAndView accountActivation(@PathVariable String token, RedirectAttributes redirectAttributes) {
+        try {
+            userService.processAccountActivation(token);
+
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert(
+                    "success",
+                    messageSource.getMessage(
+                        "message.account.verification.account_has_been_successfully_activated",
+                        null,
+                        LocaleContextHolder.getLocale()
+                    )
+                )
+            );
+
+            return new ModelAndView("redirect:/auth/signin");
+        } catch (VerificationTokenNotFoundException exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert(
+                    "danger",
+                    messageSource.getMessage(
+                        "message.account.verification.token_not_found",
+                        null,
+                        LocaleContextHolder.getLocale()
+                    )
+                )
+            );
+
+            return new ModelAndView("redirect:/");
+        } catch (VerificationTokenExpiredException exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert(
+                    "danger",
+                    messageSource.getMessage(
+                        "message.account.verification.token_expired",
+                        null,
+                        LocaleContextHolder.getLocale()
+                    )
+                )
+            );
+
+            return new ModelAndView("redirect:/");
+        }
     }
 }
