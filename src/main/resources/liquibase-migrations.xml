@@ -190,4 +190,41 @@
                                  referencedTableName="posts"
                                  onDelete="CASCADE" />
     </changeSet>
+    <changeSet id="7" author="plyschik">
+        <createTable tableName="verification_tokens">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_verification_tokens" />
+            </column>
+            <column name="token"
+                    type="VARCHAR(36)">
+                <constraints nullable="false" />
+            </column>
+            <column name="expiry_date"
+                    type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="user_id"
+                    type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addColumn tableName="users">
+            <column name="activated"
+                    type="BOOLEAN"
+                    defaultValueBoolean="false" />
+        </addColumn>
+        <addUniqueConstraint columnNames="token"
+                             constraintName="uc_verification_tokens_token"
+                             tableName="verification_tokens" />
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="verification_tokens"
+                                 constraintName="FK_VERIFICATION_TOKENS_ON_USER"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"
+                                 onDelete="CASCADE" />
+    </changeSet>
 </databaseChangeLog>

@@ -50,6 +50,8 @@ public class User {
     @Length(min = 2, max = 30)
     private String lastName;
 
+    private boolean activated = false;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private Role role;
