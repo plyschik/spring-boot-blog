@@ -20,7 +20,10 @@
                 </div>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-primary" type="submit" th:text="#{label.sign_in}"></button>
-                    <a class="btn btn-link" th:href="@{/auth/signup}" th:text="#{label.sign_up}"></a>
+                    <div class="d-inline-block">
+                        <a class="btn btn-link" th:href="@{/auth/signup}" th:text="#{label.sign_up}"></a>
+                        <a class="btn btn-link" th:href="@{/auth/forgot-password}" th:text="#{label.auth.password.reset}"></a>
+                    </div>
                 </div>
             </form>
         </div>
