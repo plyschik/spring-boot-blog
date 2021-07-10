@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.ForgotPasswordDto;
+import io.plyschik.springbootblog.dto.PasswordResetDto;
 import io.plyschik.springbootblog.dto.UserDto;
 import io.plyschik.springbootblog.entity.PasswordResetToken;
 import io.plyschik.springbootblog.entity.User;
@@ -24,6 +25,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -159,6 +161,25 @@ public class UserService {
         mimeMessageHelper.setText(template, true);
 
         mailSender.send(message);
+    }
+
+    public boolean isPasswordResetTokenValid(String token) {
+        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        if (passwordResetToken.isEmpty()) {
+            return false;
+        }
+
+        return !passwordResetToken.get().isExpired();
+    }
+
+    public void updatePasswordByPasswordResetToken(String token, PasswordResetDto passwordResetDto) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.getByToken(token);
+
+        User user = passwordResetToken.getUser();
+        user.setPassword(passwordEncoder.encode(passwordResetDto.getPassword()));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
     private String generateRandomToken() {
