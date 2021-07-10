@@ -1,16 +1,18 @@
 package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.Alert;
+import io.plyschik.springbootblog.dto.ForgotPasswordDto;
+import io.plyschik.springbootblog.dto.PasswordResetDto;
 import io.plyschik.springbootblog.dto.UserDto;
 import io.plyschik.springbootblog.entity.User.Role;
-import io.plyschik.springbootblog.exception.EmailAddressIsAlreadyTakenException;
-import io.plyschik.springbootblog.exception.VerificationTokenExpiredException;
-import io.plyschik.springbootblog.exception.VerificationTokenNotFoundException;
+import io.plyschik.springbootblog.exception.*;
 import io.plyschik.springbootblog.service.UserService;
+import liquibase.pro.packaged.S;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -129,5 +131,149 @@ public class AuthController {
 
             return new ModelAndView("redirect:/");
         }
+    }
+
+    @GetMapping("/auth/forgot-password")
+    public ModelAndView showPasswordResetRequestForm() {
+        return new ModelAndView("auth/forgot_password", "forgotPassword", new ForgotPasswordDto());
+    }
+
+    @PostMapping("/auth/forgot-password")
+    public ModelAndView processPasswordResetRequestForm(
+        @Valid @ModelAttribute("forgotPassword") ForgotPasswordDto forgotPasswordDto,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("auth/forgot_password");
+        }
+
+        try {
+            userService.processPasswordResetRequest(forgotPasswordDto);
+
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert(
+                    "success",
+                    messageSource.getMessage(
+                        "message.password_reset_request_has_been_successfully_created",
+                        null,
+                        LocaleContextHolder.getLocale()
+                    )
+                )
+            );
+
+            return new ModelAndView("redirect:/auth/forgot-password");
+        } catch (UserNotFoundException exception) {
+            bindingResult.rejectValue(
+                "email",
+                "error.email",
+                messageSource.getMessage(
+                    "message.user_with_this_email_not_exists",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            );
+
+            return new ModelAndView("auth/forgot_password");
+        } catch (PasswordResetRequestHasBeenAlreadySentException exception) {
+            redirectAttributes.addFlashAttribute(
+                "alert",
+                new Alert(
+                    "danger",
+                    messageSource.getMessage(
+                        "message.password_reset_request_has_been_already_sent",
+                        null,
+                        LocaleContextHolder.getLocale()
+                    )
+                )
+            );
+
+            return new ModelAndView("redirect:/auth/forgot-password");
+        } catch (MessagingException exception) {
+            redirectAttributes.addFlashAttribute("alert", new Alert(
+                "danger",
+                messageSource.getMessage(
+                    "message.something_went_wrong_try_again",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            ));
+
+            return new ModelAndView("redirect:/auth/forgot-password");
+        }
+    }
+
+    @GetMapping("/auth/password-reset/{token}")
+    public ModelAndView showPasswordResetForm(
+        @PathVariable String token,
+        Model model,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (!userService.isPasswordResetTokenValid(token)) {
+            redirectAttributes.addFlashAttribute("alert", new Alert(
+                "danger",
+                messageSource.getMessage(
+                    "message.password_reset_token_is_invalid",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            ));
+
+            return new ModelAndView("redirect:/auth/forgot-password");
+        }
+
+        ModelAndView modelAndView = new ModelAndView("auth/password_reset");
+        modelAndView.addObject("token", token);
+
+        if (!model.containsAttribute("passwordReset")) {
+            modelAndView.addObject("passwordReset", new PasswordResetDto());
+        }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/auth/password-reset/{token}")
+    public ModelAndView processPasswordResetForm(
+        @PathVariable String token,
+        @Valid @ModelAttribute("passwordReset") PasswordResetDto passwordResetDto,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (!userService.isPasswordResetTokenValid(token)) {
+            redirectAttributes.addFlashAttribute("alert", new Alert(
+                "danger",
+                messageSource.getMessage(
+                    "message.password_reset_token_is_invalid",
+                    null,
+                    LocaleContextHolder.getLocale()
+                )
+            ));
+
+            return new ModelAndView("redirect:/auth/forgot-password");
+        }
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("passwordReset", passwordResetDto);
+            redirectAttributes.addFlashAttribute(
+                "org.springframework.validation.BindingResult.passwordReset",
+                bindingResult
+            );
+
+            return new ModelAndView(String.format("redirect:/auth/password-reset/%s", token));
+        }
+
+        userService.updatePasswordByPasswordResetToken(token, passwordResetDto);
+
+        redirectAttributes.addFlashAttribute("alert", new Alert(
+            "success",
+            messageSource.getMessage(
+                "message.password_has_been_successfully_updated",
+                null,
+                LocaleContextHolder.getLocale()
+            )
+        ));
+
+        return new ModelAndView("redirect:/auth/signin");
     }
 }
