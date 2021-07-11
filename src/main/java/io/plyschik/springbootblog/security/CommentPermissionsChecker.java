@@ -17,6 +17,10 @@ public class CommentPermissionsChecker {
     private final CommentRepository commentRepository;
 
     public boolean checkCommentEditPermissions(Authentication authentication, Long commentId) {
+        if (authentication == null) {
+            return false;
+        }
+
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MODERATOR"))) {
             return true;
         }
@@ -46,6 +50,10 @@ public class CommentPermissionsChecker {
     }
 
     public boolean checkCommentDeletePermissions(Authentication authentication, Long commentId) {
+        if (authentication == null) {
+            return false;
+        }
+
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MODERATOR"))) {
             return true;
         }
