@@ -31,10 +31,6 @@ public class CommentService {
         return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 
-    public Page<Comment> getCommentsByPost(Post post, Pageable pageable) {
-        return commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
-    }
-
     public CommentsResponse getCommentsByPost(Post post, Pageable pageable, Authentication authentication) {
         Page<Comment> comments = commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
 
@@ -52,7 +48,7 @@ public class CommentService {
             commentApiDto.setUser(userApiDto);
 
             commentApiDto.setCanEdit(commentPermissionsChecker.checkCommentEditPermissions(authentication, comment.getId()));
-            commentApiDto.setCanEdit(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
+            commentApiDto.setCanDelete(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
 
             return commentApiDto;
         }).collect(Collectors.toList()));
