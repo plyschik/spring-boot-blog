@@ -57,12 +57,10 @@ class BlogController {
         try {
             Post post = postService.getPostByIdWithAuthorCategoryAndTags(id);
             List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
-            Page<Comment> comments = commentService.getCommentsByPost(post, PageRequest.of(page, itemsPerPage));
 
             ModelAndView modelAndView = new ModelAndView("blog/single");
             modelAndView.addObject("post", post);
             modelAndView.addObject("categories", categories);
-            modelAndView.addObject("comments", comments);
 
             if (!model.containsAttribute("comment")) {
                 modelAndView.addObject("comment", new CommentDto());

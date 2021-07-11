@@ -44,7 +44,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .failureUrl("/auth/signin?failure")
             .and()
             .logout()
-            .logoutUrl("/auth/signout");
+            .logoutUrl("/auth/signout")
+            .logoutSuccessUrl("/");
     }
 
     @Override
