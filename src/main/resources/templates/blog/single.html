@@ -1,11 +1,64 @@
 <!doctype html>
 <html
     xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/main}"
 >
     <head>
         <title>Spring Boot Blog</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" integrity="sha512-nIwdJlD5/vHj23CbO2iHCXtsqzdTTx3e3uAmpTm4x2Y8xCIFyWu4cSIV8GaGe2UNVq86/1h9EgUZy7tn243qdA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const postCommentsEndpoint = /*[[@{/api/posts/{id}/comments(id=${post.id})}]]*/ '';
+            /*]]>*/
+
+            function data() {
+                return {
+                    messages: {
+                        page: [[#{label.pagination.page}]],
+                        of: [[#{label.pagination.of}]],
+                    },
+                    loading: false,
+                    postId: [[${post.id}]],
+                    currentPage: 0,
+                    totalPages: 0,
+                    hasPreviousPage: false,
+                    hasNextPage: false,
+                    comments: [],
+                    fetchComments() {
+                        this.loading = true;
+
+                        fetch(`${postCommentsEndpoint}?page=${this.currentPage}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                this.comments = data.comments;
+                                this.currentPage = data.pagination.currentPage;
+                                this.totalPages = data.pagination.totalPages;
+                                this.hasPreviousPage = data.pagination.hasPreviousPage;
+                                this.hasNextPage = data.pagination.hasNextPage;
+                                this.loading = false;
+                            });
+                    },
+                    fetchFirstPage() {
+                        this.currentPage = 0;
+                        this.fetchComments();
+                    },
+                    fetchPreviousPage() {
+                        this.currentPage -= 1;
+                        this.fetchComments();
+                    },
+                    fetchNextPage() {
+                        this.currentPage += 1;
+                        this.fetchComments();
+                    },
+                    fetchLastPage() {
+                        this.currentPage = this.totalPages - 1;
+                        this.fetchComments();
+                    }
+                }
+            }
+        </script>
     </head>
     <body>
         <div layout:fragment="container">
@@ -46,37 +99,62 @@
                             <button class="btn btn-primary" type="submit" th:text="#{label.create}"></button>
                         </div>
                     </form>
-                    <div class="mb-3 card" th:each="comment: ${comments}">
-                        <div class="card-body">
-                            <div class="mb-2 card-text" th:text="${comment.content}"></div>
-                            <small class="text-muted">
-                                <span th:text="${comment.user.fullName}"></span>
-                                <span>&bull;</span>
-                                <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
-                            </small>
-                            <div class="mt-2" sec:authorize="isAuthenticated()">
-                                <a class="btn btn-sm btn-success" th:if="${#authorization.expression('hasPermission(__${comment.id}__, ''Comment'', ''edit'')')}" th:href="@{/posts/{postId}/comments/{commentId}/edit(postId=${post.id}, commentId=${comment.id})}" th:text="#{label.edit}"></a>
-                                <a class="btn btn-sm btn-danger" th:if="${#authorization.expression('hasPermission(__${comment.id}__, ''Comment'', ''delete'')')}" th:href="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.id}, commentId=${comment.id})}" th:text="#{label.delete}"></a>
+                    <div x-data="data()" x-init="fetchComments()">
+                        <template x-if="loading">
+                            <div class="p-5 d-flex flex-column align-items-center justify-content-center">
+                                <div class="mb-3 spinner-border" role="status" aria-hidden="true"></div>
+                                <strong th:text="#{message.comments.loading}"></strong>
                             </div>
-                        </div>
+                        </template>
+                        <template x-if="!loading">
+                            <div>
+                                <template x-if="comments.length === 0">
+                                    <div th:text="#{message.comments.empty_list}"></div>
+                                </template>
+                                <template x-for="comment in comments">
+                                    <div class="mb-3 card">
+                                        <div class="card-body">
+                                            <div class="mb-2 card-text" x-text="comment.content"></div>
+                                            <small class="text-muted">
+                                                <span x-text="`${comment.user.firstName} ${comment.user.lastName}`"></span>
+                                                <span>&bull;</span>
+                                                <span x-text="new Date(comment.createdAt).toLocaleString()"></span>
+                                            </small>
+                                            <template x-if="comment.canEdit || comment.canDelete">
+                                                <div class="mt-2">
+                                                    <template x-if="comment.canEdit">
+                                                        <a class="btn btn-sm btn-success" :href="`/posts/${postId}/comments/${comment.id}/edit`" th:text="#{label.edit}"></a>
+                                                    </template>
+                                                    <template x-if="comment.canDelete">
+                                                        <a class="btn btn-sm btn-danger" :href="`/posts/${postId}/comments/${comment.id}/delete`" th:text="#{label.delete}"></a>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template x-if="totalPages > 1">
+                                    <nav>
+                                        <ul class="pagination justify-content-center">
+                                            <li class="page-item" :class="currentPage === 0 ? 'disabled': ''">
+                                                <a class="page-link" href="#" @click="fetchFirstPage()">&laquo;</a>
+                                            </li>
+                                            <li class="page-item" :class="!hasPreviousPage ? 'disabled': ''">
+                                                <a class="page-link" href="#" @click="fetchPreviousPage()">&lsaquo;</a>
+                                            </li>
+                                            <li class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" x-text="`${messages.page} ${currentPage + 1} ${messages.of} ${totalPages}`"></li>
+                                            <li class="page-item" :class="!hasNextPage ? 'disabled': ''">
+                                                <a class="page-link" href="#" @click="fetchNextPage()">&rsaquo;</a>
+                                            </li>
+                                            <li class="page-item" :class="currentPage === (totalPages - 1) ? 'disabled': ''">
+                                                <a class="page-link" href="#" @click="fetchLastPage()">&raquo;</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </template>
+                            </div>
+                        </template>
                     </div>
-                    <nav th:if="${comments.totalPages > 1}">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" th:classappend="${comments.number == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=0)}">&laquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${!comments.hasPrevious() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.number - 1})}">&lsaquo;</a>
-                            </li>
-                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (comments.number + 1) + ' of ' + comments.totalPages}"></span>
-                            <li class="page-item" th:classappend="${!comments.hasNext() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.number + 1})}">&rsaquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${comments.number == (comments.totalPages - 1) ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/posts/{id}(id=${post.id}, page=${comments.totalPages - 1})}">&raquo;</a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
                 <div class="col-3">
                     <div class="card">
