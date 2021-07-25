@@ -8,6 +8,13 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
   liquibase:
     enabled: false
+  mail:
+    host: localhost
+    port: 25
+security:
+  remember-me:
+    key: test
+    token-validity-seconds: 604800
 pagination:
   post:
     blog: 5
