@@ -18,6 +18,10 @@
                     <label class="form-label" for="password" th:text="#{label.password}"></label>
                     <input class="form-control" id="password" name="password" type="password" required>
                 </div>
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" id="remember-me" type="checkbox" name="remember-me">
+                    <label class="form-check-label" for="remember-me" th:text="#{label.remember_me}"></label>
+                </div>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-primary" type="submit" th:text="#{label.sign_in}"></button>
                     <div class="d-inline-block">

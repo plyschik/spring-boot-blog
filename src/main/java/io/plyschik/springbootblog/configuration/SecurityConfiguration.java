@@ -3,6 +3,7 @@ package io.plyschik.springbootblog.configuration;
 import io.plyschik.springbootblog.security.ApplicationPermissionEvaluator;
 import io.plyschik.springbootblog.service.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,6 +27,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private ApplicationPermissionEvaluator applicationPermissionEvaluator;
 
+    @Value("${security.remember-me.key}")
+    private String rememberMeKey;
+
+    @Value("${security.remember-me.token-validity-seconds}")
+    private int rememberMeTokenValiditySeconds;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
@@ -42,6 +49,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .loginProcessingUrl("/auth/signin")
             .defaultSuccessUrl("/")
             .failureUrl("/auth/signin?failure")
+            .and()
+            .rememberMe()
+            .userDetailsService(userDetailsService)
+            .key(rememberMeKey)
+            .tokenValiditySeconds(rememberMeTokenValiditySeconds)
             .and()
             .logout()
             .logoutUrl("/auth/signout")
