@@ -15,8 +15,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="content" th:text="#{label.content}"></label>
-                    <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="8" required></textarea>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:text="${#fields.errors('content')[0]}"></div>
+                    <textarea class="form-control" th:classappend="${#fields.hasErrors('contentRaw') ? 'is-invalid' : ''}" id="content" th:field="*{contentRaw}" rows="8"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contentRaw')}" th:text="${#fields.errors('contentRaw')[0]}"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="category" th:text="#{label.category}"></label>
@@ -37,6 +37,15 @@
                     <button class="btn btn-primary" type="submit" th:text="#{label.create}"></button>
                 </div>
             </form>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" integrity="sha512-lB03MbtC3LxImQ+BKnZIyvVHTQ8SSmQ15AhVh5U/+CCp4wKtZMvgLGXbZIjIBBbnKsmk3/6n2vcF8a9CtVVSfA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js" integrity="sha512-ksSfTk6JIdsze75yZ8c+yDVLu09SNefa9IicxEE+HZvWo9kLPY1vrRlmucEMHQReWmEdKqusQWaDMpkTb3M2ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script>
+                new SimpleMDE({
+                    element: document.querySelector('#content'),
+                    spellChecker: false,
+                    status: false
+                });
+            </script>
         </div>
     </body>
 </html>

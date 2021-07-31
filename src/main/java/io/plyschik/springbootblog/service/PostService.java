@@ -63,6 +63,7 @@ public class PostService {
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
         Post post = modelMapper.map(postDto, Post.class);
         post.setUser(user);
+        post.setContent(MarkdownToHTMLParser.parse(postDto.getContentRaw()));
 
         if (postDto.getCategoryId() != null) {
             Category category = categoryRepository.findById(postDto.getCategoryId())
@@ -96,6 +97,7 @@ public class PostService {
     public void updatePost(long id, PostDto postDto) throws PostNotFoundException, CategoryNotFoundException {
         Post post = postRepository.findWithCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
         modelMapper.map(postDto, post);
+        post.setContent(MarkdownToHTMLParser.parse(postDto.getContentRaw()));
 
         if (postDto.getCategoryId() != null) {
             Category category = categoryRepository.findById(postDto.getCategoryId())

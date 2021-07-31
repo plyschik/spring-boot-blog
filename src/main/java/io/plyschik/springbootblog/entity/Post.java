@@ -36,6 +36,11 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @NotBlank
+    @Length(min = 4, max = 65535)
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String contentRaw;
+
     @CreationTimestamp
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;

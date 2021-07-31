@@ -30,7 +30,7 @@
                                     </a>
                                 </th:block>
                             </h6>
-                            <p class="mb-0 card-text" th:text="${post.content}"></p>
+                            <div class="mb-0 card-text" th:utext="${post.content}"></div>
                             <div class="mt-2" th:unless="${#lists.isEmpty(post.tags)}">
                                 <a class="d-inline-block me-2" th:each="tag: ${post.tags}" th:href="@{/tags/{id}/posts(id=${tag.id})}">
                                     <span class="badge rounded-pill bg-dark" th:text="${tag.name}"></span>
