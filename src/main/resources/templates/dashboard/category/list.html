@@ -37,7 +37,7 @@
                     <li class="page-item" th:classappend="${!categories.hasPrevious() ? 'disabled' : ''}">
                         <a class="page-link" th:href="@{/dashboard/categories(page=${categories.number - 1})}">&lsaquo;</a>
                     </li>
-                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (categories.number + 1) + ' of ' + categories.totalPages}"></span>
+                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="#{pagination(${categories.number + 1}, ${categories.totalPages})}"></span>
                     <li class="page-item" th:classappend="${!categories.hasNext() ? 'disabled' : ''}">
                         <a class="page-link" th:href="@{/dashboard/categories(page=${categories.number + 1})}">&rsaquo;</a>
                     </li>

@@ -10,7 +10,7 @@
     <body>
         <div layout:fragment="container">
             <div class="row">
-                <div class="col-9">
+                <div class="col-12 col-md-8 col-lg-9">
                     <h3 class="mb-4" th:text="#{header.blog.from_tag(${tag.name})}"></h3>
                     <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
                     <div th:each="post: ${posts}" class="mb-4 card">
@@ -47,7 +47,7 @@
                             <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
                                 <a class="page-link" th:href="@{/tags/{id}/posts(id=${tag.id}, page=${posts.number - 1})}">&lsaquo;</a>
                             </li>
-                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (posts.number + 1) + ' of ' + posts.totalPages}"></span>
+                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="#{pagination(${posts.number + 1}, ${posts.totalPages})}"></span>
                             <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
                                 <a class="page-link" th:href="@{/tags/{id}/posts(id=${tag.id}, page=${posts.number + 1})}">&rsaquo;</a>
                             </li>
@@ -57,7 +57,7 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-md-4 col-xl-3">
                     <div class="card mb-3">
                         <div class="card-header" th:text="#{label.most_popular_categories}"></div>
                         <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>

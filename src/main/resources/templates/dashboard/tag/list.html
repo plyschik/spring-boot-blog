@@ -37,7 +37,7 @@
                     <li class="page-item" th:classappend="${!tags.hasPrevious() ? 'disabled' : ''}">
                         <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number - 1})}">&lsaquo;</a>
                     </li>
-                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (tags.number + 1) + ' of ' + tags.totalPages}"></span>
+                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="#{pagination(${tags.number + 1}, ${tags.totalPages})}"></span>
                     <li class="page-item" th:classappend="${!tags.hasNext() ? 'disabled' : ''}">
                         <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number + 1})}">&rsaquo;</a>
                     </li>
