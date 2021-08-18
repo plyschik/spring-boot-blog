@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.entity;
 
+import io.plyschik.springbootblog.dto.PostCountByYearAndMonthDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,25 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedNativeQuery(
+    name = "count_posts_by_year_and_month",
+    query = "SELECT YEAR(p.created_at) AS year, MONTH(p.created_at) AS month, COUNT(*) AS count " +
+            "FROM posts p " +
+            "GROUP BY year, month " +
+            "ORDER BY year DESC, month DESC",
+    resultSetMapping = "count_posts_by_year_and_month_mapping"
+)
+@SqlResultSetMapping(
+    name = "count_posts_by_year_and_month_mapping",
+    classes = @ConstructorResult(
+        targetClass = PostCountByYearAndMonthDto.class,
+        columns = {
+            @ColumnResult(name = "year", type = Integer.class),
+            @ColumnResult(name = "month", type = Integer.class),
+            @ColumnResult(name = "count", type = Integer.class)
+        }
+    )
+)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

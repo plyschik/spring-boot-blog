@@ -1,6 +1,8 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.PostDto;
+import io.plyschik.springbootblog.dto.PostCountByYearAndMonthDto;
+import io.plyschik.springbootblog.dto.YearArchiveEntry;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
@@ -17,8 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +61,41 @@ public class PostService {
             postRepository.findPostIdsByTagId(tagId),
             pageable
         );
+    }
+
+    public Page<Post> getPostsFromDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return postRepository.findAllWithAuthorCategoryAndTagsByCreatedAtBetweenOrderByCreatedAtDesc(
+            startDate,
+            endDate,
+            pageable
+        );
+    }
+
+    public List<YearArchiveEntry> getPostsArchive() {
+        List<PostCountByYearAndMonthDto> postsCountByYearAndMonth = postRepository.findPostsCountByYearAndMonthDto();
+        HashMap<Integer, List<PostCountByYearAndMonthDto>> years = postsCountByYearAndMonth.stream()
+            .collect(Collectors.groupingBy(
+                PostCountByYearAndMonthDto::getYear,
+                LinkedHashMap::new,
+                Collectors.toList()
+            )
+        );
+
+        List<YearArchiveEntry> yearArchiveEntries = new ArrayList<>();
+        for (Map.Entry<Integer, List<PostCountByYearAndMonthDto>> entry: years.entrySet()) {
+            Integer postsCount = entry.getValue().stream()
+                .map(PostCountByYearAndMonthDto::getCount)
+                .mapToInt(Integer::intValue)
+                .sum();
+
+            List<YearArchiveEntry.Month> monthList = entry.getValue().stream()
+                .map(item -> new YearArchiveEntry.Month(item.getMonth(), item.getCount()))
+                .collect(Collectors.toList());
+
+            yearArchiveEntries.add(new YearArchiveEntry(entry.getKey(), postsCount, monthList));
+        }
+
+        return yearArchiveEntries;
     }
 
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {

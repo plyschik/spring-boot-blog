@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <div class="card">
+                    <div class="card mb-3">
                         <div class="card-header" th:text="#{label.most_popular_categories}"></div>
                         <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>
                         <ul class="list-group list-group-flush" th:if="${not categories.isEmpty}">
@@ -165,6 +165,25 @@
                                 <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
                             </li>
                         </ul>
+                    </div>
+                    <div class="accordion" id="archiveAccordion">
+                        <div class="accordion-item" th:each="year, iterator: ${archive}">
+                            <h2 class="accordion-header" th:id="${'heading-' + year.getYear()}">
+                                <button class="accordion-button px-3 py-3" th:classappend="${not iterator.first ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#collapse-' + year.getYear()}" aria-expanded="true" th:aria-controls="${'collapse-' + year.getYear()}" th:text="${year.getYear() + ' (' + year.getCount() + ')'}"></button>
+                            </h2>
+                            <div th:id="${'collapse-' + year.getYear()}" class="accordion-collapse collapse" th:classappend="${iterator.first ? 'show': ''}" th:aria-labelledby="${'heading-' + year.getYear()}" data-bs-parent="#archiveAccordion">
+                                <div class="accordion-body p-0">
+                                    <ul class="list-group list-group-flush">
+                                        <a class="list-group-item list-group-item-action" th:each="month: ${year.getMonths()}" th:href="@{/archive/{year}/{month}(year=${year.getYear()}, month=${month.getMonth()})}">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span th:text="#{month(__${month.getMonth()}__)} + ' ' + ${year.getYear()}"></span>
+                                                <span class="badge bg-primary rounded-pill" th:text="${month.getCount()}"></span>
+                                            </div>
+                                        </a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

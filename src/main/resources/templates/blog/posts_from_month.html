@@ -11,7 +11,7 @@
         <div layout:fragment="container">
             <div class="row">
                 <div class="col-9">
-                    <h3 class="mb-4" th:text="#{header.blog.from_category(${category.name})}"></h3>
+                    <h3 class="mb-4" th:text="#{header.posts_from_date_range(${#temporals.format(startDate, 'dd-MM-yyyy')}, ${#temporals.format(endDate, 'dd-MM-yyyy')})}"></h3>
                     <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
                     <div th:each="post: ${posts}" class="mb-4 card">
                         <div class="card-body">
@@ -42,17 +42,17 @@
                     <nav th:if="${posts.totalPages > 1}">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/categories/{id}/posts(id=${category.id}, page=0)}">&laquo;</a>
+                                <a class="page-link" th:href="@{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')}, page=0)}">&laquo;</a>
                             </li>
                             <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/categories/{id}/posts(id=${category.id}, page=${posts.number - 1})}">&lsaquo;</a>
+                                <a class="page-link" th:href="@{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')}, page=${posts.number - 1})}">&lsaquo;</a>
                             </li>
                             <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (posts.number + 1) + ' of ' + posts.totalPages}"></span>
                             <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/categories/{id}/posts(id=${category.id}, page=${posts.number + 1})}">&rsaquo;</a>
+                                <a class="page-link" th:href="@{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')}, page=${posts.number + 1})}">&rsaquo;</a>
                             </li>
                             <li class="page-item" th:classappend="${posts.number == (posts.totalPages - 1) ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/categories/{id}/posts(id=${category.id}, page=${posts.totalPages - 1})}">&raquo;</a>
+                                <a class="page-link" th:href="@{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')}, page=${posts.totalPages - 1})}">&raquo;</a>
                             </li>
                         </ul>
                     </nav>
@@ -68,17 +68,17 @@
                         </ul>
                     </div>
                     <div class="accordion" id="archiveAccordion">
-                        <div class="accordion-item" th:each="year, iterator: ${archive}">
-                            <h2 class="accordion-header" th:id="${'heading-' + year.getYear()}">
-                                <button class="accordion-button px-3 py-3" th:classappend="${not iterator.first ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#collapse-' + year.getYear()}" aria-expanded="true" th:aria-controls="${'collapse-' + year.getYear()}" th:text="${year.getYear() + ' (' + year.getCount() + ')'}"></button>
+                        <div class="accordion-item" th:each="entry: ${archive}">
+                            <h2 class="accordion-header" th:id="${'heading-' + entry.getYear()}">
+                                <button class="accordion-button px-3 py-3" th:classappend="${#request.getAttribute('year') == entry.getYear() ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#collapse-' + entry.getYear()}" aria-expanded="true" th:aria-controls="${'collapse-' + entry.getYear()}" th:text="${entry.getYear() + ' (' + entry.getCount() + ')'}"></button>
                             </h2>
-                            <div th:id="${'collapse-' + year.getYear()}" class="accordion-collapse collapse" th:classappend="${iterator.first ? 'show': ''}" th:aria-labelledby="${'heading-' + year.getYear()}" data-bs-parent="#archiveAccordion">
+                            <div th:id="${'collapse-' + entry.getYear()}" class="accordion-collapse collapse" th:classappend="${#request.getAttribute('year') == entry.getYear() ? 'show': ''}" th:aria-labelledby="${'heading-' + entry.getYear()}" data-bs-parent="#archiveAccordion">
                                 <div class="accordion-body p-0">
                                     <ul class="list-group list-group-flush">
-                                        <a class="list-group-item list-group-item-action" th:each="month: ${year.getMonths()}" th:href="@{/archive/{year}/{month}(year=${year.getYear()}, month=${month.getMonth()})}">
+                                        <a class="list-group-item list-group-item-action" th:each="item: ${entry.getMonths()}" th:href="@{/archive/{year}/{month}(year=${entry.getYear()}, month=${item.getMonth()})}">
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <span th:text="#{month(__${month.getMonth()}__)} + ' ' + ${year.getYear()}"></span>
-                                                <span class="badge bg-primary rounded-pill" th:text="${month.getCount()}"></span>
+                                                <span th:text="#{month(${item.getMonth()})} + ' ' + ${entry.getYear()}"></span>
+                                                <span class="badge bg-primary rounded-pill" th:text="${item.getCount()}"></span>
                                             </div>
                                         </a>
                                     </ul>
