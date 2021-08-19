@@ -7,10 +7,7 @@ import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.exception.CategoryNotFoundException;
-import io.plyschik.springbootblog.exception.PostNotFoundException;
-import io.plyschik.springbootblog.exception.TagNotFoundException;
-import io.plyschik.springbootblog.exception.UserNotFoundException;
+import io.plyschik.springbootblog.exception.*;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.TagService;
@@ -28,11 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
@@ -62,12 +57,7 @@ class BlogController {
     }
 
     @GetMapping("/posts/{id}")
-    public ModelAndView singlePost(
-        @PathVariable Long id,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.comments}") int itemsPerPage,
-        Model model
-    ) {
+    public ModelAndView singlePost(@PathVariable Long id, Model model) {
         try {
             Post post = postService.getPostByIdWithAuthorCategoryAndTags(id);
             List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
@@ -83,7 +73,7 @@ class BlogController {
             }
 
             return modelAndView;
-        } catch (PostNotFoundException exception) {
+        } catch (PostNotFoundException | PostIsNotPublishedException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }

@@ -137,17 +137,17 @@
                                     <nav>
                                         <ul class="pagination justify-content-center">
                                             <li class="page-item" :class="currentPage === 0 ? 'disabled': ''">
-                                                <a class="page-link" href="#" @click="fetchFirstPage()">&laquo;</a>
+                                                <span class="page-link cursor-pointer" @click="fetchFirstPage()">&laquo;</span>
                                             </li>
                                             <li class="page-item" :class="!hasPreviousPage ? 'disabled': ''">
-                                                <a class="page-link" href="#" @click="fetchPreviousPage()">&lsaquo;</a>
+                                                <span class="page-link cursor-pointer" @click="fetchPreviousPage()">&lsaquo;</span>
                                             </li>
                                             <li class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" x-text="`${messages.page} ${currentPage + 1} ${messages.of} ${totalPages}`"></li>
                                             <li class="page-item" :class="!hasNextPage ? 'disabled': ''">
-                                                <a class="page-link" href="#" @click="fetchNextPage()">&rsaquo;</a>
+                                                <span class="page-link cursor-pointer" @click="fetchNextPage()">&rsaquo;</span>
                                             </li>
                                             <li class="page-item" :class="currentPage === (totalPages - 1) ? 'disabled': ''">
-                                                <a class="page-link" href="#" @click="fetchLastPage()">&raquo;</a>
+                                                <span class="page-link cursor-pointer" @click="fetchLastPage()">&raquo;</span>
                                             </li>
                                         </ul>
                                     </nav>

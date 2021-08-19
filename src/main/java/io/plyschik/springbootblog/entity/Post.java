@@ -65,6 +65,9 @@ public class Post {
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "published")
+    private boolean published;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
