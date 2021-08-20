@@ -5,7 +5,7 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.tag.edit}"></h3>
             <form th:action="@{/dashboard/tags/{id}/edit(id=${id})}" th:object="${tag}" method="POST">
                 <div class="mb-3">
@@ -17,6 +17,6 @@
                     <button class="btn btn-primary" type="submit" th:text="#{label.update}"></button>
                 </div>
             </form>
-        </div>
+        </th:block>
     </body>
 </html>

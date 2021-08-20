@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.sign_up}"></h3>
             <form th:action="@{/auth/signup}" th:object="${user}" method="POST">
                 <div class="mb-3">
@@ -30,6 +30,6 @@
                 </div>
                 <button class="btn btn-primary" type="submit" th:text="#{label.sign_up}"></button>
             </form>
-        </div>
+        </th:block>
     </body>
 </html>

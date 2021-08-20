@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.sign_in}"></h3>
             <div class="alert alert-danger" th:if="${param.failure}" th:text="#{message.invalid_credentials}"></div>
             <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
@@ -30,6 +30,6 @@
                     </div>
                 </div>
             </form>
-        </div>
+        </th:block>
     </body>
 </html>

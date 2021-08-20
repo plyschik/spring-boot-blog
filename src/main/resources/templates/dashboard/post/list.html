@@ -5,7 +5,7 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.post.list}"></h3>
             <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
             <div class="table-responsive">
@@ -50,6 +50,6 @@
                     </li>
                 </ul>
             </nav>
-        </div>
+        </th:block>
     </body>
 </html>

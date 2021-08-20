@@ -5,7 +5,7 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.post.create}"></h3>
             <form th:action="@{/dashboard/posts/create}" th:object="${post}" method="POST">
                 <div class="mb-3">
@@ -52,6 +52,6 @@
                     status: false
                 });
             </script>
-        </div>
+        </th:block>
     </body>
 </html>

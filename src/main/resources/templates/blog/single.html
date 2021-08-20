@@ -3,10 +3,9 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
     <head>
-        <title>Spring Boot Blog</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" integrity="sha512-nIwdJlD5/vHj23CbO2iHCXtsqzdTTx3e3uAmpTm4x2Y8xCIFyWu4cSIV8GaGe2UNVq86/1h9EgUZy7tn243qdA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script th:inline="javascript">
             /*<![CDATA[*/
@@ -61,7 +60,7 @@
         </script>
     </head>
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
                     <div class="card">
@@ -187,6 +186,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </body>
 </html>

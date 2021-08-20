@@ -2,13 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
-    <head>
-        <title>Spring Boot Blog</title>
-    </head>
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-lg-9">
                     <h3 class="mb-4" th:text="#{header.blog.from_author(${author.fullName})}"></h3>
@@ -88,6 +85,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </body>
 </html>

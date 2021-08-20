@@ -2,10 +2,10 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.comment.delete}"></h3>
             <div class="mb-3 card">
                 <div class="card-body">
@@ -23,6 +23,6 @@
                     <button class="btn btn-danger" type="submit" th:text="#{label.delete}"></button>
                 </form>
             </div>
-        </div>
+        </th:block>
     </body>
 </html>
