@@ -7,82 +7,15 @@
     <body>
         <th:block layout:fragment="container">
             <div class="row">
-                <div class="col-12 col-md-8 col-lg-9">
+                <div class="col-12 col-md-8 col-xl-9">
                     <h3 class="mb-4" th:text="#{header.blog.from_author(${author.fullName})}"></h3>
                     <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
-                    <div th:each="post: ${posts}" class="mb-4 card">
-                        <div class="card-body">
-                            <a class="text-decoration-none" th:href="@{/posts/{id}(id=${post.id})}">
-                                <h4 class="card-title" th:text="${post.title}"></h4>
-                            </a>
-                            <h6 class="my-2 card-subtitle text-muted">
-                                <span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
-                                <span>&bull;</span>
-                                <a class="text-decoration-none" th:href="@{/authors/{id}/posts(id=${post.user.id})}">
-                                    <span th:text="${post.user.fullName}"></span>
-                                </a>
-                                <th:block th:if="${post.category != null}">
-                                    <span>&bull;</span>
-                                    <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${post.category.id})}">
-                                        <span th:text="${post.category.name}"></span>
-                                    </a>
-                                </th:block>
-                            </h6>
-                            <div class="mb-0 card-text" th:utext="${post.content}"></div>
-                            <div class="mt-2" th:unless="${#lists.isEmpty(post.tags)}">
-                                <a class="d-inline-block me-2" th:each="tag: ${post.tags}" th:href="@{/tags/{id}/posts(id=${tag.id})}">
-                                    <span class="badge rounded-pill bg-dark" th:text="${tag.name}"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <nav th:if="${posts.totalPages > 1}">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=0)}">&laquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number - 1})}">&lsaquo;</a>
-                            </li>
-                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="#{pagination(${posts.number + 1}, ${posts.totalPages})}"></span>
-                            <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number + 1})}">&rsaquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${posts.number == (posts.totalPages - 1) ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.totalPages - 1})}">&raquo;</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div th:each="post: ${posts}" th:include="fragments/general :: post"></div>
+                    <div th:insert="fragments/general :: pagination(${posts}, @{/authors/{id}/posts(id=${author.id})})"></div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
-                    <div class="card mb-3">
-                        <div class="card-header" th:text="#{label.most_popular_categories}"></div>
-                        <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>
-                        <ul class="list-group list-group-flush" th:if="${not categories.isEmpty}">
-                            <li class="list-group-item" th:each="category: ${categories}">
-                                <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="accordion" id="archiveAccordion">
-                        <div class="accordion-item" th:each="year, iterator: ${archive}">
-                            <h2 class="accordion-header" th:id="${'heading-' + year.getYear()}">
-                                <button class="accordion-button px-3 py-3" th:classappend="${not iterator.first ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#collapse-' + year.getYear()}" aria-expanded="true" th:aria-controls="${'collapse-' + year.getYear()}" th:text="${year.getYear() + ' (' + year.getCount() + ')'}"></button>
-                            </h2>
-                            <div th:id="${'collapse-' + year.getYear()}" class="accordion-collapse collapse" th:classappend="${iterator.first ? 'show': ''}" th:aria-labelledby="${'heading-' + year.getYear()}" data-bs-parent="#archiveAccordion">
-                                <div class="accordion-body p-0">
-                                    <ul class="list-group list-group-flush">
-                                        <a class="list-group-item list-group-item-action" th:each="month: ${year.getMonths()}" th:href="@{/archive/{year}/{month}(year=${year.getYear()}, month=${month.getMonth()})}">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span th:text="#{month(__${month.getMonth()}__)} + ' ' + ${year.getYear()}"></span>
-                                                <span class="badge bg-primary rounded-pill" th:text="${month.getCount()}"></span>
-                                            </div>
-                                        </a>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div th:insert="fragments/general :: popularCategories"></div>
+                    <div th:insert="fragments/general :: archiveAccordion"></div>
                 </div>
             </div>
         </th:block>

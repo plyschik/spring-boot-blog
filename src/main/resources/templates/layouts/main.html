@@ -1,10 +1,13 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="main(navbar, container)">
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="main(title, navbar, container, styles, scripts)"
+>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title th:text="#{label.application_name}"></title>
+        <title th:replace="${title}"></title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" integrity="sha512-F7WyTLiiiPqvu2pGumDR15med0MDkUIo5VTVyyfECR5DZmCnDhti9q5VID02ItWjq6fvDfMaBaDl2J3WdL1uxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <style>
             .card-body p:last-child {
@@ -20,6 +23,7 @@
                 cursor: pointer;
             }
         </style>
+        <th:block th:replace="${styles}"></th:block>
     </head>
     <body class="bg-light">
         <nav class="mb-4 navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -28,10 +32,14 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="ml-auto collapse navbar-collapse" id="navbar" th:replace="${navbar}"></div>
+                <div class="ml-auto collapse navbar-collapse" id="navbar" th:insert="${navbar}"></div>
             </div>
         </nav>
-        <div class="container" th:insert="${container}"></div>
+        <div class="container">
+            <div th:if="${alert}" th:class="'mb-4 alert alert-' + ${alert.type}" th:text="${alert.message}"></div>
+            <th:block th:insert="${container}"></th:block>
+        </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js" integrity="sha512-NWNl2ZLgVBoi6lTcMsHgCQyrZVFnSmcaa3zRv0L3aoGXshwoxkGs3esa9zwQHsChGRL4aLDnJjJJeP6MjPX46Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <th:block th:replace="${scripts}"></th:block>
     </body>
 </html>

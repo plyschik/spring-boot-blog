@@ -6,90 +6,16 @@
     layout:decorate="~{layouts/blog}"
 >
     <head>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" integrity="sha512-nIwdJlD5/vHj23CbO2iHCXtsqzdTTx3e3uAmpTm4x2Y8xCIFyWu4cSIV8GaGe2UNVq86/1h9EgUZy7tn243qdA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            const postCommentsEndpoint = /*[[@{/api/posts/{id}/comments(id=${post.id})}]]*/ '';
-            /*]]>*/
-
-            function data() {
-                return {
-                    messages: {
-                        page: [[#{label.pagination.page}]],
-                        of: [[#{label.pagination.of}]],
-                    },
-                    loading: false,
-                    postId: [[${post.id}]],
-                    currentPage: 0,
-                    totalPages: 0,
-                    hasPreviousPage: false,
-                    hasNextPage: false,
-                    comments: [],
-                    fetchComments() {
-                        this.loading = true;
-
-                        fetch(`${postCommentsEndpoint}?page=${this.currentPage}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                this.comments = data.comments;
-                                this.currentPage = data.pagination.currentPage;
-                                this.totalPages = data.pagination.totalPages;
-                                this.hasPreviousPage = data.pagination.hasPreviousPage;
-                                this.hasNextPage = data.pagination.hasNextPage;
-                                this.loading = false;
-                            });
-                    },
-                    fetchFirstPage() {
-                        this.currentPage = 0;
-                        this.fetchComments();
-                    },
-                    fetchPreviousPage() {
-                        this.currentPage -= 1;
-                        this.fetchComments();
-                    },
-                    fetchNextPage() {
-                        this.currentPage += 1;
-                        this.fetchComments();
-                    },
-                    fetchLastPage() {
-                        this.currentPage = this.totalPages - 1;
-                        this.fetchComments();
-                    }
-                }
-            }
-        </script>
+        <title layout:fragment="title" th:text="|#{label.application_name} - ${post.title}|"></title>
     </head>
     <body>
         <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title" th:text="${post.title}"></h4>
-                            <h6 class="my-2 card-subtitle text-muted">
-                                <span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
-                                <span>&bull;</span>
-                                <a class="text-decoration-none" th:href="@{/authors/{id}/posts(id=${post.user.id})}">
-                                    <span th:text="${post.user.fullName}"></span>
-                                </a>
-                                <th:block th:if="${post.category != null}">
-                                    <span>&bull;</span>
-                                    <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${post.category.id})}">
-                                        <span th:text="${post.category.name}"></span>
-                                    </a>
-                                </th:block>
-                            </h6>
-                            <div class="mb-0 card-text" th:utext="${post.content}"></div>
-                            <div class="mt-2" th:unless="${#lists.isEmpty(post.tags)}">
-                                <a class="d-inline-block me-2" th:each="tag: ${post.tags}" th:href="@{/tags/{id}/posts(id=${tag.id})}">
-                                    <span class="badge rounded-pill bg-dark" th:text="${tag.name}"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="my-3" th:text="#{header.comments}"></h3>
+                    <div th:include="fragments/general :: post"></div>
+                    <h3 class="my-4" th:text="#{header.comments}"></h3>
                     <div class="alert alert-info" sec:authorize="isAnonymous()" th:text="#{message.only_authenticated_users_can_create_comments}"></div>
-                    <form class="mb-3" sec:authorize="isAuthenticated()" th:action="@{/posts/{id}/comments(id=${post.id})}" th:object="${comment}" method="POST">
+                    <form class="mb-3" sec:authorize="isAuthenticated()" th:action="@{/posts/{id}/comments(id=${post.id})}" method="POST" th:object="${comment}">
                         <div class="mb-3">
                             <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="3" required th:placeholder="#{label.comment}"></textarea>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:text="${#fields.errors('content')[0]}"></div>
@@ -156,36 +82,65 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
-                    <div class="card mb-3">
-                        <div class="card-header" th:text="#{label.most_popular_categories}"></div>
-                        <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>
-                        <ul class="list-group list-group-flush" th:if="${not categories.isEmpty}">
-                            <li class="list-group-item" th:each="category: ${categories}">
-                                <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="accordion" id="archiveAccordion">
-                        <div class="accordion-item" th:each="year, iterator: ${archive}">
-                            <h2 class="accordion-header" th:id="${'heading-' + year.getYear()}">
-                                <button class="accordion-button px-3 py-3" th:classappend="${not iterator.first ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#collapse-' + year.getYear()}" aria-expanded="true" th:aria-controls="${'collapse-' + year.getYear()}" th:text="${year.getYear() + ' (' + year.getCount() + ')'}"></button>
-                            </h2>
-                            <div th:id="${'collapse-' + year.getYear()}" class="accordion-collapse collapse" th:classappend="${iterator.first ? 'show': ''}" th:aria-labelledby="${'heading-' + year.getYear()}" data-bs-parent="#archiveAccordion">
-                                <div class="accordion-body p-0">
-                                    <ul class="list-group list-group-flush">
-                                        <a class="list-group-item list-group-item-action" th:each="month: ${year.getMonths()}" th:href="@{/archive/{year}/{month}(year=${year.getYear()}, month=${month.getMonth()})}">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span th:text="#{month(__${month.getMonth()}__)} + ' ' + ${year.getYear()}"></span>
-                                                <span class="badge bg-primary rounded-pill" th:text="${month.getCount()}"></span>
-                                            </div>
-                                        </a>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div th:insert="fragments/general :: popularCategories"></div>
+                    <div th:insert="fragments/general :: archiveAccordion"></div>
                 </div>
             </div>
+        </th:block>
+
+        <th:block layout:fragment="scripts">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" integrity="sha512-nIwdJlD5/vHj23CbO2iHCXtsqzdTTx3e3uAmpTm4x2Y8xCIFyWu4cSIV8GaGe2UNVq86/1h9EgUZy7tn243qdA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                const postCommentsEndpoint = /*[[@{/api/posts/{id}/comments(id=${post.id})}]]*/ '';
+                /*]]>*/
+
+                function data() {
+                    return {
+                        messages: {
+                            page: [[#{label.pagination.page}]],
+                            of: [[#{label.pagination.of}]],
+                        },
+                        loading: false,
+                        postId: [[${post.id}]],
+                        currentPage: 0,
+                        totalPages: 0,
+                        hasPreviousPage: false,
+                        hasNextPage: false,
+                        comments: [],
+                        fetchComments() {
+                            this.loading = true;
+
+                            fetch(`${postCommentsEndpoint}?page=${this.currentPage}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    this.comments = data.comments;
+                                    this.currentPage = data.pagination.currentPage;
+                                    this.totalPages = data.pagination.totalPages;
+                                    this.hasPreviousPage = data.pagination.hasPreviousPage;
+                                    this.hasNextPage = data.pagination.hasNextPage;
+                                    this.loading = false;
+                                });
+                        },
+                        fetchFirstPage() {
+                            this.currentPage = 0;
+                            this.fetchComments();
+                        },
+                        fetchPreviousPage() {
+                            this.currentPage -= 1;
+                            this.fetchComments();
+                        },
+                        fetchNextPage() {
+                            this.currentPage += 1;
+                            this.fetchComments();
+                        },
+                        fetchLastPage() {
+                            this.currentPage = this.totalPages - 1;
+                            this.fetchComments();
+                        }
+                    }
+                }
+            </script>
         </th:block>
     </body>
 </html>
