@@ -5,9 +5,9 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.post.edit}"></h3>
-            <form th:action="@{/dashboard/posts/{id}/edit(id=${id})}" th:object="${post}" method="POST">
+            <form th:action="@{/dashboard/posts/{id}/edit(id=${id})}" method="POST" th:object="${post}">
                 <div class="mb-3">
                     <label class="form-label" for="title" th:text="#{label.title}"></label>
                     <input class="form-control" th:classappend="${#fields.hasErrors('title') ? 'is-invalid' : ''}" id="title" type="text" th:field="*{title}" required>
@@ -15,8 +15,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="content" th:text="#{label.content}"></label>
-                    <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="8" required></textarea>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:text="${#fields.errors('content')[0]}"></div>
+                    <textarea class="form-control" th:classappend="${#fields.hasErrors('contentRaw') ? 'is-invalid' : ''}" id="content" th:field="*{contentRaw}" rows="8" required></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contentRaw')}" th:text="${#fields.errors('contentRaw')[0]}"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="category" th:text="#{label.category}"></label>
@@ -33,10 +33,31 @@
                     </select>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('tagIds')}" th:text="${#fields.errors('tagIds')[0]}"></div>
                 </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" id="isPublished" type="checkbox" th:field="*{published}">
+                        <label class="form-check-label" for="isPublished" th:text="#{label.publish_post}"></label>
+                    </div>
+                </div>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-primary" type="submit" th:text="#{label.update}"></button>
                 </div>
             </form>
-        </div>
+        </th:block>
+
+        <th:block layout:fragment="styles">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" integrity="sha512-lB03MbtC3LxImQ+BKnZIyvVHTQ8SSmQ15AhVh5U/+CCp4wKtZMvgLGXbZIjIBBbnKsmk3/6n2vcF8a9CtVVSfA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        </th:block>
+
+        <th:block layout:fragment="scripts">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js" integrity="sha512-ksSfTk6JIdsze75yZ8c+yDVLu09SNefa9IicxEE+HZvWo9kLPY1vrRlmucEMHQReWmEdKqusQWaDMpkTb3M2ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script>
+                new SimpleMDE({
+                    element: document.querySelector('#content'),
+                    spellChecker: false,
+                    status: false
+                });
+            </script>
+        </th:block>
     </body>
 </html>

@@ -259,4 +259,29 @@
                                  referencedTableName="users"
                                  onDelete="CASCADE" />
     </changeSet>
+    <changeSet id="9" author="plyschik">
+        <addColumn tableName="posts">
+            <column name="content_raw"
+                    type="TEXT"
+                    afterColumn="content">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="10" author="plyschik">
+        <addColumn tableName="posts">
+            <column name="published"
+                    type="BOOLEAN"
+                    defaultValueBoolean="true"
+                    afterColumn="created_at" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="999" author="plyschik">
+        <sqlFile path="data/users.sql" />
+        <sqlFile path="data/categories.sql" />
+        <sqlFile path="data/tags.sql" />
+        <sqlFile path="data/posts.sql" />
+        <sqlFile path="data/posts_tags.sql" />
+        <sqlFile path="data/comments.sql" />
+    </changeSet>
 </databaseChangeLog>

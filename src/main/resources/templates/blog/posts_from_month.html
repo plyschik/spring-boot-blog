@@ -8,12 +8,12 @@
         <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
-                    <h3 class="mb-4" th:text="#{header.blog.from_tag(${tag.name})}"></h3>
+                    <h3 class="mb-4" th:text="#{header.posts_from_date_range(${#temporals.format(startDate, 'dd-MM-yyyy')}, ${#temporals.format(endDate, 'dd-MM-yyyy')})}"></h3>
                     <th:block th:if="${#lists.isEmpty(posts)}">
                         <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
                     </th:block>
                     <div th:each="post: ${posts}" th:include="fragments/fragments :: post(${post}, true)"></div>
-                    <div th:insert="fragments/fragments :: pagination(${posts}, @{/tags/{id}/posts(id=${tag.id})})"></div>
+                    <div th:insert="fragments/fragments :: pagination(${posts}, @{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')})})"></div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
                     <div th:insert="fragments/fragments :: popularCategories(${categories})"></div>

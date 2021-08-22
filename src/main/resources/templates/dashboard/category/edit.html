@@ -5,9 +5,9 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.category.edit}"></h3>
-            <form th:action="@{/dashboard/categories/{id}/edit(id=${id})}" th:object="${category}" method="POST">
+            <form th:action="@{/dashboard/categories/{id}/edit(id=${id})}" method="POST" th:object="${category}">
                 <div class="mb-3">
                     <label class="form-label" for="name" th:text="#{label.name}"></label>
                     <input class="form-control" th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}" id="name" type="text" th:field="*{name}" required>
@@ -17,6 +17,6 @@
                     <button class="btn btn-primary" type="submit" th:text="#{label.update}"></button>
                 </div>
             </form>
-        </div>
+        </th:block>
     </body>
 </html>

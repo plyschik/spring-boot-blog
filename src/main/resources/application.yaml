@@ -26,6 +26,10 @@ spring:
           auth: true
           starttls:
             enable: true
+security:
+  remember-me:
+    key: ${SECURITY_REMEMBER_ME_KEY}
+    token-validity-seconds: 604800
 pagination:
   post:
     blog: 5

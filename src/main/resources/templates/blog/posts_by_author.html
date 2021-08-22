@@ -2,73 +2,24 @@
 <html
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/main}"
+    layout:decorate="~{layouts/blog}"
 >
-    <head>
-        <title>Spring Boot Blog</title>
-    </head>
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <div class="row">
-                <div class="col-9">
+                <div class="col-12 col-md-8 col-xl-9">
                     <h3 class="mb-4" th:text="#{header.blog.from_author(${author.fullName})}"></h3>
-                    <div class="alert alert-info" th:if="${posts.isEmpty}" th:text="#{message.posts_list_is_empty}"></div>
-                    <div th:each="post: ${posts}" class="mb-4 card">
-                        <div class="card-body">
-                            <a class="text-decoration-none" th:href="@{/posts/{id}(id=${post.id})}">
-                                <h4 class="card-title" th:text="${post.title}"></h4>
-                            </a>
-                            <h6 class="my-2 card-subtitle text-muted">
-                                <span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></span>
-                                <span>&bull;</span>
-                                <a class="text-decoration-none" th:href="@{/authors/{id}/posts(id=${post.user.id})}">
-                                    <span th:text="${post.user.fullName}"></span>
-                                </a>
-                                <th:block th:if="${post.category != null}">
-                                    <span>&bull;</span>
-                                    <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${post.category.id})}">
-                                        <span th:text="${post.category.name}"></span>
-                                    </a>
-                                </th:block>
-                            </h6>
-                            <p class="mb-0 card-text" th:text="${post.content}"></p>
-                            <div class="mt-2" th:unless="${#lists.isEmpty(post.tags)}">
-                                <a class="d-inline-block me-2" th:each="tag: ${post.tags}" th:href="@{/tags/{id}/posts(id=${tag.id})}">
-                                    <span class="badge rounded-pill bg-dark" th:text="${tag.name}"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <nav th:if="${posts.totalPages > 1}">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" th:classappend="${posts.number == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=0)}">&laquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${!posts.hasPrevious() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number - 1})}">&lsaquo;</a>
-                            </li>
-                            <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (posts.number + 1) + ' of ' + posts.totalPages}"></span>
-                            <li class="page-item" th:classappend="${!posts.hasNext() ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.number + 1})}">&rsaquo;</a>
-                            </li>
-                            <li class="page-item" th:classappend="${posts.number == (posts.totalPages - 1) ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/authors/{id}/posts(id=${author.id}, page=${posts.totalPages - 1})}">&raquo;</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <th:block th:if="${#lists.isEmpty(posts)}">
+                        <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
+                    </th:block>
+                    <div th:each="post: ${posts}" th:include="fragments/fragments :: post(${post}, true)"></div>
+                    <div th:insert="fragments/fragments :: pagination(${posts}, @{/authors/{id}/posts(id=${author.id})})"></div>
                 </div>
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-header" th:text="#{label.most_popular_categories}"></div>
-                        <div class="card-body" th:if="${categories.isEmpty}" th:text="#{message.categories_list_is_empty}"></div>
-                        <ul class="list-group list-group-flush" th:if="${not categories.isEmpty}">
-                            <li class="list-group-item" th:each="category: ${categories}">
-                                <a class="text-decoration-none" th:href="@{/categories/{id}/posts(id=${category.id})}" th:text="${category.name} + ' (' + ${category.postsCount} + ')'"></a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="col-12 col-md-4 col-xl-3">
+                    <div th:insert="fragments/fragments :: popularCategories(${categories})"></div>
+                    <div th:insert="fragments/fragments :: archiveAccordion(${archive})"></div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </body>
 </html>

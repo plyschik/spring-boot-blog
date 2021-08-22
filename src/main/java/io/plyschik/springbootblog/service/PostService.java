@@ -1,11 +1,14 @@
 package io.plyschik.springbootblog.service;
 
+import io.plyschik.springbootblog.dto.PostCountByYearAndMonthDto;
 import io.plyschik.springbootblog.dto.PostDto;
+import io.plyschik.springbootblog.dto.YearArchiveEntry;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
+import io.plyschik.springbootblog.exception.PostIsNotPublishedException;
 import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
@@ -17,8 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +37,13 @@ public class PostService {
     }
 
     public Post getPostByIdWithAuthorCategoryAndTags(long id) {
-        return postRepository.findWithUserCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findWithUserCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
+
+        if (!post.isPublished()) {
+            throw new PostIsNotPublishedException();
+        }
+
+        return post;
     }
 
     public Page<Post> getPostsWithCategory(Pageable pageable) {
@@ -42,27 +51,69 @@ public class PostService {
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTags(Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByOrderByCreatedAtDesc(pageable);
+        return postRepository.findAllWithAuthorCategoryAndTagsByPublishedIsTrueOrderByCreatedAtDesc(pageable);
     }
 
     public Page<Post> getPostsByUserId(long userId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByUserIdOrderByCreatedAtDesc(userId, pageable);
+        return postRepository.findAllWithAuthorCategoryAndTagsByUserIdAndPublishedIsTrueOrderByCreatedAtDesc(
+            userId,
+            pageable
+        );
     }
 
     public Page<Post> getPostsByCategoryId(long categoryId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
+        return postRepository.findAllWithAuthorCategoryAndTagsByCategoryIdAndPublishedIsTrueOrderByCreatedAtDesc(
+            categoryId,
+            pageable
+        );
     }
 
     public Page<Post> getPostsByTagId(long tagId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByIdInOrderByCreatedAtDesc(
+        return postRepository.findAllWithAuthorCategoryAndTagsByIdInAndPublishedIsTrueOrderByCreatedAtDesc(
             postRepository.findPostIdsByTagId(tagId),
             pageable
         );
     }
 
+    public Page<Post> getPostsFromDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return postRepository.findAllWithAuthorCategoryAndTagsByCreatedAtBetweenAndPublishedIsTrueOrderByCreatedAtDesc(
+            startDate,
+            endDate,
+            pageable
+        );
+    }
+
+    public List<YearArchiveEntry> getPostsArchive() {
+        List<PostCountByYearAndMonthDto> postsCountByYearAndMonth = postRepository.findPostsCountByYearAndMonthDto();
+        HashMap<Integer, List<PostCountByYearAndMonthDto>> years = postsCountByYearAndMonth.stream()
+            .collect(Collectors.groupingBy(
+                PostCountByYearAndMonthDto::getYear,
+                LinkedHashMap::new,
+                Collectors.toList()
+            )
+        );
+
+        List<YearArchiveEntry> yearArchiveEntries = new ArrayList<>();
+        for (Map.Entry<Integer, List<PostCountByYearAndMonthDto>> entry: years.entrySet()) {
+            Integer postsCount = entry.getValue().stream()
+                .map(PostCountByYearAndMonthDto::getCount)
+                .mapToInt(Integer::intValue)
+                .sum();
+
+            List<YearArchiveEntry.Month> monthList = entry.getValue().stream()
+                .map(item -> new YearArchiveEntry.Month(item.getMonth(), item.getCount()))
+                .collect(Collectors.toList());
+
+            yearArchiveEntries.add(new YearArchiveEntry(entry.getKey(), postsCount, monthList));
+        }
+
+        return yearArchiveEntries;
+    }
+
     public void createPost(PostDto postDto, User user) throws CategoryNotFoundException, TagNotFoundException {
         Post post = modelMapper.map(postDto, Post.class);
         post.setUser(user);
+        post.setContent(MarkdownToHTMLParser.parse(postDto.getContentRaw()));
 
         if (postDto.getCategoryId() != null) {
             Category category = categoryRepository.findById(postDto.getCategoryId())
@@ -96,6 +147,7 @@ public class PostService {
     public void updatePost(long id, PostDto postDto) throws PostNotFoundException, CategoryNotFoundException {
         Post post = postRepository.findWithCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
         modelMapper.map(postDto, post);
+        post.setContent(MarkdownToHTMLParser.parse(postDto.getContentRaw()));
 
         if (postDto.getCategoryId() != null) {
             Category category = categoryRepository.findById(postDto.getCategoryId())

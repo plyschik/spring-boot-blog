@@ -19,9 +19,11 @@ public class PostDto {
 
     @NotBlank
     @Length(min = 4, max = 65535)
-    private String content;
-    
+    private String contentRaw;
+
     private Long categoryId;
 
     private Set<Long> tagIds = new HashSet<>();
+
+    private boolean published;
 }

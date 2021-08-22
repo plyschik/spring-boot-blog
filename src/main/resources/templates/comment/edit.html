@@ -1,14 +1,11 @@
 <!doctype html>
 <html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/main}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/blog}"
 >
-    <head>
-        <title>Spring Boot Blog</title>
-    </head>
     <body>
-        <div layout:fragment="container">
+        <th:block layout:fragment="container">
             <h3 class="mb-4" th:text="#{header.comment_edit}"></h3>
             <form th:action="@{/posts/{postId}/comments/{commentId}/edit(postId=${postId}, commentId=${commentId})}" th:object="${comment}" method="POST">
                 <div class="mb-3">
@@ -19,6 +16,6 @@
                     <button class="btn btn-primary" type="submit" th:text="#{label.edit}"></button>
                 </div>
             </form>
-        </div>
+        </th:block>
     </body>
 </html>

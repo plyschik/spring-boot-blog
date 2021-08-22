@@ -5,11 +5,13 @@
     layout:decorate="~{layouts/dashboard}"
 >
     <body>
-        <div layout:fragment="content">
+        <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.tag.list}"></h3>
-            <div class="alert alert-info" th:if="${tags.isEmpty}" th:text="#{message.tags_list_is_empty}"></div>
+            <th:block th:if="${#lists.isEmpty(tags)}">
+                <div th:replace="fragments/fragments :: alert('info', #{message.tags_list_is_empty})"></div>
+            </th:block>
             <div class="table-responsive">
-                <table class="table table-bordered bg-white text-nowrap" th:if="${!tags.isEmpty}">
+                <table class="table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(tags)}">
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
@@ -29,23 +31,7 @@
                     </tbody>
                 </table>
             </div>
-            <nav th:if="${tags.totalPages > 1}">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${tags.number == 0 ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/dashboard/tags(page=0)}">&laquo;</a>
-                    </li>
-                    <li class="page-item" th:classappend="${!tags.hasPrevious() ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number - 1})}">&lsaquo;</a>
-                    </li>
-                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="${'Page ' + (tags.number + 1) + ' of ' + tags.totalPages}"></span>
-                    <li class="page-item" th:classappend="${!tags.hasNext() ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.number + 1})}">&rsaquo;</a>
-                    </li>
-                    <li class="page-item" th:classappend="${tags.number == (tags.totalPages - 1) ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/dashboard/tags(page=${tags.totalPages - 1})}">&raquo;</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+            <div th:insert="fragments/fragments :: pagination(${tags}, '/dashboard/tags')"></div>
+        </th:block>
     </body>
 </html>

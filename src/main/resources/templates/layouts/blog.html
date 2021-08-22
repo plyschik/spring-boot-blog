@@ -1,0 +1,54 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    th:replace="~{layouts/main :: main(~{:: title}, ~{:: #navbar-block}, ~{:: #container-block}, ~{:: #styles-block}, ~{:: #scripts-block})}"
+>
+    <head>
+        <title layout:fragment="title" th:text="#{label.application_name}"></title>
+    </head>
+    <body>
+        <th:block id="navbar-block">
+            <ul class="ms-auto mb-2 mb-lg-0 navbar-nav">
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/auth/signup}" th:text="#{label.sign_up}"></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/auth/signin}" th:text="#{label.sign_in}"></a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMINISTRATOR')">
+                    <a class="nav-link" th:href="@{/dashboard/posts}" th:text="#{label.dashboard}"></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/auth/signout}" method="POST">
+                        <button class="nav-link btn btn-link" type="submit" th:text="#{label.sign_out}"></button>
+                    </form>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" href="#" data-bs-toggle="dropdown" th:text="#{label.language}"></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="?lang=en" th:text="#{language.english}"></a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="?lang=pl" th:text="#{language.polish}"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </th:block>
+
+        <th:block id="container-block">
+            <th:block layout:fragment="container"></th:block>
+        </th:block>
+
+        <th:block id="styles-block">
+            <th:block layout:fragment="styles"></th:block>
+        </th:block>
+
+        <th:block id="scripts-block">
+            <th:block layout:fragment="scripts"></th:block>
+        </th:block>
+    </body>
+</html>
