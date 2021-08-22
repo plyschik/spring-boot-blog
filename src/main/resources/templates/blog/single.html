@@ -12,9 +12,11 @@
         <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
-                    <div th:include="fragments/general :: post"></div>
+                    <div th:include="fragments/fragments :: post(${post}, false)"></div>
                     <h3 class="my-4" th:text="#{header.comments}"></h3>
-                    <div class="alert alert-info" sec:authorize="isAnonymous()" th:text="#{message.only_authenticated_users_can_create_comments}"></div>
+                    <th:block sec:authorize="isAnonymous()">
+                        <div th:replace="fragments/fragments :: alert('info', #{message.only_authenticated_users_can_create_comments})"></div>
+                    </th:block>
                     <form class="mb-3" sec:authorize="isAuthenticated()" th:action="@{/posts/{id}/comments(id=${post.id})}" method="POST" th:object="${comment}">
                         <div class="mb-3">
                             <textarea class="form-control" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" id="content" th:field="*{content}" rows="3" required th:placeholder="#{label.comment}"></textarea>
@@ -82,8 +84,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
-                    <div th:insert="fragments/general :: popularCategories"></div>
-                    <div th:insert="fragments/general :: archiveAccordion"></div>
+                    <div th:insert="fragments/fragments :: popularCategories(${categories})"></div>
+                    <div th:insert="fragments/fragments :: archiveAccordion(${archive})"></div>
                 </div>
             </div>
         </th:block>

@@ -7,25 +7,25 @@
     <body>
         <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.sign_up}"></h3>
-            <form th:action="@{/auth/signup}" th:object="${user}" method="POST">
+            <form th:action="@{/auth/signup}" method="POST" th:object="${user}">
                 <div class="mb-3">
                     <label class="form-label" for="email" th:text="#{label.email}"></label>
-                    <input class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" id="email" th:field="*{email}" type="email">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" id="email" type="email" th:field="*{email}">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')[0]}"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="password" th:text="#{label.password}"></label>
-                    <input class="form-control" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}" id="password" th:field="*{password}" type="password">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}" id="password" type="password" th:field="*{password}">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:text="${#fields.errors('password')[0]}"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="firstName" th:text="#{label.first_name}"></label>
-                    <input class="form-control" th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}" id="firstName" th:field="*{firstName}" type="text">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}" id="firstName" type="text" th:field="*{firstName}">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:text="${#fields.errors('firstName')[0]}"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="lastName" th:text="#{label.last_name}"></label>
-                    <input class="form-control" th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}" id="lastName" th:field="*{lastName}" type="text">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}" id="lastName" type="text" th:field="*{lastName}">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:text="${#fields.errors('lastName')[0]}"></div>
                 </div>
                 <button class="btn btn-primary" type="submit" th:text="#{label.sign_up}"></button>

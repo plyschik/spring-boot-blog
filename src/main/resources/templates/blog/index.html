@@ -8,13 +8,15 @@
         <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
-                    <div class="alert alert-info" th:if="${#lists.isEmpty(posts)}" th:text="#{message.posts_list_is_empty}"></div>
-                    <div th:each="post: ${posts}" th:insert="fragments/general :: post"></div>
-                    <div th:insert="fragments/general :: pagination(${posts}, '/')"></div>
+                    <th:block th:if="${#lists.isEmpty(posts)}">
+                        <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
+                    </th:block>
+                    <div th:each="post: ${posts}" th:insert="fragments/fragments :: post(${post}, true)"></div>
+                    <div th:insert="fragments/fragments :: pagination(${posts}, '/')"></div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
-                    <div th:insert="fragments/general :: popularCategories"></div>
-                    <div th:insert="fragments/general :: archiveAccordion"></div>
+                    <div th:insert="fragments/fragments :: popularCategories(${categories})"></div>
+                    <div th:insert="fragments/fragments :: archiveAccordion(${archive})"></div>
                 </div>
             </div>
         </th:block>

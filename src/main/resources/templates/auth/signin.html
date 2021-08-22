@@ -7,8 +7,12 @@
     <body>
         <th:block layout:fragment="container">
             <h3 class="mb-3" th:text="#{header.sign_in}"></h3>
-            <div class="alert alert-danger" th:if="${param.failure}" th:text="#{message.invalid_credentials}"></div>
-            <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+            <th:block th:if="${param.failure}">
+                <div th:replace="fragments/fragments :: alert('danger', #{message.invalid_credentials})"></div>
+            </th:block>
+            <th:block th:if="${message}">
+                <div th:replace="fragments/fragments :: alert('success', ${message})"></div>
+            </th:block>
             <form th:action="@{/auth/signin}" method="POST">
                 <div class="mb-3">
                     <label class="form-label" for="email" th:text="#{label.email}"></label>

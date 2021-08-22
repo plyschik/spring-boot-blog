@@ -9,37 +9,26 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title th:replace="${title}"></title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" integrity="sha512-F7WyTLiiiPqvu2pGumDR15med0MDkUIo5VTVyyfECR5DZmCnDhti9q5VID02ItWjq6fvDfMaBaDl2J3WdL1uxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <style>
-            .card-body p:last-child {
-                margin-bottom: 0;
-            }
-
-            .accordion-button:focus {
-                box-shadow: none;
-                border-color: rgba(0, 0, 0, 0.125);
-            }
-
-            .cursor-pointer {
-                cursor: pointer;
-            }
-        </style>
-        <th:block th:replace="${styles}"></th:block>
+        <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+        <th:block th:insert="${styles}"></th:block>
     </head>
     <body class="bg-light">
         <nav class="mb-4 navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" th:href="@{/}" th:text="#{label.application_name}"></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="ml-auto collapse navbar-collapse" id="navbar" th:insert="${navbar}"></div>
             </div>
         </nav>
         <div class="container">
-            <div th:if="${alert}" th:class="'mb-4 alert alert-' + ${alert.type}" th:text="${alert.message}"></div>
+            <th:block th:if="${alert}">
+                <th:block th:insert="fragments/fragments :: alert(${alert.type}, ${alert.message})"></th:block>
+            </th:block>
             <th:block th:insert="${container}"></th:block>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js" integrity="sha512-NWNl2ZLgVBoi6lTcMsHgCQyrZVFnSmcaa3zRv0L3aoGXshwoxkGs3esa9zwQHsChGRL4aLDnJjJJeP6MjPX46Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <th:block th:replace="${scripts}"></th:block>
+        <th:block th:insert="${scripts}"></th:block>
     </body>
 </html>
