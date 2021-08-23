@@ -6,7 +6,20 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.category.list}"></h3>
+            <div class="mb-3 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <h3 class="mb-3 mb-md-0" th:text="#{header.category.list}"></h3>
+                <form class="row g-2" th:action="@{/dashboard/categories}" method="GET">
+                    <div class="col-auto">
+                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}" />
+                    </div>
+                    <div class="col-auto">
+                        <input class="btn btn-primary" type="submit" th:value="${'Search'}">
+                    </div>
+                    <div class="col-auto" th:if="${#request.getParameter('name')}">
+                        <a class="btn btn-danger" th:href="@{/dashboard/categories}">✕</a>
+                    </div>
+                </form>
+            </div>
             <th:block th:if="${#lists.isEmpty(categories)}">
                 <div th:replace="fragments/fragments :: alert('info', #{message.categories_list_is_empty})"></div>
             </th:block>
@@ -14,8 +27,39 @@
                 <table class="table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(categories)}">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
-                            <th style="width: 100%;" th:text="#{label.name}"></th>
+                            <th class="text-center" style="width: 1%;">
+                                <th:block th:if="${categories.getSort().getOrderFor('id') == null}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=id,asc" th:text="#{label.id}"></a>
+                                </th:block>
+                                <th:block th:if="${categories.getSort().getOrderFor('id')?.isAscending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=id,desc" th:text="|#{label.id} ▲|"></a>
+                                </th:block>
+                                <th:block th:if="${categories.getSort().getOrderFor('id')?.isDescending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=id,asc" th:text="|#{label.id} ▼|"></a>
+                                </th:block>
+                            </th>
+                            <th style="width: 100%;">
+                                <span th:if="${categories.getSort().getOrderFor('name') == null}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=name,asc" th:text="#{label.name}"></a>
+                                </span>
+                                <span th:if="${categories.getSort().getOrderFor('name')?.isAscending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=name,desc" th:text="|#{label.name} ▲|"></a>
+                                </span>
+                                <span th:if="${categories.getSort().getOrderFor('name')?.isDescending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=name,asc" th:text="|#{label.name} ▼|"></a>
+                                </span>
+                            </th>
+                            <th style="width: 1%;">
+                                <span th:if="${categories.getSort().getOrderFor('postsCount') == null}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=postsCount,asc" th:text="#{label.posts_count}"></a>
+                                </span>
+                                <span th:if="${categories.getSort().getOrderFor('postsCount')?.isAscending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=postsCount,desc" th:text="|#{label.posts_count} ▲|"></a>
+                                </span>
+                                <span th:if="${categories.getSort().getOrderFor('postsCount')?.isDescending()}">
+                                    <a class="text-decoration-none text-white" href="/dashboard/categories?sort=postsCount,asc" th:text="|#{label.posts_count} ▼|"></a>
+                                </span>
+                            </th>
                             <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
@@ -23,6 +67,7 @@
                         <tr th:each="category: ${categories}">
                             <td class="text-center align-middle" th:text="${category.id}"></td>
                             <td class="align-middle" th:text="${category.name}"></td>
+                            <td class="align-middle text-center" th:text="${category.postsCount}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{label.delete}"></a>

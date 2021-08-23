@@ -29,8 +29,8 @@ public class CategoryService {
         return categoryRepository.findAllByOrderByName();
     }
 
-    public Page<Category> getCategories(Pageable pageable) {
-        return categoryRepository.findAllByOrderByIdDesc(pageable);
+    public Page<CategoryWithPostsCount> getCategories(String name, Pageable pageable) {
+        return categoryRepository.findAllWithPostsCountWhereNameLike(name, pageable);
     }
 
     public List<CategoryWithPostsCount> getCategoriesWithPostsCount() {
