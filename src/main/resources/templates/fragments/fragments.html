@@ -84,6 +84,36 @@
         </nav>
     </th:block>
 
+    <th:block th:fragment="advanced_pagination(pageable, path)">
+        <div class="mb-3 d-flex flex-column-reverse flex-md-row justify-content-between align-items-center" th:if="${pageable.totalPages > 1}">
+            <div
+                th:with="
+                    from=${(pageable.getNumber() * pageable.getSize()) + 1},
+                    to=${from + (pageable.getNumberOfElements() - 1)},
+                    of=${pageable.getTotalElements()}
+                "
+                th:text="#{pagination.entries(${from}, ${to}, ${of})}">
+            </div>
+            <nav class="mb-2 mb-md-0">
+                <ul class="mb-0 pagination justify-content-center">
+                    <li class="page-item" th:classappend="${pageable.number == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{${path}(page=0)}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${!pageable.hasPrevious() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{${path}(page=${pageable.number - 1})}">&lsaquo;</a>
+                    </li>
+                    <span class="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center" th:text="#{pagination(${pageable.number + 1}, ${pageable.totalPages})}"></span>
+                    <li class="page-item" th:classappend="${!pageable.hasNext() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{${path}(page=${pageable.number + 1})}">&rsaquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${pageable.number == (pageable.totalPages - 1) ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{${path}(page=${pageable.totalPages - 1})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </th:block>
+
     <th:block th:fragment="alert(type, message)">
         <th:block th:switch="${type}">
             <div th:case="'success'" class="mb-4 alert alert-success" th:text="${message}"></div>
