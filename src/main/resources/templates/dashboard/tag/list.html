@@ -6,16 +6,41 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.tag.list}"></h3>
-            <th:block th:if="${#lists.isEmpty(tags)}">
-                <div th:replace="fragments/fragments :: alert('info', #{message.tags_list_is_empty})"></div>
+            <div class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <h3 class="mb-3 mb-md-0" th:text="#{header.tag.list}"></h3>
+                <form class="row g-2" th:action="@{/dashboard/tags}" method="GET">
+                    <div class="mt-0 col-auto">
+                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}" />
+                    </div>
+                    <div class="mt-0 col-auto">
+                        <input class="btn btn-primary" type="submit" th:value="#{label.search}">
+                    </div>
+                    <div class="mt-0 col-auto" th:if="${#bools.isTrue(#request.getParameter('name')) && !#request.getParameter('name').isBlank()}">
+                        <a class="btn btn-danger" th:href="@{/dashboard/tags}">✕</a>
+                    </div>
+                </form>
+            </div>
+            <th:block th:if="${tags.getTotalElements() == 0}">
+                <th:block th:unless="${#request.getParameter('name')}">
+                    <div th:replace="fragments/fragments :: alert('info', #{message.tags_list_is_empty})"></div>
+                </th:block>
+                <th:block th:if="${#request.getParameter('name')}">
+                    <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
+                </th:block>
             </th:block>
-            <div class="table-responsive">
-                <table class="table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(tags)}">
+            <div class="table-responsive" th:unless="${tags.getTotalElements() == 0}">
+                <table class="table table-bordered bg-white text-nowrap">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
-                            <th style="width: 100%;" th:text="#{label.name}"></th>
+                            <th class="text-center" style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('id')?.isAscending()} ? 'id,desc' : 'id,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.id}${tags.getSort().getOrderFor('id') == null ? '' : tags.getSort().getOrderFor('id').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 100%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('name')?.isAscending()} ? 'name,desc' : 'name,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.name}${tags.getSort().getOrderFor('name') == null ? '' : tags.getSort().getOrderFor('name').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('postsCount')?.isAscending()} ? 'postsCount,desc' : 'postsCount,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.posts_count}${tags.getSort().getOrderFor('postsCount') == null ? '' : tags.getSort().getOrderFor('postsCount').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
                             <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
@@ -23,6 +48,7 @@
                         <tr th:each="tag: ${tags}">
                             <td class="text-center align-middle" th:text="${tag.id}"></td>
                             <td class="align-middle" th:text="${tag.name}"></td>
+                            <td class="align-middle text-center" th:text="${tag.postsCount}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{label.delete}"></a>
@@ -31,7 +57,7 @@
                     </tbody>
                 </table>
             </div>
-            <div th:insert="fragments/fragments :: pagination(${tags}, '/dashboard/tags')"></div>
+            <div th:insert="fragments/fragments :: advanced_pagination(${tags}, @{/dashboard/tags(sort=${#request.getParameter('sort')}, name=${#request.getParameter('name')})})"></div>
         </th:block>
     </body>
 </html>

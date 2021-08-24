@@ -86,14 +86,14 @@
 
     <th:block th:fragment="advanced_pagination(pageable, path)">
         <div class="mb-3 d-flex flex-column-reverse flex-md-row justify-content-between align-items-center" th:if="${pageable.totalPages > 1}">
-            <div
+            <span
                 th:with="
                     from=${(pageable.getNumber() * pageable.getSize()) + 1},
                     to=${from + (pageable.getNumberOfElements() - 1)},
                     of=${pageable.getTotalElements()}
                 "
                 th:text="#{pagination.entries(${from}, ${to}, ${of})}">
-            </div>
+            </span>
             <nav class="mb-2 mb-md-0">
                 <ul class="mb-0 pagination justify-content-center">
                     <li class="page-item" th:classappend="${pageable.number == 0 ? 'disabled' : ''}">
