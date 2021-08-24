@@ -9,13 +9,13 @@
             <div class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
                 <h3 class="mb-3 mb-md-0" th:text="#{header.category.list}"></h3>
                 <form class="row g-2" th:action="@{/dashboard/categories}" method="GET">
-                    <div class="col-auto">
+                    <div class="mt-0 col-auto">
                         <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}" />
                     </div>
-                    <div class="col-auto">
+                    <div class="mt-0 col-auto">
                         <input class="btn btn-primary" type="submit" th:value="#{label.search}">
                     </div>
-                    <div class="col-auto" th:if="${#bools.isTrue(#request.getParameter('name')) && !#request.getParameter('name').isBlank()}">
+                    <div class="mt-0 col-auto" th:if="${#bools.isTrue(#request.getParameter('name')) && !#request.getParameter('name').isBlank()}">
                         <a class="btn btn-danger" th:href="@{/dashboard/categories}">✕</a>
                     </div>
                 </form>
