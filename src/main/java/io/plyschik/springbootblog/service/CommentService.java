@@ -1,14 +1,12 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.dto.api.CommentApiDto;
-import io.plyschik.springbootblog.dto.api.CommentsResponse;
-import io.plyschik.springbootblog.dto.api.PaginationApiDto;
-import io.plyschik.springbootblog.dto.api.UserApiDto;
+import io.plyschik.springbootblog.dto.PostsCommentApiResponse;
 import io.plyschik.springbootblog.entity.Comment;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.CommentNotFoundException;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.repository.CommentRepository;
 import io.plyschik.springbootblog.security.CommentPermissionsChecker;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,36 +30,37 @@ public class CommentService {
         return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 
-    public CommentsResponse getCommentsByPost(Post post, Pageable pageable, Authentication authentication) {
-        Page<Comment> comments = commentRepository.findAllByPostOrderByCreatedAtDesc(post, pageable);
+    public PostsCommentApiResponse getCommentsByPostId(long postId, Pageable pageable, Authentication authentication) throws PostNotFoundException {
+        if (!commentRepository.existsById(postId)) {
+            throw new PostNotFoundException();
+        }
 
-        CommentsResponse response = new CommentsResponse();
-        response.setComments(comments.stream().map(comment -> {
-            CommentApiDto commentApiDto = new CommentApiDto();
-            commentApiDto.setId(comment.getId());
-            commentApiDto.setContent(comment.getContent());
-            commentApiDto.setCreatedAt(comment.getCreatedAt());
+        Page<Comment> commentsFromDatabase = commentRepository.findAllByPostId(postId, pageable);
 
-            User user = comment.getUser();
-            UserApiDto userApiDto = new UserApiDto();
-            userApiDto.setFirstName(user.getFirstName());
-            userApiDto.setLastName(user.getLastName());
-            commentApiDto.setUser(userApiDto);
+        List<PostsCommentApiResponse.Comment> comments = commentsFromDatabase.stream()
+            .map(comment -> {
+                PostsCommentApiResponse.Comment commentDto = modelMapper.map(comment, PostsCommentApiResponse.Comment.class);
+                commentDto.setCanEdit(commentPermissionsChecker.checkCommentEditPermissions(authentication, comment.getId()));
+                commentDto.setCanDelete(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
 
-            commentApiDto.setCanEdit(commentPermissionsChecker.checkCommentEditPermissions(authentication, comment.getId()));
-            commentApiDto.setCanDelete(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
+                return commentDto;
+            })
+            .collect(Collectors.toList());
 
-            return commentApiDto;
-        }).collect(Collectors.toList()));
+        PostsCommentApiResponse.Pagination pagination = PostsCommentApiResponse.Pagination.builder()
+            .currentPage(commentsFromDatabase.getNumber())
+            .totalPages(commentsFromDatabase.getTotalPages())
+            .numberOfElements(commentsFromDatabase.getNumberOfElements())
+            .totalElements(commentsFromDatabase.getTotalElements())
+            .pageSize(commentsFromDatabase.getSize())
+            .hasPreviousPage(commentsFromDatabase.hasPrevious())
+            .hasNextPage(commentsFromDatabase.hasNext())
+            .build();
 
-        PaginationApiDto paginationApiDto = new PaginationApiDto();
-        paginationApiDto.setCurrentPage(comments.getNumber());
-        paginationApiDto.setTotalPages(comments.getTotalPages());
-        paginationApiDto.setHasPreviousPage(comments.hasPrevious());
-        paginationApiDto.setHasNextPage(comments.hasNext());
-        response.setPagination(paginationApiDto);
-
-        return response;
+        return PostsCommentApiResponse.builder()
+            .comments(comments)
+            .pagination(pagination)
+            .build();
     }
 
     public CommentDto getCommentForEdit(long id) throws CommentNotFoundException {

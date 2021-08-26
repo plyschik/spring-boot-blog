@@ -2,8 +2,7 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CommentDto;
-import io.plyschik.springbootblog.dto.api.CommentsResponse;
-import io.plyschik.springbootblog.entity.Post;
+import io.plyschik.springbootblog.dto.PostsCommentApiResponse;
 import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.exception.UserNotFoundException;
@@ -11,18 +10,22 @@ import io.plyschik.springbootblog.service.CommentService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -38,19 +41,13 @@ public class CommentController {
     private final MessageSource messageSource;
 
     @GetMapping("/api/posts/{id}/comments")
-    public ResponseEntity<?> getPostComments(
+    public ResponseEntity<PostsCommentApiResponse> getPostComments(
         @PathVariable Long id,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.comments}") int itemsPerPage,
+        @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
         Authentication authentication
     ) {
         try {
-            Post post = postService.getPostById(id);
-            CommentsResponse response = commentService.getCommentsByPost(
-                post,
-                PageRequest.of(page, itemsPerPage),
-                authentication
-            );
+            PostsCommentApiResponse response = commentService.getCommentsByPostId(id, pageable, authentication);
 
             return ResponseEntity.ok(response);
         } catch (PostNotFoundException exception) {
