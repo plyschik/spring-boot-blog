@@ -30,6 +30,11 @@ spring:
     web:
       pageable:
         default-page-size: 10
+  web:
+    resources:
+      static-locations:
+        - "file:src/main/resources/static/"
+        - "classpath:/static/"
 security:
   remember-me:
     key: ${SECURITY_REMEMBER_ME_KEY}

@@ -33,3 +33,5 @@ build/
 .vscode/
 
 .jpb/
+
+/src/main/resources/static/assets/js/**/*
