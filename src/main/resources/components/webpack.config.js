@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: {
     comments: './src/comments',
   },
@@ -20,13 +20,13 @@ module.exports = {
             presets: [
               '@babel/preset-env',
               '@babel/preset-react',
-            ]
-          }
-        }
-      }
-    ]
+            ],
+          },
+        },
+      },
+    ],
   },
   resolve: {
-    extensions: ['.js', '.jsx']
-  }
+    extensions: ['.js', '.jsx'],
+  },
 };
