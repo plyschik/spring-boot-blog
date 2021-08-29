@@ -1,10 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CommentsList from './CommentsList';
+import CommentsComponent from './CommentsComponent';
+import { CommentsProvider } from './CommentsContext';
 
 const container = document.querySelector('#sbb-comments');
 
 ReactDOM.render(
-  <CommentsList i18n={JSON.parse(container.dataset.i18n)} postId={container.dataset.postId} />,
+  <CommentsProvider>
+    <CommentsComponent
+      i18n={JSON.parse(container.dataset.i18n)}
+      postId={container.dataset.postId}
+    />
+  </CommentsProvider>,
   container,
 );

@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import classNames from 'classnames';
 import Comment from './Comment';
+import { CommentsContext } from './CommentsContext';
 
 const CommentsList = ({ i18n, postId }) => {
+  const [state, dispatch] = useContext(CommentsContext);
+
   const [loading, setLoading] = useState(false);
-  const [comments, setComments] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isFirstPageAvailable, setIsFirstPageAvailable] = useState(false);
@@ -19,7 +21,10 @@ const CommentsList = ({ i18n, postId }) => {
 
     axios.get(`/api/posts/${postId}/comments?page=${page}`)
       .then(({ data: { comments: items, pagination } }) => {
-        setComments(items);
+        dispatch({
+          type: 'set',
+          payload: items,
+        });
         setCurrentPage(pagination.currentPage);
         setTotalPages(pagination.totalPages);
         setIsFirstPageAvailable(pagination.currentPage > 0);
@@ -69,9 +74,9 @@ const CommentsList = ({ i18n, postId }) => {
   return (
     <>
       <div>
-        {!comments.length ? (
+        {!state.comments.length ? (
           <div className="alert alert-info">{i18n.empty}</div>
-        ) : comments.map((comment) => (
+        ) : state.comments.map((comment) => (
           <Comment
             key={comment.id}
             i18n={i18n}
