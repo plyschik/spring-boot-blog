@@ -7,6 +7,7 @@ import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.exception.PostNotFoundException;
+import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.repository.CommentRepository;
 import io.plyschik.springbootblog.security.CommentPermissionsChecker;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final ModelMapper modelMapper;
     private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final PostService postService;
     private final CommentPermissionsChecker commentPermissionsChecker;
 
     public Comment getComment(long id) throws CommentNotFoundException {
@@ -75,6 +78,23 @@ public class CommentService {
         comment.setPost(post);
 
         commentRepository.save(comment);
+    }
+
+    public PostsCommentApiResponse.Comment createComment(
+        Authentication authentication,
+        long postId,
+        CommentDto commentDto
+    ) throws UserNotFoundException, PostNotFoundException {
+        Comment comment = modelMapper.map(commentDto, Comment.class);
+        comment.setUser(userService.getUserByEmail(authentication.getName()));
+        comment.setPost(postService.getPostById(postId));
+        commentRepository.save(comment);
+
+        PostsCommentApiResponse.Comment dto = modelMapper.map(comment, PostsCommentApiResponse.Comment.class);
+        dto.setCanEdit(commentPermissionsChecker.checkCommentEditPermissions(authentication, comment.getId()));
+        dto.setCanDelete(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
+
+        return dto;
     }
 
     public void updateComment(long id, CommentDto commentDto) throws CommentNotFoundException {

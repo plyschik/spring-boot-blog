@@ -1,5 +1,7 @@
 package io.plyschik.springbootblog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.dto.YearArchiveEntry;
@@ -14,6 +16,8 @@ import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -29,11 +33,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 class BlogController {
+    private final MessageSource messageSource;
+    private final ObjectMapper objectMapper;
     private final UserService userService;
     private final PostService postService;
     private final CategoryService categoryService;
@@ -67,13 +74,45 @@ class BlogController {
             modelAndView.addObject("post", post);
             modelAndView.addObject("categories", categories);
             modelAndView.addObject("archive", archive);
+            modelAndView.addObject("i18n", objectMapper.writeValueAsString(new HashMap<String, String>() {{
+                put("loading", messageSource.getMessage(
+                    "message.comments.loading",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("empty", messageSource.getMessage(
+                    "message.comments.empty_list",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("page", messageSource.getMessage(
+                    "label.pagination.page",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("of", messageSource.getMessage(
+                    "label.pagination.of",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("edit", messageSource.getMessage(
+                    "label.edit",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("delete", messageSource.getMessage(
+                    "label.delete",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+            }}));
 
             if (!model.containsAttribute("comment")) {
                 modelAndView.addObject("comment", new CommentDto());
             }
 
             return modelAndView;
-        } catch (PostNotFoundException | PostIsNotPublishedException exception) {
+        } catch (PostNotFoundException | PostIsNotPublishedException | JsonProcessingException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
