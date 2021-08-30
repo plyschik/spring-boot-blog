@@ -2,16 +2,22 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import classNames from 'classnames';
-import { CommentsContext } from './CommentsContext';
+import { InternationalizationContext } from '../contexts/InternationalizationContext';
+import { CommentsContext } from '../contexts/CommentsContext';
 
 const CommentCreate = ({ postId }) => {
-  const [, dispatch] = useContext(CommentsContext);
+  const i18n = useContext(InternationalizationContext);
+  const { fetchFirstPage } = useContext(CommentsContext);
 
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState(null);
 
   const handleContentChange = (event) => {
+    if (contentError) {
+      setContentError(null);
+    }
+
     setContent(event.target.value);
   };
 
@@ -22,12 +28,9 @@ const CommentCreate = ({ postId }) => {
     setLoading(true);
 
     axios.post(`/api/posts/${postId}/comments`, { content })
-      .then((response) => {
+      .then(() => {
         setContent('');
-        dispatch({
-          type: 'append',
-          payload: response.data,
-        });
+        fetchFirstPage();
       })
       .catch((error) => {
         if (error.response) {
@@ -52,7 +55,7 @@ const CommentCreate = ({ postId }) => {
           <textarea
             className={classNames('form-control', { 'is-invalid': contentError })}
             rows="3"
-            placeholder="Comment"
+            placeholder={i18n.comment}
             value={content}
             disabled={loading}
             onChange={handleContentChange}
@@ -66,7 +69,7 @@ const CommentCreate = ({ postId }) => {
         disabled={loading}
       >
         {loading && <span className="me-2 spinner-border spinner-border-sm" />}
-        Create
+        {i18n.create}
       </button>
     </form>
   );

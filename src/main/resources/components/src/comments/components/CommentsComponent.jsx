@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CommentsList from './CommentsList';
 import CommentCreate from './CommentCreate';
+import Pagination from './Pagination';
 
-const CommentsComponent = ({ i18n, postId }) => (
+const CommentsComponent = ({ postId }) => (
   <>
     <CommentCreate postId={postId} />
-    <CommentsList i18n={i18n} postId={postId} />
+    <CommentsList postId={postId} />
+    <Pagination />
   </>
 );
 
 CommentsComponent.propTypes = {
-  i18n: PropTypes.objectOf(PropTypes.string).isRequired,
   postId: PropTypes.string.isRequired,
 };
 

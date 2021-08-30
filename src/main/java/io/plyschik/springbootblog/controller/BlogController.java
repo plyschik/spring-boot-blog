@@ -85,6 +85,16 @@ class BlogController {
                     null,
                     LocaleContextHolder.getLocale()
                 ));
+                put("comment", messageSource.getMessage(
+                    "label.comment",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("create", messageSource.getMessage(
+                    "label.create",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
                 put("page", messageSource.getMessage(
                     "label.pagination.page",
                     null,
