@@ -18,5 +18,5 @@ ReactDOM.render(
       </CommentsProvider>
     </PaginationProvider>
   </InternationalizationProvider>,
-  container,
+  container
 );

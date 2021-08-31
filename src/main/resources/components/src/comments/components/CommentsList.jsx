@@ -25,18 +25,20 @@ const CommentsList = ({ postId }) => {
     <>
       {!comments.length ? (
         <div>{i18n.empty_list}</div>
-      ) : comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          postId={postId}
-          id={comment.id}
-          content={comment.content}
-          createdAt={comment.createdAt}
-          fullName={`${comment.user.firstName} ${comment.user.lastName}`}
-          canEdit={comment.canEdit}
-          canDelete={comment.canDelete}
-        />
-      ))}
+      ) : (
+        comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            postId={postId}
+            id={comment.id}
+            content={comment.content}
+            createdAt={comment.createdAt}
+            fullName={`${comment.user.firstName} ${comment.user.lastName}`}
+            canEdit={comment.canEdit}
+            canDelete={comment.canDelete}
+          />
+        ))
+      )}
     </>
   );
 };

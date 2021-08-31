@@ -26,8 +26,25 @@ const Comment = ({
         </small>
         {(canEdit || canDelete) && (
           <div className="mt-2">
-            {canEdit && <Button className="me-1" variant="success" size="sm" href={`/posts/${postId}/comments/${id}/edit`}>{i18n.edit}</Button>}
-            {canDelete && <Button variant="danger" size="sm" href={`/posts/${postId}/comments/${id}/delete`}>{i18n.delete}</Button>}
+            {canEdit && (
+              <Button
+                className="me-1"
+                variant="success"
+                size="sm"
+                href={`/posts/${postId}/comments/${id}/edit`}
+              >
+                {i18n.edit}
+              </Button>
+            )}
+            {canDelete && (
+              <Button
+                variant="danger"
+                size="sm"
+                href={`/posts/${postId}/comments/${id}/delete`}
+              >
+                {i18n.delete}
+              </Button>
+            )}
           </div>
         )}
       </Card.Body>

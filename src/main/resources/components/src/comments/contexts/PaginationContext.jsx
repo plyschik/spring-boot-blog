@@ -40,7 +40,4 @@ PaginationProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export {
-  PaginationContext,
-  PaginationProvider,
-};
+export { PaginationContext, PaginationProvider };

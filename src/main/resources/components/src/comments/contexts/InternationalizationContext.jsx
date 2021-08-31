@@ -14,7 +14,4 @@ InternationalizationProvider.propTypes = {
   i18n: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-export {
-  InternationalizationContext,
-  InternationalizationProvider,
-};
+export { InternationalizationContext, InternationalizationProvider };

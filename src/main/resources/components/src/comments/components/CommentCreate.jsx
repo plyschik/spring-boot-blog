@@ -28,7 +28,8 @@ const CommentCreate = ({ isAnonymous, postId }) => {
     setContentError(null);
     setLoading(true);
 
-    axios.post(`/api/posts/${postId}/comments`, { content })
+    axios
+      .post(`/api/posts/${postId}/comments`, { content })
       .then(() => {
         setContent('');
         fetchFirstPage();
@@ -47,14 +48,15 @@ const CommentCreate = ({ isAnonymous, postId }) => {
 
   if (isAnonymous) {
     return (
-      <div className="alert alert-info">{i18n.only_authenticated_users_can_create_comments}</div>
+      <div className="alert alert-info">
+        {i18n.only_authenticated_users_can_create_comments}
+      </div>
     );
   }
 
   return (
     <Form className="mb-3" method="POST" onSubmit={handleSubmit}>
       <Form.Group className="mb-3">
-        <Form.Label>{i18n.comment}</Form.Label>
         <Form.Control
           as="textarea"
           rows={3}
@@ -62,8 +64,11 @@ const CommentCreate = ({ isAnonymous, postId }) => {
           disabled={loading}
           value={content}
           onChange={handleContentChange}
+          placeholder={`${i18n.comment}...`}
         />
-        <Form.Control.Feedback type="invalid">{contentError}</Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid">
+          {contentError}
+        </Form.Control.Feedback>
       </Form.Group>
       <Button type="submit" disabled={loading}>
         {loading && <span className="me-2 spinner-border spinner-border-sm" />}

@@ -24,7 +24,8 @@ const CommentsProvider = ({ children, postId }) => {
   const fetchComments = (page) => {
     setLoading(true);
 
-    axios.get(`/api/posts/${postId}/comments?page=${page}`)
+    axios
+      .get(`/api/posts/${postId}/comments?page=${page}`)
       .then(({ data: { comments: items, pagination } }) => {
         setComments(items);
         setCurrentPage(pagination.currentPage);
@@ -33,7 +34,9 @@ const CommentsProvider = ({ children, postId }) => {
         setIsFirstPageAvailable(pagination.currentPage > 0);
         setIsPreviousPageAvailable(pagination.hasPreviousPage);
         setIsNextPageAvailable(pagination.hasNextPage);
-        setIsLastPageAvailable(pagination.currentPage < (pagination.totalPages - 1));
+        setIsLastPageAvailable(
+          pagination.currentPage < pagination.totalPages - 1
+        );
       })
       .catch(() => {
         setTimeout(() => {
@@ -82,7 +85,4 @@ CommentsProvider.propTypes = {
   postId: PropTypes.string.isRequired,
 };
 
-export {
-  CommentsContext,
-  CommentsProvider,
-};
+export { CommentsContext, CommentsProvider };

@@ -30,10 +30,16 @@ const PaginationComponent = () => {
 
   return (
     <Pagination className="justify-content-center">
-      <Pagination.Item disabled={!isFirstPageAvailable} onClick={fetchFirstPage}>
+      <Pagination.Item
+        disabled={!isFirstPageAvailable}
+        onClick={fetchFirstPage}
+      >
         «
       </Pagination.Item>
-      <Pagination.Item disabled={!isPreviousPageAvailable} onClick={fetchPreviousPage}>
+      <Pagination.Item
+        disabled={!isPreviousPageAvailable}
+        onClick={fetchPreviousPage}
+      >
         ‹
       </Pagination.Item>
       <li className="page-item border border-start-0 border-end-0 px-3 d-flex align-items-center">
