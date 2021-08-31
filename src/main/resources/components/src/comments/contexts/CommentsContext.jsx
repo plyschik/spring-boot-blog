@@ -11,6 +11,7 @@ const CommentsProvider = ({ children, postId }) => {
     totalPages,
     setCurrentPage,
     setTotalPages,
+    setTotalElements,
     setIsFirstPageAvailable,
     setIsPreviousPageAvailable,
     setIsNextPageAvailable,
@@ -28,6 +29,7 @@ const CommentsProvider = ({ children, postId }) => {
         setComments(items);
         setCurrentPage(pagination.currentPage);
         setTotalPages(pagination.totalPages);
+        setTotalElements(pagination.totalElements);
         setIsFirstPageAvailable(pagination.currentPage > 0);
         setIsPreviousPageAvailable(pagination.hasPreviousPage);
         setIsNextPageAvailable(pagination.hasNextPage);

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Comment from './Comment';
-import { CommentsContext } from '../contexts/CommentsContext';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
+import { CommentsContext } from '../contexts/CommentsContext';
+import Comment from './Comment';
 
 const CommentsList = ({ postId }) => {
   const i18n = useContext(InternationalizationContext);
@@ -24,7 +24,7 @@ const CommentsList = ({ postId }) => {
   return (
     <>
       {!comments.length ? (
-        <div className="alert alert-info">{i18n.empty}</div>
+        <div>{i18n.empty_list}</div>
       ) : comments.map((comment) => (
         <Comment
           key={comment.id}

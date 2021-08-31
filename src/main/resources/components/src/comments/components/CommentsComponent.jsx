@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import CommentsList from './CommentsList';
+import { InternationalizationContext } from '../contexts/InternationalizationContext';
+import { PaginationContext } from '../contexts/PaginationContext';
 import CommentCreate from './CommentCreate';
+import CommentsList from './CommentsList';
 import Pagination from './Pagination';
 
-const CommentsComponent = ({ postId }) => (
-  <>
-    <CommentCreate postId={postId} />
-    <CommentsList postId={postId} />
-    <Pagination />
-  </>
-);
+const CommentsComponent = ({ isAnonymous, postId }) => {
+  const i18n = useContext(InternationalizationContext);
+  const { totalElements } = useContext(PaginationContext);
+
+  return (
+    <>
+      <h3 className="my-4">{`${i18n.comments} (${totalElements})`}</h3>
+      <CommentCreate isAnonymous={isAnonymous} postId={postId} />
+      <CommentsList postId={postId} />
+      <Pagination />
+    </>
+  );
+};
 
 CommentsComponent.propTypes = {
+  isAnonymous: PropTypes.bool.isRequired,
   postId: PropTypes.string.isRequired,
 };
 

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
-import { CommentsContext } from '../contexts/CommentsContext';
 import { PaginationContext } from '../contexts/PaginationContext';
+import { CommentsContext } from '../contexts/CommentsContext';
 
 const Pagination = () => {
   const i18n = useContext(InternationalizationContext);

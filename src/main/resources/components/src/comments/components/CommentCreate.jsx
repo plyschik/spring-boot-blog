@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import classNames from 'classnames';
+import axios from 'axios';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
 import { CommentsContext } from '../contexts/CommentsContext';
 
-const CommentCreate = ({ postId }) => {
+const CommentCreate = ({ isAnonymous, postId }) => {
   const i18n = useContext(InternationalizationContext);
   const { fetchFirstPage } = useContext(CommentsContext);
 
@@ -44,6 +44,12 @@ const CommentCreate = ({ postId }) => {
       });
   };
 
+  if (isAnonymous) {
+    return (
+      <div className="alert alert-info">{i18n.only_authenticated_users_can_create_comments}</div>
+    );
+  }
+
   return (
     <form
       className="mb-3"
@@ -76,6 +82,7 @@ const CommentCreate = ({ postId }) => {
 };
 
 CommentCreate.propTypes = {
+  isAnonymous: PropTypes.bool.isRequired,
   postId: PropTypes.string.isRequired,
 };
 

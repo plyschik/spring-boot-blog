@@ -6,6 +6,7 @@ const PaginationContext = createContext();
 const PaginationProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [isFirstPageAvailable, setIsFirstPageAvailable] = useState(false);
   const [isPreviousPageAvailable, setIsPreviousPageAvailable] = useState(false);
   const [isNextPageAvailable, setIsNextPageAvailable] = useState(false);
@@ -16,12 +17,14 @@ const PaginationProvider = ({ children }) => {
       value={{
         currentPage,
         totalPages,
+        totalElements,
         isFirstPageAvailable,
         isPreviousPageAvailable,
         isNextPageAvailable,
         isLastPageAvailable,
         setCurrentPage,
         setTotalPages,
+        setTotalElements,
         setIsFirstPageAvailable,
         setIsPreviousPageAvailable,
         setIsNextPageAvailable,

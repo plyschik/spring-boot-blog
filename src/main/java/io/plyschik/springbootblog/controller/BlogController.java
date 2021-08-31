@@ -80,8 +80,18 @@ class BlogController {
                     null,
                     LocaleContextHolder.getLocale()
                 ));
-                put("empty", messageSource.getMessage(
+                put("only_authenticated_users_can_create_comments", messageSource.getMessage(
+                    "message.only_authenticated_users_can_create_comments",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("empty_list", messageSource.getMessage(
                     "message.comments.empty_list",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("comments", messageSource.getMessage(
+                    "header.comments",
                     null,
                     LocaleContextHolder.getLocale()
                 ));

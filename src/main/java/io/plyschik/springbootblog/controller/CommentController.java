@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -70,67 +69,6 @@ public class CommentController {
             return ResponseEntity.ok(comment);
         } catch (UserNotFoundException | PostNotFoundException exception) {
             return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/posts/{id}/comments")
-    @PreAuthorize("isAuthenticated()")
-    public ModelAndView processCommentCreateForm(
-        @PathVariable("id") Long postId,
-        @ModelAttribute("comment") @Valid CommentDto commentDto,
-        BindingResult bindingResult,
-        Principal principal,
-        RedirectAttributes redirectAttributes
-    ) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("comment", commentDto);
-            redirectAttributes.addFlashAttribute(
-                "org.springframework.validation.BindingResult.comment",
-                bindingResult
-            );
-
-            return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        }
-
-        try {
-            commentService.createComment(
-                commentDto,
-                userService.getUserByEmail(principal.getName()),
-                postService.getPostById(postId)
-            );
-
-            redirectAttributes.addFlashAttribute("alert", new Alert(
-                "success",
-                messageSource.getMessage(
-                    "message.comment_has_successfully_created",
-                    null,
-                    LocaleContextHolder.getLocale()
-                )
-            ));
-
-            return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (UserNotFoundException exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert(
-                "danger",
-                messageSource.getMessage(
-                    "message.user_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                )
-            ));
-
-            return new ModelAndView("redirect:/");
-        } catch (PostNotFoundException exception) {
-            redirectAttributes.addFlashAttribute("alert", new Alert(
-                "danger",
-                messageSource.getMessage(
-                    "message.post_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                )
-            ));
-
-            return new ModelAndView("redirect:/");
         }
     }
 
