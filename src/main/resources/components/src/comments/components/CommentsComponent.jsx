@@ -4,7 +4,7 @@ import { InternationalizationContext } from '../contexts/InternationalizationCon
 import { PaginationContext } from '../contexts/PaginationContext';
 import CommentCreate from './CommentCreate';
 import CommentsList from './CommentsList';
-import Pagination from './Pagination';
+import PaginationComponent from './PaginationComponent';
 
 const CommentsComponent = ({ isAnonymous, postId }) => {
   const i18n = useContext(InternationalizationContext);
@@ -15,7 +15,7 @@ const CommentsComponent = ({ isAnonymous, postId }) => {
       <h3 className="my-4">{`${i18n.comments} (${totalElements})`}</h3>
       <CommentCreate isAnonymous={isAnonymous} postId={postId} />
       <CommentsList postId={postId} />
-      <Pagination />
+      <PaginationComponent />
     </>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import axios from 'axios';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
 import { CommentsContext } from '../contexts/CommentsContext';
 
@@ -51,33 +52,24 @@ const CommentCreate = ({ isAnonymous, postId }) => {
   }
 
   return (
-    <form
-      className="mb-3"
-      method="POST"
-      onSubmit={handleSubmit}
-    >
-      <div className="mb-3">
-        <div className="input-group">
-          <textarea
-            className={classNames('form-control', { 'is-invalid': contentError })}
-            rows="3"
-            placeholder={i18n.comment}
-            value={content}
-            disabled={loading}
-            onChange={handleContentChange}
-          />
-          {contentError && <div className="invalid-feedback">{contentError}</div>}
-        </div>
-      </div>
-      <button
-        className="btn btn-primary"
-        type="submit"
-        disabled={loading}
-      >
+    <Form className="mb-3" method="POST" onSubmit={handleSubmit}>
+      <Form.Group className="mb-3">
+        <Form.Label>{i18n.comment}</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          isInvalid={contentError}
+          disabled={loading}
+          value={content}
+          onChange={handleContentChange}
+        />
+        <Form.Control.Feedback type="invalid">{contentError}</Form.Control.Feedback>
+      </Form.Group>
+      <Button type="submit" disabled={loading}>
         {loading && <span className="me-2 spinner-border spinner-border-sm" />}
         {i18n.create}
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 };
 

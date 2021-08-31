@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import { InternationalizationContext } from '../contexts/InternationalizationContext';
 
 const Comment = ({
-  i18n,
   postId,
   id,
   content,
@@ -10,27 +12,30 @@ const Comment = ({
   fullName,
   canEdit,
   canDelete,
-}) => (
-  <div className="mb-3 card">
-    <div className="card-body">
-      <div className="mb-2 card-text">{content}</div>
-      <small className="text-muted">
-        <span>{fullName}</span>
-        <span className="mx-1">&bull;</span>
-        <span>{new Date(createdAt).toLocaleString()}</span>
-      </small>
-      {(canEdit || canDelete) && (
-        <div className="mt-2">
-          {canEdit && <a className="me-1 btn btn-sm btn-success" href={`/posts/${postId}/comments/${id}/edit`}>{i18n.edit}</a>}
-          {canDelete && <a className="btn btn-sm btn-danger" href={`/posts/${postId}/comments/${id}/delete`}>{i18n.delete}</a>}
-        </div>
-      )}
-    </div>
-  </div>
-);
+}) => {
+  const i18n = useContext(InternationalizationContext);
+
+  return (
+    <Card className="mb-3">
+      <Card.Body>
+        <Card.Text className="mb-1">{content}</Card.Text>
+        <small className="text-muted">
+          <span>{fullName}</span>
+          <span className="mx-1">&bull;</span>
+          <span>{new Date(createdAt).toLocaleString()}</span>
+        </small>
+        {(canEdit || canDelete) && (
+          <div className="mt-2">
+            {canEdit && <Button className="me-1" variant="success" size="sm" href={`/posts/${postId}/comments/${id}/edit`}>{i18n.edit}</Button>}
+            {canDelete && <Button variant="danger" size="sm" href={`/posts/${postId}/comments/${id}/delete`}>{i18n.delete}</Button>}
+          </div>
+        )}
+      </Card.Body>
+    </Card>
+  );
+};
 
 Comment.propTypes = {
-  i18n: PropTypes.objectOf(PropTypes.string).isRequired,
   postId: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   content: PropTypes.string.isRequired,

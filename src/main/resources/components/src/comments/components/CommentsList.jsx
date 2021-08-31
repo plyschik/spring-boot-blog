@@ -28,7 +28,6 @@ const CommentsList = ({ postId }) => {
       ) : comments.map((comment) => (
         <Comment
           key={comment.id}
-          i18n={i18n}
           postId={postId}
           id={comment.id}
           content={comment.content}
