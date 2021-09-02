@@ -53,7 +53,7 @@ const Comment = ({
 };
 
 Comment.propTypes = {
-  postId: PropTypes.string.isRequired,
+  postId: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
   content: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,

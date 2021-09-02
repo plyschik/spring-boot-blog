@@ -1,23 +1,22 @@
 import React, { useContext } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
-import { PaginationContext } from '../contexts/PaginationContext';
 import { CommentsContext } from '../contexts/CommentsContext';
 
 const PaginationComponent = () => {
   const i18n = useContext(InternationalizationContext);
-
   const {
-    isFirstPageAvailable,
-    isPreviousPageAvailable,
-    isNextPageAvailable,
-    isLastPageAvailable,
-    currentPage,
-    totalPages,
-  } = useContext(PaginationContext);
-
-  const {
-    loading,
+    state: {
+      loading,
+      pagination: {
+        currentPage,
+        totalPages,
+        isFirstPageAvailable,
+        isPreviousPageAvailable,
+        isNextPageAvailable,
+        isLastPageAvailable,
+      },
+    },
     fetchFirstPage,
     fetchPreviousPage,
     fetchNextPage,

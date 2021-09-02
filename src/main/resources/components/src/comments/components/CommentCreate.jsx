@@ -9,7 +9,6 @@ import { CommentsContext } from '../contexts/CommentsContext';
 const CommentCreate = ({ isAnonymous, postId }) => {
   const i18n = useContext(InternationalizationContext);
   const { fetchFirstPage } = useContext(CommentsContext);
-
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState(null);
@@ -22,28 +21,25 @@ const CommentCreate = ({ isAnonymous, postId }) => {
     setContent(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setContentError(null);
     setLoading(true);
 
-    axios
-      .post(`/api/posts/${postId}/comments`, { content })
-      .then(() => {
-        setContent('');
-        fetchFirstPage();
-      })
-      .catch((error) => {
-        if (error.response) {
-          if (error.response.status === 400) {
-            setContentError(error.response.data.errors[0].message);
-          }
+    try {
+      await axios.post(`/api/posts/${postId}/comments`, { content });
+      setContent('');
+      fetchFirstPage();
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          setContentError(error.response.data.errors[0].message);
         }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isAnonymous) {
@@ -80,7 +76,7 @@ const CommentCreate = ({ isAnonymous, postId }) => {
 
 CommentCreate.propTypes = {
   isAnonymous: PropTypes.bool.isRequired,
-  postId: PropTypes.string.isRequired,
+  postId: PropTypes.number.isRequired,
 };
 
 export default CommentCreate;

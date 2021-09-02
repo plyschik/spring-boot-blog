@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
 import { CommentsContext } from '../contexts/CommentsContext';
 import Comment from './Comment';
+import PaginationComponent from './PaginationComponent';
 
 const CommentsList = ({ postId }) => {
   const i18n = useContext(InternationalizationContext);
-  const { loading, comments, fetchFirstPage } = useContext(CommentsContext);
+  const { state: commentsState, fetchFirstPage } = useContext(CommentsContext);
 
   useEffect(() => {
     fetchFirstPage();
   }, []);
 
-  if (loading) {
+  if (commentsState.loading) {
     return (
       <div className="p-5 d-flex justify-content-center align-items-center">
         <div className="me-3 spinner-grow" />
@@ -21,30 +22,31 @@ const CommentsList = ({ postId }) => {
     );
   }
 
+  if (commentsState.comments.length === 0) {
+    return <div>{i18n.empty_list}</div>;
+  }
+
   return (
     <>
-      {!comments.length ? (
-        <div>{i18n.empty_list}</div>
-      ) : (
-        comments.map((comment) => (
-          <Comment
-            key={comment.id}
-            postId={postId}
-            id={comment.id}
-            content={comment.content}
-            createdAt={comment.createdAt}
-            fullName={`${comment.user.firstName} ${comment.user.lastName}`}
-            canEdit={comment.canEdit}
-            canDelete={comment.canDelete}
-          />
-        ))
-      )}
+      {commentsState.comments.map((comment) => (
+        <Comment
+          key={comment.id}
+          postId={postId}
+          id={comment.id}
+          content={comment.content}
+          createdAt={comment.createdAt}
+          fullName={`${comment.user.firstName} ${comment.user.lastName}`}
+          canEdit={comment.canEdit}
+          canDelete={comment.canDelete}
+        />
+      ))}
+      <PaginationComponent postId={postId} />
     </>
   );
 };
 
 CommentsList.propTypes = {
-  postId: PropTypes.string.isRequired,
+  postId: PropTypes.number.isRequired,
 };
 
 export default CommentsList;

@@ -1,51 +1,110 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { PaginationContext } from './PaginationContext';
+
+const FETCHING_COMMENTS = 'FETCHING_COMMENTS';
+const FETCH_COMMENTS = 'FETCH_COMMENTS';
 
 const CommentsContext = createContext();
 
 const CommentsProvider = ({ children, postId }) => {
-  const {
-    currentPage,
-    totalPages,
-    setCurrentPage,
-    setTotalPages,
-    setTotalElements,
-    setIsFirstPageAvailable,
-    setIsPreviousPageAvailable,
-    setIsNextPageAvailable,
-    setIsLastPageAvailable,
-  } = useContext(PaginationContext);
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case FETCHING_COMMENTS:
+        return {
+          ...state,
+          loading: true,
+        };
+      case FETCH_COMMENTS:
+        return {
+          ...state,
+          loading: false,
+          comments: action.payload.comments,
+          pagination: action.payload.pagination,
+        };
+      default:
+        return state;
+    }
+  };
 
-  const [loading, setLoading] = useState(false);
-  const [comments, setComments] = useState([]);
+  const initialState = {
+    loading: false,
+    comments: [],
+    pagination: {
+      currentPage: 0,
+      totalPages: 0,
+      totalElements: 0,
+      isFirstPageAvailable: false,
+      isPreviousPageAvailable: false,
+      isNextPageAvailable: false,
+      isLastPageAvailable: false,
+    },
+  };
 
-  const fetchComments = (page) => {
-    setLoading(true);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-    axios
-      .get(`/api/posts/${postId}/comments?page=${page}`)
-      .then(({ data: { comments: items, pagination } }) => {
-        setComments(items);
-        setCurrentPage(pagination.currentPage);
-        setTotalPages(pagination.totalPages);
-        setTotalElements(pagination.totalElements);
-        setIsFirstPageAvailable(pagination.currentPage > 0);
-        setIsPreviousPageAvailable(pagination.hasPreviousPage);
-        setIsNextPageAvailable(pagination.hasNextPage);
-        setIsLastPageAvailable(
-          pagination.currentPage < pagination.totalPages - 1
-        );
-      })
-      .catch(() => {
-        setTimeout(() => {
-          fetchComments(page);
-        }, 1000);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const fetchComments = async (page) => {
+    dispatch({ type: FETCHING_COMMENTS });
+
+    const {
+      data: {
+        comments,
+        pagination: {
+          currentPage,
+          totalPages,
+          totalElements,
+          hasPreviousPage,
+          hasNextPage,
+        },
+      },
+    } = await axios.get(`/api/posts/${postId}/comments?page=${page}`);
+
+    dispatch({
+      type: FETCH_COMMENTS,
+      payload: {
+        comments,
+        pagination: {
+          currentPage,
+          totalPages,
+          totalElements,
+          isFirstPageAvailable: currentPage > 0,
+          isPreviousPageAvailable: hasPreviousPage,
+          isNextPageAvailable: hasNextPage,
+          isLastPageAvailable: currentPage < totalPages - 1,
+        },
+      },
+    });
+
+    // axios.get(`/api/posts/${postId}/comments?page=${page}`).then(
+    //   ({
+    //     data: {
+    //       comments,
+    //       pagination: {
+    //         currentPage,
+    //         totalPages,
+    //         totalElements,
+    //         hasPreviousPage,
+    //         hasNextPage,
+    //       },
+    //     },
+    //   }) => {
+    //     dispatch({
+    //       type: FETCH_COMMENTS,
+    //       payload: {
+    //         comments,
+    //         pagination: {
+    //           currentPage,
+    //           totalPages,
+    //           totalElements,
+    //           isFirstPageAvailable: currentPage > 0,
+    //           isPreviousPageAvailable: hasPreviousPage,
+    //           isNextPageAvailable: hasNextPage,
+    //           isLastPageAvailable: currentPage < totalPages - 1,
+    //         },
+    //       },
+    //     });
+    //   }
+    // );
   };
 
   const fetchFirstPage = () => {
@@ -53,22 +112,21 @@ const CommentsProvider = ({ children, postId }) => {
   };
 
   const fetchPreviousPage = () => {
-    fetchComments(currentPage - 1);
+    fetchComments(state.pagination.currentPage - 1);
   };
 
   const fetchNextPage = () => {
-    fetchComments(currentPage + 1);
+    fetchComments(state.pagination.currentPage + 1);
   };
 
   const fetchLastPage = () => {
-    fetchComments(totalPages - 1);
+    fetchComments(state.pagination.totalPages - 1);
   };
 
   return (
     <CommentsContext.Provider
       value={{
-        loading,
-        comments,
+        state,
         fetchFirstPage,
         fetchPreviousPage,
         fetchNextPage,
@@ -82,7 +140,7 @@ const CommentsProvider = ({ children, postId }) => {
 
 CommentsProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  postId: PropTypes.string.isRequired,
+  postId: PropTypes.number.isRequired,
 };
 
 export { CommentsContext, CommentsProvider };
