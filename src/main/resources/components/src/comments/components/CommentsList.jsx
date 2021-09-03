@@ -4,6 +4,7 @@ import { InternationalizationContext } from '../contexts/InternationalizationCon
 import { CommentsContext } from '../contexts/CommentsContext';
 import Comment from './Comment';
 import CommentEditModal from './CommentEditModal';
+import CommentDeleteModal from './CommentDeleteModal';
 import PaginationComponent from './PaginationComponent';
 
 const CommentsList = ({ postId }) => {
@@ -11,11 +12,13 @@ const CommentsList = ({ postId }) => {
   const {
     state: commentsState,
     fetchFirstPage,
-    updateComments,
+    updateComment,
+    deleteComment,
   } = useContext(CommentsContext);
   const [commentToEdit, setCommentToEdit] = useState(null);
+  const [commentToDelete, setCommentToDelete] = useState(null);
 
-  const handleEditComment = (post, id, content) => {
+  const setEditedComment = (post, id, content) => {
     setCommentToEdit({
       post,
       id,
@@ -23,12 +26,27 @@ const CommentsList = ({ postId }) => {
     });
   };
 
-  const handleEditUpdate = (comment) => {
-    updateComments(comment);
+  const handleCommentUpdate = (comment) => {
+    updateComment(comment);
   };
 
-  const handleCloseModal = () => {
+  const handleCommentEditModalClose = () => {
     setCommentToEdit(null);
+  };
+
+  const setDeletedComment = (post, id) => {
+    setCommentToDelete({
+      post,
+      id,
+    });
+  };
+
+  const handleCommentDelete = (id) => {
+    deleteComment(id);
+  };
+
+  const handleCommentDeleteModalClose = () => {
+    setCommentToDelete(null);
   };
 
   useEffect(() => {
@@ -60,14 +78,22 @@ const CommentsList = ({ postId }) => {
           fullName={`${comment.user.firstName} ${comment.user.lastName}`}
           canEdit={comment.canEdit}
           canDelete={comment.canDelete}
-          handleEditComment={handleEditComment}
+          setEditedComment={setEditedComment}
+          setDeletedComment={setDeletedComment}
         />
       ))}
       {commentToEdit && (
         <CommentEditModal
           comment={commentToEdit}
-          handleEditUpdate={handleEditUpdate}
-          handleCloseModal={handleCloseModal}
+          handleCommentUpdate={handleCommentUpdate}
+          handleCommentEditModalClose={handleCommentEditModalClose}
+        />
+      )}
+      {commentToDelete && (
+        <CommentDeleteModal
+          comment={commentToDelete}
+          handleCommentDelete={handleCommentDelete}
+          handleCommentDeleteModalClose={handleCommentDeleteModalClose}
         />
       )}
       <PaginationComponent postId={postId} />

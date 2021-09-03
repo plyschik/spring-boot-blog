@@ -12,7 +12,8 @@ const Comment = ({
   fullName,
   canEdit,
   canDelete,
-  handleEditComment,
+  setEditedComment,
+  setDeletedComment,
 }) => {
   const i18n = useContext(InternationalizationContext);
 
@@ -32,7 +33,7 @@ const Comment = ({
                 className="me-1"
                 variant="success"
                 size="sm"
-                onClick={() => handleEditComment(postId, id, content)}
+                onClick={() => setEditedComment(postId, id, content)}
               >
                 {i18n.edit}
               </Button>
@@ -41,7 +42,7 @@ const Comment = ({
               <Button
                 variant="danger"
                 size="sm"
-                href={`/posts/${postId}/comments/${id}/delete`}
+                onClick={() => setDeletedComment(postId, id)}
               >
                 {i18n.delete}
               </Button>
@@ -61,7 +62,8 @@ Comment.propTypes = {
   fullName: PropTypes.string.isRequired,
   canEdit: PropTypes.bool.isRequired,
   canDelete: PropTypes.bool.isRequired,
-  handleEditComment: PropTypes.func.isRequired,
+  setEditedComment: PropTypes.func.isRequired,
+  setDeletedComment: PropTypes.func.isRequired,
 };
 
 export default Comment;

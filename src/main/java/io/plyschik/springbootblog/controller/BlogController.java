@@ -120,6 +120,21 @@ class BlogController {
                     null,
                     LocaleContextHolder.getLocale()
                 ));
+                put("confirmation", messageSource.getMessage(
+                    "label.confirmation",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("delete_message", messageSource.getMessage(
+                    "header.comment.delete",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("confirm", messageSource.getMessage(
+                    "label.confirm",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
                 put("page", messageSource.getMessage(
                     "label.pagination.page",
                     null,

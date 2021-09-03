@@ -4,7 +4,8 @@ import axios from 'axios';
 
 const FETCHING_COMMENTS = 'FETCHING_COMMENTS';
 const FETCH_COMMENTS = 'FETCH_COMMENTS';
-const UPDATE_COMMENTS = 'UPDATE_COMMENTS';
+const UPDATE_COMMENT = 'UPDATE_COMMENT';
+const DELETE_COMMENT = 'DELETE_COMMENT';
 
 const CommentsContext = createContext();
 
@@ -23,7 +24,7 @@ const CommentsProvider = ({ children, postId }) => {
           comments: action.payload.comments,
           pagination: action.payload.pagination,
         };
-      case UPDATE_COMMENTS:
+      case UPDATE_COMMENT:
         return {
           ...state,
           comments: state.comments.map((comment) => {
@@ -33,6 +34,13 @@ const CommentsProvider = ({ children, postId }) => {
 
             return comment;
           }),
+        };
+      case DELETE_COMMENT:
+        return {
+          ...state,
+          comments: state.comments.filter(
+            (comment) => comment.id !== action.payload
+          ),
         };
       default:
         return state;
@@ -104,10 +112,17 @@ const CommentsProvider = ({ children, postId }) => {
     fetchComments(state.pagination.totalPages - 1);
   };
 
-  const updateComments = (comment) => {
+  const updateComment = (comment) => {
     dispatch({
-      type: UPDATE_COMMENTS,
+      type: UPDATE_COMMENT,
       payload: comment,
+    });
+  };
+
+  const deleteComment = (id) => {
+    dispatch({
+      type: DELETE_COMMENT,
+      payload: id,
     });
   };
 
@@ -119,7 +134,8 @@ const CommentsProvider = ({ children, postId }) => {
         fetchPreviousPage,
         fetchNextPage,
         fetchLastPage,
-        updateComments,
+        updateComment,
+        deleteComment,
       }}
     >
       {children}

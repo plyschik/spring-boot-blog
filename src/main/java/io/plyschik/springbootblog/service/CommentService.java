@@ -116,6 +116,7 @@ public class CommentService {
     }
 
     public void deleteComment(long id) {
-        commentRepository.deleteById(id);
+        Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
+        commentRepository.delete(comment);
     }
 }

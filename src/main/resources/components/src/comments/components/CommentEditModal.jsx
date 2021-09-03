@@ -6,7 +6,11 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
 
-const CommentEditModal = ({ comment, handleEditUpdate, handleCloseModal }) => {
+const CommentEditModal = ({
+  comment,
+  handleCommentUpdate,
+  handleCommentEditModalClose,
+}) => {
   const i18n = useContext(InternationalizationContext);
 
   const [loading, setLoading] = useState(false);
@@ -17,7 +21,7 @@ const CommentEditModal = ({ comment, handleEditUpdate, handleCloseModal }) => {
     setLoading(false);
     setContent('');
     setContentError(null);
-    handleCloseModal();
+    handleCommentEditModalClose();
   };
 
   const handleContentChange = (event) => {
@@ -41,7 +45,7 @@ const CommentEditModal = ({ comment, handleEditUpdate, handleCloseModal }) => {
           content,
         }
       );
-      handleEditUpdate(response.data);
+      handleCommentUpdate(response.data);
       handleClose();
     } catch (error) {
       if (error.response) {
@@ -95,8 +99,8 @@ CommentEditModal.propTypes = {
     id: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
   }).isRequired,
-  handleEditUpdate: PropTypes.func.isRequired,
-  handleCloseModal: PropTypes.func.isRequired,
+  handleCommentUpdate: PropTypes.func.isRequired,
+  handleCommentEditModalClose: PropTypes.func.isRequired,
 };
 
 export default CommentEditModal;
