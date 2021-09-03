@@ -21,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -73,66 +71,27 @@ public class CommentController {
     }
 
     @PreAuthorize("hasPermission(#commentId, 'Comment', 'edit')")
-    @GetMapping("/posts/{postId}/comments/{commentId}/edit")
-    public ModelAndView commentEditForm(@PathVariable Long postId, @PathVariable Long commentId, Model model) {
-        try {
-            ModelAndView modelAndView = new ModelAndView("comment/edit");
-            modelAndView.addObject("postId", postId);
-            modelAndView.addObject("commentId", commentId);
-
-            if (!model.containsAttribute("comment")) {
-                modelAndView.addObject("comment", commentService.getCommentForEdit(commentId));
-            }
-
-            return modelAndView;
-        } catch (CommentNotFoundException exception) {
-            return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        }
-    }
-
-    @PreAuthorize("hasPermission(#commentId, 'Comment', 'edit')")
-    @PostMapping("/posts/{postId}/comments/{commentId}/edit")
-    public ModelAndView processEditForm(
+    @PatchMapping("/api/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<PostsCommentApiResponse.Comment> updateComment(
+        Authentication authentication,
         @PathVariable Long postId,
         @PathVariable Long commentId,
-        @ModelAttribute("comment") @Valid CommentDto commentDto,
-        BindingResult bindingResult,
-        RedirectAttributes redirectAttributes
+        @Valid @RequestBody CommentDto commentDto
     ) {
         try {
-            if (bindingResult.hasErrors()) {
-                redirectAttributes.addFlashAttribute("comment", commentDto);
-                redirectAttributes.addFlashAttribute(
-                    "org.springframework.validation.BindingResult.comment",
-                    bindingResult
-                );
-
-                return new ModelAndView(String.format("redirect:/posts/%d/comments/%d/edit", postId, commentId));
+            if (!postService.existsById(postId)) {
+                throw new PostNotFoundException();
             }
 
-            commentService.updateComment(commentId, commentDto);
-
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("success", messageSource.getMessage(
-                    "message.comment_has_been_successfully_updated",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
+            PostsCommentApiResponse.Comment comment = commentService.updateComment(
+                authentication,
+                commentId,
+                commentDto
             );
 
-            return new ModelAndView(String.format("redirect:/posts/%d", postId));
-        } catch (CommentNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.comment_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView(String.format("redirect:/posts/%d", postId));
+            return ResponseEntity.ok(comment);
+        } catch (PostNotFoundException | CommentNotFoundException exception) {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -12,6 +12,7 @@ const Comment = ({
   fullName,
   canEdit,
   canDelete,
+  handleEditComment,
 }) => {
   const i18n = useContext(InternationalizationContext);
 
@@ -31,7 +32,7 @@ const Comment = ({
                 className="me-1"
                 variant="success"
                 size="sm"
-                href={`/posts/${postId}/comments/${id}/edit`}
+                onClick={() => handleEditComment(postId, id, content)}
               >
                 {i18n.edit}
               </Button>
@@ -60,6 +61,7 @@ Comment.propTypes = {
   fullName: PropTypes.string.isRequired,
   canEdit: PropTypes.bool.isRequired,
   canDelete: PropTypes.bool.isRequired,
+  handleEditComment: PropTypes.func.isRequired,
 };
 
 export default Comment;

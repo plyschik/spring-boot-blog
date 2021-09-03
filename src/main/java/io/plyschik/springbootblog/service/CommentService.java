@@ -97,11 +97,22 @@ public class CommentService {
         return dto;
     }
 
-    public void updateComment(long id, CommentDto commentDto) throws CommentNotFoundException {
+    public PostsCommentApiResponse.Comment updateComment(
+        Authentication authentication,
+        long id,
+        CommentDto commentDto
+    ) throws CommentNotFoundException {
         Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
         modelMapper.map(commentDto, comment);
 
-        commentRepository.save(comment);
+        PostsCommentApiResponse.Comment dto = modelMapper.map(
+            commentRepository.save(comment),
+            PostsCommentApiResponse.Comment.class
+        );
+        dto.setCanEdit(commentPermissionsChecker.checkCommentEditPermissions(authentication, comment.getId()));
+        dto.setCanDelete(commentPermissionsChecker.checkCommentDeletePermissions(authentication, comment.getId()));
+
+        return dto;
     }
 
     public void deleteComment(long id) {

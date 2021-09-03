@@ -105,6 +105,21 @@ class BlogController {
                     null,
                     LocaleContextHolder.getLocale()
                 ));
+                put("comment_edit", messageSource.getMessage(
+                    "header.comment_edit",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("update", messageSource.getMessage(
+                    "label.update",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
+                put("cancel", messageSource.getMessage(
+                    "label.cancel",
+                    null,
+                    LocaleContextHolder.getLocale()
+                ));
                 put("page", messageSource.getMessage(
                     "label.pagination.page",
                     null,

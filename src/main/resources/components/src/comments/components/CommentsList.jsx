@@ -1,13 +1,35 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { InternationalizationContext } from '../contexts/InternationalizationContext';
 import { CommentsContext } from '../contexts/CommentsContext';
 import Comment from './Comment';
+import CommentEditModal from './CommentEditModal';
 import PaginationComponent from './PaginationComponent';
 
 const CommentsList = ({ postId }) => {
   const i18n = useContext(InternationalizationContext);
-  const { state: commentsState, fetchFirstPage } = useContext(CommentsContext);
+  const {
+    state: commentsState,
+    fetchFirstPage,
+    updateComments,
+  } = useContext(CommentsContext);
+  const [commentToEdit, setCommentToEdit] = useState(null);
+
+  const handleEditComment = (post, id, content) => {
+    setCommentToEdit({
+      post,
+      id,
+      content,
+    });
+  };
+
+  const handleEditUpdate = (comment) => {
+    updateComments(comment);
+  };
+
+  const handleCloseModal = () => {
+    setCommentToEdit(null);
+  };
 
   useEffect(() => {
     fetchFirstPage();
@@ -38,8 +60,16 @@ const CommentsList = ({ postId }) => {
           fullName={`${comment.user.firstName} ${comment.user.lastName}`}
           canEdit={comment.canEdit}
           canDelete={comment.canDelete}
+          handleEditComment={handleEditComment}
         />
       ))}
+      {commentToEdit && (
+        <CommentEditModal
+          comment={commentToEdit}
+          handleEditUpdate={handleEditUpdate}
+          handleCloseModal={handleCloseModal}
+        />
+      )}
       <PaginationComponent postId={postId} />
     </>
   );
