@@ -2,17 +2,19 @@ package io.plyschik.springbootblog.controller.dashboard;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryDto;
+import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExistsException;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
 import io.plyschik.springbootblog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +31,10 @@ public class CategoryController {
 
     @GetMapping("/dashboard/categories")
     public ModelAndView showList(
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.items-per-page}") int itemsPerPage
+        @RequestParam(defaultValue = "") String name,
+        @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Category> categories = categoryService.getCategories(PageRequest.of(page, itemsPerPage));
+        Page<CategoryWithPostsCount> categories = categoryService.getCategories(name, pageable);
 
         return new ModelAndView("dashboard/category/list", "categories", categories);
     }

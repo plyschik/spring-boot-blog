@@ -2,6 +2,7 @@ package io.plyschik.springbootblog.controller.dashboard;
 
 import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.TagDto;
+import io.plyschik.springbootblog.dto.TagWithPostsCount;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
@@ -13,6 +14,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +33,10 @@ public class TagController {
 
     @GetMapping("/dashboard/tags")
     public ModelAndView showList(
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.items-per-page}") int itemsPerPage
+        @RequestParam(defaultValue = "") String name,
+        @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Tag> tags = tagService.getTags(PageRequest.of(page, itemsPerPage));
+        Page<TagWithPostsCount> tags = tagService.getTags(name, pageable);
 
         return new ModelAndView("dashboard/tag/list", "tags", tags);
     }

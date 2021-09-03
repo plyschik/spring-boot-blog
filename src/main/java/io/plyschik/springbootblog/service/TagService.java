@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.TagDto;
+import io.plyschik.springbootblog.dto.TagWithPostsCount;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
@@ -27,8 +28,8 @@ public class TagService {
         return tagRepository.findAllByOrderByName();
     }
 
-    public Page<Tag> getTags(Pageable pageable) {
-        return tagRepository.findAllByOrderByIdDesc(pageable);
+    public Page<TagWithPostsCount> getTags(String name, Pageable pageable) {
+        return tagRepository.findAllWithPostsCountWhereNameLike(name, pageable);
     }
 
     public void createTag(TagDto tagDto) throws TagAlreadyExistsException {

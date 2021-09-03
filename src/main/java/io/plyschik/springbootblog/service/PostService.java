@@ -32,6 +32,10 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
+    public boolean existsById(long id) {
+        return postRepository.existsById(id);
+    }
+
     public Post getPostById(long id) {
         return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }

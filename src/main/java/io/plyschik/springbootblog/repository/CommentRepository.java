@@ -1,7 +1,6 @@
 package io.plyschik.springbootblog.repository;
 
 import io.plyschik.springbootblog.entity.Comment;
-import io.plyschik.springbootblog.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -17,5 +16,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findById(Long id);
 
     @EntityGraph(attributePaths = {"user"})
-    Page<Comment> findAllByPostOrderByCreatedAtDesc(Post post, Pageable pageable);
+    Page<Comment> findAllByPostId(long postId, Pageable pageable);
 }
