@@ -34,4 +34,4 @@ build/
 
 .jpb/
 
-/src/main/resources/static/assets/js/**/*
+/src/main/resources/static/assets/
