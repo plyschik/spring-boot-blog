@@ -8,7 +8,6 @@ module.exports = {
     comments: './src/comments',
   },
   output: {
-    path: path.resolve(__dirname, '../static/assets'),
     filename: '[name].js',
     clean: true,
   },
