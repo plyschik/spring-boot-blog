@@ -8,12 +8,12 @@
         <th:block layout:fragment="container">
             <div class="row">
                 <div class="col-12 col-md-8 col-xl-9">
-                    <h3 class="mb-4" th:text="#{header.posts_from_date_range(${#temporals.format(startDate, 'dd-MM-yyyy')}, ${#temporals.format(endDate, 'dd-MM-yyyy')})}"></h3>
-                    <th:block th:if="${#lists.isEmpty(posts)}">
-                        <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
+                    <h3 class="mb-4" th:text="#{header.search.results(${#request.getParameter('query')}, ${posts.getTotalElements()})}"></h3>
+                    <th:block th:if="${posts.isEmpty()}">
+                        <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
                     </th:block>
-                    <div th:each="post: ${posts}" th:include="fragments/fragments :: post(${post}, true)"></div>
-                    <div th:insert="fragments/fragments :: pagination(${posts}, @{/archive/{year}/{month}(year=${#request.getAttribute('year')}, month=${#request.getAttribute('month')})})"></div>
+                    <div th:each="post: ${posts}" th:insert="fragments/fragments :: post(${post}, true)"></div>
+                    <div th:insert="fragments/fragments :: pagination(${posts}, @{/search(query=${#request.getParameter('query')})})"></div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
                     <div th:insert="fragments/fragments :: search"></div>

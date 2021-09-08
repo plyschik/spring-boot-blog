@@ -31,7 +31,7 @@
     </th:block>
 
     <th:block th:fragment="popularCategories(categories)">
-        <div class="mt-4 mt-md-0 mb-4 card">
+        <div class="mb-4 card">
             <div class="card-header" th:text="#{label.most_popular_categories}"></div>
             <div class="card-body" th:if="${#lists.isEmpty(categories)}" th:text="#{message.categories_list_is_empty}"></div>
             <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(categories)}">
@@ -121,5 +121,16 @@
             <div th:case="'danger'" class="mb-4 alert alert-danger" th:text="${message}"></div>
             <div th:case="*" class="mb-4 alert alert-secondary" th:text="${message}"></div>
         </th:block>
+    </th:block>
+
+    <th:block th:fragment="search">
+        <form class="mt-4 mt-md-0 mb-4 row g-2" th:action="@{/search}" method="GET">
+            <div class="mt-0 col">
+                <input class="form-control" type="text" name="query" th:value="${#request.getParameter('query')}" th:placeholder="#{placeholder.query}" required>
+            </div>
+            <div class="mt-0 col-4">
+                <input class="btn btn-primary w-100" type="submit" th:value="#{label.search}">
+            </div>
+        </form>
     </th:block>
 </html>

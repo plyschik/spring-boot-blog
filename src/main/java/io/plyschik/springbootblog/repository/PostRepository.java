@@ -27,6 +27,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     Page<Post> findAllWithAuthorCategoryAndTagsByPublishedIsTrueOrderByCreatedAtDesc(Pageable pageable);
 
+    @Query("SELECT DISTINCT p FROM Post p " +
+           "LEFT JOIN p.user u " +
+           "LEFT JOIN p.category c " +
+           "LEFT JOIN p.tags t " +
+           "WHERE p.published = TRUE AND (p.title LIKE %:query% OR p.content LIKE %:query%)")
+    Page<Post> findByTitleOrContentContainsWithUserCategoryAndTags(String query, Pageable pageable);
+
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     Page<Post> findAllWithAuthorCategoryAndTagsByUserIdAndPublishedIsTrueOrderByCreatedAtDesc(
         Long userId,

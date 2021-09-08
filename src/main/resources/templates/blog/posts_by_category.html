@@ -16,6 +16,7 @@
                     <div th:insert="fragments/fragments :: pagination(${posts}, @{/categories/{id}/posts(id=${category.id})})"></div>
                 </div>
                 <div class="col-12 col-md-4 col-xl-3">
+                    <div th:insert="fragments/fragments :: search"></div>
                     <div th:insert="fragments/fragments :: popularCategories(${categories})"></div>
                     <div th:insert="fragments/fragments :: archiveAccordion(${archive})"></div>
                 </div>

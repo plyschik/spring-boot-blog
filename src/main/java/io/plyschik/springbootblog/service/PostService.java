@@ -58,6 +58,10 @@ public class PostService {
         return postRepository.findAllWithAuthorCategoryAndTagsByPublishedIsTrueOrderByCreatedAtDesc(pageable);
     }
 
+    public Page<Post> getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(String query, Pageable pageable) {
+        return postRepository.findByTitleOrContentContainsWithUserCategoryAndTags(query, pageable);
+    }
+
     public Page<Post> getPostsByUserId(long userId, Pageable pageable) {
         return postRepository.findAllWithAuthorCategoryAndTagsByUserIdAndPublishedIsTrueOrderByCreatedAtDesc(
             userId,
