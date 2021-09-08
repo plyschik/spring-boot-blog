@@ -6,7 +6,7 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.post.delete(${post.title})}"></h3>
+            <h3 class="mb-4" th:text="#{header.post.delete(${post.title})}"></h3>
             <form th:action="@{/dashboard/posts/{id}/delete(id=${post.id})}" method="POST">
                 <button class="btn btn-danger" type="submit" th:text="#{label.confirm}"></button>
             </form>

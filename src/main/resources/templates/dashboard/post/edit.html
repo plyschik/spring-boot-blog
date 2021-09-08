@@ -6,7 +6,7 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.post.edit}"></h3>
+            <h3 class="mb-4" th:text="#{header.post.edit}"></h3>
             <form th:action="@{/dashboard/posts/{id}/edit(id=${id})}" method="POST" th:object="${post}">
                 <div class="mb-3">
                     <label class="form-label" for="title" th:text="#{label.title}"></label>

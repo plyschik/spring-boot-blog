@@ -51,7 +51,7 @@ const CommentCreate = ({ isAnonymous, postId }) => {
   }
 
   return (
-    <Form className="mb-3" method="POST" onSubmit={handleSubmit}>
+    <Form className="mb-4" method="POST" onSubmit={handleSubmit}>
       <Form.Group className="mb-3">
         <Form.Control
           as="textarea"

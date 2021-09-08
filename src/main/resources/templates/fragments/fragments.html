@@ -31,7 +31,7 @@
     </th:block>
 
     <th:block th:fragment="popularCategories(categories)">
-        <div class="mb-3 card">
+        <div class="mt-4 mt-md-0 mb-4 card">
             <div class="card-header" th:text="#{label.most_popular_categories}"></div>
             <div class="card-body" th:if="${#lists.isEmpty(categories)}" th:text="#{message.categories_list_is_empty}"></div>
             <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(categories)}">
@@ -66,7 +66,7 @@
 
     <th:block th:fragment="pagination(pageable, path)">
         <nav th:if="${pageable.totalPages > 1}">
-            <ul class="pagination justify-content-center">
+            <ul class="mt-4 mb-0 pagination justify-content-center">
                 <li class="page-item" th:classappend="${pageable.number == 0 ? 'disabled' : ''}">
                     <a class="page-link" th:href="@{${path}(page=0)}">&laquo;</a>
                 </li>
@@ -85,7 +85,7 @@
     </th:block>
 
     <th:block th:fragment="advanced_pagination(pageable, path)">
-        <div class="mb-3 d-flex flex-column-reverse flex-md-row justify-content-between align-items-center" th:if="${pageable.totalPages > 1}">
+        <div class="mt-4 mb-0 d-flex flex-column-reverse flex-md-row justify-content-between align-items-center" th:if="${pageable.totalPages > 1}">
             <span
                 th:with="
                     from=${(pageable.getNumber() * pageable.getSize()) + 1},

@@ -6,7 +6,7 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.sign_in}"></h3>
+            <h3 class="mb-4" th:text="#{header.sign_in}"></h3>
             <th:block th:if="${param.failure}">
                 <div th:replace="fragments/fragments :: alert('danger', #{message.invalid_credentials})"></div>
             </th:block>

@@ -6,12 +6,12 @@
 >
     <body>
         <th:block layout:fragment="container">
-            <h3 class="mb-3" th:text="#{header.post.list}"></h3>
+            <h3 class="mb-4" th:text="#{header.post.list}"></h3>
             <th:block th:if="${#lists.isEmpty(posts)}">
                 <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
             </th:block>
             <div class="table-responsive">
-                <table class="table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(posts)}">
+                <table class="mb-0 table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(posts)}">
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>

@@ -28,7 +28,7 @@ const PaginationComponent = () => {
   }
 
   return (
-    <Pagination className="justify-content-center">
+    <Pagination className="mt-4 mb-0 justify-content-center">
       <Pagination.Item
         disabled={!isFirstPageAvailable}
         onClick={fetchFirstPage}

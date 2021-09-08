@@ -12,3 +12,7 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+#comments > .card:last-child {
+  margin-bottom: 0 !important;
+}
