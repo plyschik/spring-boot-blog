@@ -1,6 +1,7 @@
 package io.plyschik.springbootblog.repository;
 
 import io.plyschik.springbootblog.dto.PostCountByYearAndMonthDto;
+import io.plyschik.springbootblog.dto.PostWithRelationshipsCount;
 import io.plyschik.springbootblog.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +22,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     Optional<Post> findWithUserCategoryAndTagsById(Long id);
 
-    @EntityGraph(attributePaths = {"category"})
-    Page<Post> findAllWithCategoryByOrderByCreatedAtDesc(Pageable pageable);
+    @Query("SELECT new io.plyschik.springbootblog.dto.PostWithRelationshipsCount(p.id, p.title, CONCAT(u.firstName, ' ', u.lastName) AS author, ca.name AS category, COUNT(DISTINCT t.id) AS tagsCount, COUNT(DISTINCT co.id) AS commentsCount, p.createdAt) " +
+            "FROM Post p " +
+            "LEFT JOIN p.user u " +
+            "LEFT JOIN p.category ca " +
+            "LEFT JOIN p.tags t " +
+            "LEFT JOIN p.comments co " +
+            "GROUP BY p.id")
+    Page<PostWithRelationshipsCount> findAllByTitleContains(String query, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     Page<Post> findAllWithAuthorCategoryAndTagsByPublishedIsTrueOrderByCreatedAtDesc(Pageable pageable);

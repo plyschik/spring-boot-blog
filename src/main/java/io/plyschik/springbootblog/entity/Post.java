@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "posts")
@@ -94,6 +95,10 @@ public class Post {
     public void removeTag(Tag tag) {
         tags.remove(tag);
         tag.getPosts().remove(this);
+    }
+
+    public String getCommaSeparatedTags() {
+        return tags.stream().map(Tag::getName).collect(Collectors.joining(", "));
     }
 
     @Override

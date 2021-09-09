@@ -2,6 +2,7 @@ package io.plyschik.springbootblog.service;
 
 import io.plyschik.springbootblog.dto.PostCountByYearAndMonthDto;
 import io.plyschik.springbootblog.dto.PostDto;
+import io.plyschik.springbootblog.dto.PostWithRelationshipsCount;
 import io.plyschik.springbootblog.dto.YearArchiveEntry;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
@@ -50,8 +51,8 @@ public class PostService {
         return post;
     }
 
-    public Page<Post> getPostsWithCategory(Pageable pageable) {
-        return postRepository.findAllWithCategoryByOrderByCreatedAtDesc(pageable);
+    public Page<PostWithRelationshipsCount> getPostsWithCategory(String query, Pageable pageable) {
+        return postRepository.findAllByTitleContains(query, pageable);
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTags(Pageable pageable) {
