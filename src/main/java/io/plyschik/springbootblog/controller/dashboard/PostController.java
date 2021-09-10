@@ -1,7 +1,6 @@
 package io.plyschik.springbootblog.controller.dashboard;
 
-import io.plyschik.springbootblog.dto.Alert;
-import io.plyschik.springbootblog.dto.PostDto;
+import io.plyschik.springbootblog.dto.*;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
@@ -13,12 +12,13 @@ import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -40,18 +40,32 @@ public class PostController {
 
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.items-per-page}") int itemsPerPage
+        @RequestParam(required = false, defaultValue = "") String query,
+        @RequestParam(name = "user", required = false) Long userId,
+        @RequestParam(name = "category", required = false) Long categoryId,
+        @RequestParam(name = "tag", required = false) Long tagId,
+        @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Post> posts = postService.getPostsWithCategory(PageRequest.of(page, itemsPerPage));
+        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, userId, categoryId, tagId, pageable);
+        List<UserWithPostsCount> users = userService.getUsersWithPostsCount(Sort.by("fullName").ascending());
+        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCountDashboard(
+            Sort.by("name").ascending()
+        );
+        List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("name").ascending());
 
-        return new ModelAndView("dashboard/post/list", "posts", posts);
+        ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("users", users);
+        modelAndView.addObject("categories", categories);
+        modelAndView.addObject("tags", tags);
+
+        return modelAndView;
     }
 
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
         List<Category> categories = categoryService.getCategories();
-        List<Tag> tags = tagService.getTags();
+        List<Tag> tags = tagService.getTagsWithPostsCount();
 
         ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
         modelAndView.addObject("post", new PostDto());
@@ -117,7 +131,7 @@ public class PostController {
         try {
             PostDto post = postService.getPostByIdForEdit(id);
             List<Category> categories = categoryService.getCategories();
-            List<Tag> tags = tagService.getTags();
+            List<Tag> tags = tagService.getTagsWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
             modelAndView.addObject("id", id);

@@ -7,26 +7,112 @@
     <body>
         <th:block layout:fragment="container">
             <h3 class="mb-4" th:text="#{header.post.list}"></h3>
-            <th:block th:if="${#lists.isEmpty(posts)}">
-                <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
+            <div class="mb-4 row g-3">
+                <div class="col-12 col-md-3">
+                    <form class="mt-0 row g-2" th:action="@{/dashboard/posts}" method="GET">
+                        <div class="mt-0 col">
+                            <select class="form-control" name="user">
+                                <option value="" th:text="#{label.all_users}"></option>
+                                <option th:each="user: ${users}" th:value="${user.id}" th:text="|${user.fullName} (${user.postsCount})|" th:selected="${#strings.equals(user.id, #request.getParameter('user'))}"></option>
+                            </select>
+                        </div>
+                        <div class="mt-0 col-auto">
+                            <input class="btn btn-primary" type="submit" th:value="#{label.filter}">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-12 col-md-3">
+                    <form class="mt-0 row g-2" th:action="@{/dashboard/posts}" method="GET">
+                        <div class="mt-0 col">
+                            <select class="form-control" name="category">
+                                <option value="" th:text="#{label.all_categories}"></option>
+                                <option th:each="category: ${categories}" th:value="${category.id}" th:text="|${category.name} (${category.postsCount})|" th:selected="${#strings.equals(category.id, #request.getParameter('category'))}"></option>
+                            </select>
+                        </div>
+                        <div class="mt-0 col-auto">
+                            <input class="btn btn-primary" type="submit" th:value="#{label.filter}">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-12 col-md-3">
+                    <form class="mt-0 row g-2" th:action="@{/dashboard/posts}" method="GET">
+                        <div class="mt-0 col">
+                            <select class="form-control" name="tag">
+                                <option value="" th:text="#{label.all_tags}"></option>
+                                <option th:each="tag: ${tags}" th:value="${tag.id}" th:text="|${tag.name} (${tag.postsCount})|" th:selected="${#strings.equals(tag.id, #request.getParameter('tag'))}"></option>
+                            </select>
+                        </div>
+                        <div class="mt-0 col-auto">
+                            <input class="btn btn-primary" type="submit" th:value="#{label.filter}" />
+                        </div>
+                    </form>
+                </div>
+                <div class="col-12 col-md-3">
+                    <form class="mt-0 row g-2" th:action="@{/dashboard/posts}" method="GET">
+                        <div class="mt-0 col">
+                            <input class="form-control" type="text" name="query" th:value="${#request.getParameter('query')}" th:placeholder="#{placeholder.query}" />
+                        </div>
+                        <div class="mt-0 col-auto">
+                            <input class="btn btn-primary" type="submit" th:value="#{label.search}">
+                        </div>
+                        <div class="mt-0 col-auto" th:if="${!#strings.isEmpty(#request.getParameter('query'))}">
+                            <a class="btn btn-danger" th:href="@{/dashboard/posts(user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}">✕</a>
+                        </div>
+                        <input type="hidden" name="user" th:value="${#request.getParameter('user')}">
+                        <input type="hidden" name="category" th:value="${#request.getParameter('category')}">
+                        <input type="hidden" name="tag" th:value="${#request.getParameter('tag')}">
+                    </form>
+                </div>
+            </div>
+            <th:block th:if="${posts.getTotalElements() == 0}">
+                <th:block th:if="${#strings.isEmpty(#request.getParameter('query')) && #strings.isEmpty(#request.getParameter('user')) && #strings.isEmpty(#request.getParameter('category')) && #strings.isEmpty(#request.getParameter('tag'))}">
+                    <div th:replace="fragments/fragments :: alert('info', #{message.posts_list_is_empty})"></div>
+                </th:block>
+                <th:block th:if="${!#strings.isEmpty(#request.getParameter('query')) || !#strings.isEmpty(#request.getParameter('user')) || !#strings.isEmpty(#request.getParameter('category')) || !#strings.isEmpty(#request.getParameter('tag'))}">
+                    <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
+                </th:block>
             </th:block>
-            <div class="table-responsive">
-                <table class="mb-0 table table-bordered bg-white text-nowrap" th:unless="${#lists.isEmpty(posts)}">
+            <div class="table-responsive" th:unless="${posts.getTotalElements() == 0}">
+                <table class="mb-0 table table-bordered bg-white text-nowrap">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center" style="width: 1%;" th:text="#{label.id}"></th>
-                            <th style="width: 70%;" th:text="#{label.title}"></th>
-                            <th style="width: 1%;" th:text="#{label.created_at}"></th>
-                            <th style="width: 30%;" th:text="#{label.category}"></th>
+                            <th class="text-center" style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('id')?.isAscending()} ? 'id,desc' : 'id,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.id}${posts.getSort().getOrderFor('id') == null ? '' : posts.getSort().getOrderFor('id').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 85%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('title')?.isAscending()} ? 'title,desc' : 'title,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.title}${posts.getSort().getOrderFor('title') == null ? '' : posts.getSort().getOrderFor('title').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 5%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('author')?.isAscending()} ? 'author,desc' : 'author,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.author}${posts.getSort().getOrderFor('author') == null ? '' : posts.getSort().getOrderFor('author').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 5%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('category')?.isAscending()} ? 'category,desc' : 'category,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.category}${posts.getSort().getOrderFor('category') == null ? '' : posts.getSort().getOrderFor('category').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('tagsCount')?.isAscending()} ? 'tagsCount,desc' : 'tagsCount,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.tags}${posts.getSort().getOrderFor('tagsCount') == null ? '' : posts.getSort().getOrderFor('tagsCount').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('commentsCount')?.isAscending()} ? 'commentsCount,desc' : 'commentsCount,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.comments}${posts.getSort().getOrderFor('commentsCount') == null ? '' : posts.getSort().getOrderFor('commentsCount').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
+                            <th style="width: 1%;">
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/posts(sort=(${posts.getSort().getOrderFor('createdAt')?.isAscending()} ? 'createdAt,desc' : 'createdAt,asc'), query=${#request.getParameter('query')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')})}" th:text="|#{label.created_at}${posts.getSort().getOrderFor('createdAt') == null ? '' : posts.getSort().getOrderFor('createdAt').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                            </th>
                             <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="post: ${posts}">
                             <td class="text-center align-middle" th:text="${post.id}"></td>
-                            <td class="align-middle" th:text="${post.title}"></td>
+                            <td class="align-middle text-truncate " style="max-width: 85%;" th:text="${post.title}"></td>
+                            <td class="align-middle" th:text="${post.author}"></td>
+                            <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category, '-')}"></td>
+                            <td class="text-center align-middle">
+                                <span class="badge rounded-pill bg-secondary" th:text="${post.tagsCount}"></span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="badge rounded-pill bg-secondary" th:text="${post.commentsCount}"></span>
+                            </td>
                             <td class="text-center align-middle" th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy, HH:mm:ss')}"></td>
-                            <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category?.name, #messages.msg('label.no_category'))}"></td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/posts/{id}/edit(id=${post.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/posts/{id}/delete(id=${post.id})}" th:text="#{label.delete}"></a>
@@ -35,7 +121,7 @@
                     </tbody>
                 </table>
             </div>
-            <div th:insert="fragments/fragments :: pagination(${posts}, '/dashboard/posts')"></div>
+            <div th:insert="fragments/fragments :: advanced_pagination(${posts}, @{/dashboard/posts(sort=${#request.getParameter('sort')}, user=${#request.getParameter('user')}, category=${#request.getParameter('category')}, tag=${#request.getParameter('tag')}, query=${#request.getParameter('query')})})"></div>
         </th:block>
     </body>
 </html>

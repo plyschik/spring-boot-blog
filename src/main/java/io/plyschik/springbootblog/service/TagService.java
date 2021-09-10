@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +25,16 @@ public class TagService {
         return tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
     }
 
-    public List<Tag> getTags() {
+    public List<Tag> getTagsWithPostsCount() {
         return tagRepository.findAllByOrderByName();
     }
 
-    public Page<TagWithPostsCount> getTags(String name, Pageable pageable) {
-        return tagRepository.findAllWithPostsCountWhereNameLike(name, pageable);
+    public Page<TagWithPostsCount> getTagsWithPostsCount(String query, Pageable pageable) {
+        return tagRepository.findAllWithPostsCount(query, pageable);
+    }
+
+    public List<TagWithPostsCount> getTagsWithPostsCount(Sort sort) {
+        return tagRepository.findAllWithPostsCount(sort);
     }
 
     public void createTag(TagDto tagDto) throws TagAlreadyExistsException {

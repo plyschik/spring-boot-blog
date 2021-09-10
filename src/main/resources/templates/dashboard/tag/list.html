@@ -10,21 +10,21 @@
                 <h3 class="mb-3 mb-md-0" th:text="#{header.tag.list}"></h3>
                 <form class="mt-0 row g-2" th:action="@{/dashboard/tags}" method="GET">
                     <div class="mt-0 col-auto">
-                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}" />
+                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}">
                     </div>
                     <div class="mt-0 col-auto">
                         <input class="btn btn-primary" type="submit" th:value="#{label.search}">
                     </div>
-                    <div class="mt-0 col-auto" th:if="${#bools.isTrue(#request.getParameter('name')) && !#request.getParameter('name').isBlank()}">
+                    <div class="mt-0 col-auto" th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
                         <a class="btn btn-danger" th:href="@{/dashboard/tags}">✕</a>
                     </div>
                 </form>
             </div>
             <th:block th:if="${tags.getTotalElements() == 0}">
-                <th:block th:unless="${#request.getParameter('name')}">
+                <th:block th:if="${#strings.isEmpty(#request.getParameter('name'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.tags_list_is_empty})"></div>
                 </th:block>
-                <th:block th:if="${#request.getParameter('name')}">
+                <th:block th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
                 </th:block>
             </th:block>
@@ -48,7 +48,11 @@
                         <tr th:each="tag: ${tags}">
                             <td class="text-center align-middle" th:text="${tag.id}"></td>
                             <td class="align-middle" th:text="${tag.name}"></td>
-                            <td class="align-middle text-center" th:text="${tag.postsCount}"></td>
+                            <td class="align-middle text-center">
+                                <a th:href="@{/dashboard/posts(tag=${tag.id})}">
+                                    <span class="badge rounded-pill bg-secondary" th:text="${tag.postsCount}"></span>
+                                </a>
+                            </td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/tags/{id}/edit(id=${tag.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/tags/{id}/delete(id=${tag.id})}" th:text="#{label.delete}"></a>

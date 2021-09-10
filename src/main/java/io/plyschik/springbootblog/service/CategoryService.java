@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +30,16 @@ public class CategoryService {
         return categoryRepository.findAllByOrderByName();
     }
 
-    public Page<CategoryWithPostsCount> getCategories(String name, Pageable pageable) {
-        return categoryRepository.findAllWithPostsCountWhereNameLike(name, pageable);
+    public Page<CategoryWithPostsCount> getCategories(String query, Pageable pageable) {
+        return categoryRepository.findAllWithPostsCount(query, pageable);
     }
 
     public List<CategoryWithPostsCount> getCategoriesWithPostsCount() {
         return categoryRepository.findCategoriesWithPostsCountOrderedByPostsCount(PageRequest.of(0, 5));
+    }
+
+    public List<CategoryWithPostsCount> getCategoriesWithPostsCountDashboard(Sort sort) {
+        return categoryRepository.findAllWithPostsCount(sort);
     }
 
     public void createCategory(CategoryDto categoryDto) throws CategoryAlreadyExistsException {

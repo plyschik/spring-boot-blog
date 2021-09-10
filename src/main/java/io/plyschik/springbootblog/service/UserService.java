@@ -3,6 +3,7 @@ package io.plyschik.springbootblog.service;
 import io.plyschik.springbootblog.dto.ForgotPasswordDto;
 import io.plyschik.springbootblog.dto.PasswordResetDto;
 import io.plyschik.springbootblog.dto.UserDto;
+import io.plyschik.springbootblog.dto.UserWithPostsCount;
 import io.plyschik.springbootblog.entity.PasswordResetToken;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.entity.User.Role;
@@ -13,6 +14,7 @@ import io.plyschik.springbootblog.repository.UserRepository;
 import io.plyschik.springbootblog.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,6 +27,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,6 +50,10 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() ->
             new UsernameNotFoundException(String.format("Username %s not found.", email))
         );
+    }
+
+    public List<UserWithPostsCount> getUsersWithPostsCount(Sort sort) {
+        return userRepository.findAllWithPostsCount(sort);
     }
 
     public void signUp(UserDto userDto, Role role) throws EmailAddressIsAlreadyTakenException, MessagingException {
