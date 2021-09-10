@@ -1,8 +1,6 @@
 package io.plyschik.springbootblog.controller.dashboard;
 
-import io.plyschik.springbootblog.dto.Alert;
-import io.plyschik.springbootblog.dto.PostDto;
-import io.plyschik.springbootblog.dto.PostWithRelationshipsCount;
+import io.plyschik.springbootblog.dto.*;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
@@ -44,11 +42,22 @@ public class PostController {
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
         @RequestParam(required = false, defaultValue = "") String query,
+        @RequestParam(name = "category", required = false) Long categoryId,
+        @RequestParam(name = "tag", required = false) Long tagId,
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, pageable);
+        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, categoryId, tagId, pageable);
+        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCountDashboard(
+            Sort.by("id").descending()
+        );
+        List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("id").descending());
 
-        return new ModelAndView("dashboard/post/list", "posts", posts);
+        ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("categories", categories);
+        modelAndView.addObject("tags", tags);
+
+        return modelAndView;
     }
 
     @GetMapping("/dashboard/posts/create")

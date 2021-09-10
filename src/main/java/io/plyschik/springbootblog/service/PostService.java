@@ -51,7 +51,20 @@ public class PostService {
         return post;
     }
 
-    public Page<PostWithRelationshipsCount> getPostsWithCategory(String query, Pageable pageable) {
+    public Page<PostWithRelationshipsCount> getPostsWithCategory(
+        String query,
+        Long categoryId,
+        Long tagId,
+        Pageable pageable
+    ) {
+        if (categoryId != null) {
+            return postRepository.findAllByTitleContainsAndCategoryIdEquals(query, categoryId, pageable);
+        }
+
+        if (tagId != null) {
+            return postRepository.findAllByTitleContainsAndTagIdEquals(query, tagId, pageable);
+        }
+
         return postRepository.findAllByTitleContains(query, pageable);
     }
 
