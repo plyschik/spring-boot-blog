@@ -10,21 +10,21 @@
                 <h3 class="mb-3 mb-md-0" th:text="#{header.category.list}"></h3>
                 <form class="mt-0 row g-2" th:action="@{/dashboard/categories}" method="GET">
                     <div class="mt-0 col-auto">
-                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}" />
+                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}">
                     </div>
                     <div class="mt-0 col-auto">
                         <input class="btn btn-primary" type="submit" th:value="#{label.search}">
                     </div>
-                    <div class="mt-0 col-auto" th:if="${#bools.isTrue(#request.getParameter('name')) && !#request.getParameter('name').isBlank()}">
+                    <div class="mt-0 col-auto" th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
                         <a class="btn btn-danger" th:href="@{/dashboard/categories}">✕</a>
                     </div>
                 </form>
             </div>
             <th:block th:if="${categories.getTotalElements() == 0}">
-                <th:block th:unless="${#request.getParameter('name')}">
+                <th:block th:if="${#strings.isEmpty(#request.getParameter('name'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.categories_list_is_empty})"></div>
                 </th:block>
-                <th:block th:if="${#request.getParameter('name')}">
+                <th:block th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
                 </th:block>
             </th:block>
@@ -48,7 +48,11 @@
                         <tr th:each="category: ${categories}">
                             <td class="text-center align-middle" th:text="${category.id}"></td>
                             <td class="align-middle" th:text="${category.name}"></td>
-                            <td class="align-middle text-center" th:text="${category.postsCount}"></td>
+                            <td class="align-middle text-center">
+                                <a th:href="@{/dashboard/posts(category=${category.id})}">
+                                    <span class="badge rounded-pill bg-secondary" th:text="${category.postsCount}"></span>
+                                </a>
+                            </td>
                             <td class="text-center align-middle">
                                 <a class="btn btn-sm btn-primary" th:href="@{/dashboard/categories/{id}/edit(id=${category.id})}" th:text="#{label.edit}"></a>
                                 <a class="btn btn-sm btn-danger" th:href="@{/dashboard/categories/{id}/delete(id=${category.id})}" th:text="#{label.delete}"></a>
