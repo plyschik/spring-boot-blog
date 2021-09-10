@@ -65,7 +65,7 @@ public class PostController {
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
         List<Category> categories = categoryService.getCategories();
-        List<Tag> tags = tagService.getTags();
+        List<Tag> tags = tagService.getTagsWithPostsCount();
 
         ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
         modelAndView.addObject("post", new PostDto());
@@ -131,7 +131,7 @@ public class PostController {
         try {
             PostDto post = postService.getPostByIdForEdit(id);
             List<Category> categories = categoryService.getCategories();
-            List<Tag> tags = tagService.getTags();
+            List<Tag> tags = tagService.getTagsWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
             modelAndView.addObject("id", id);

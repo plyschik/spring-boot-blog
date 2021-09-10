@@ -30,8 +30,8 @@ public class CategoryService {
         return categoryRepository.findAllByOrderByName();
     }
 
-    public Page<CategoryWithPostsCount> getCategories(String name, Pageable pageable) {
-        return categoryRepository.findAllWithPostsCountWhereNameLike(name, pageable);
+    public Page<CategoryWithPostsCount> getCategories(String query, Pageable pageable) {
+        return categoryRepository.findAllWithPostsCount(query, pageable);
     }
 
     public List<CategoryWithPostsCount> getCategoriesWithPostsCount() {

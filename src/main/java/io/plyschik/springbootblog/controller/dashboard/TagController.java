@@ -8,12 +8,10 @@ import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
@@ -33,10 +31,10 @@ public class TagController {
 
     @GetMapping("/dashboard/tags")
     public ModelAndView showList(
-        @RequestParam(defaultValue = "") String name,
+        @RequestParam(required = false, defaultValue = "") String query,
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<TagWithPostsCount> tags = tagService.getTags(name, pageable);
+        Page<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(query, pageable);
 
         return new ModelAndView("dashboard/tag/list", "tags", tags);
     }

@@ -31,10 +31,10 @@ public class CategoryController {
 
     @GetMapping("/dashboard/categories")
     public ModelAndView showList(
-        @RequestParam(defaultValue = "") String name,
+        @RequestParam(required = false, defaultValue = "") String query,
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<CategoryWithPostsCount> categories = categoryService.getCategories(name, pageable);
+        Page<CategoryWithPostsCount> categories = categoryService.getCategories(query, pageable);
 
         return new ModelAndView("dashboard/category/list", "categories", categories);
     }

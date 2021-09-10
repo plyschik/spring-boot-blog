@@ -34,7 +34,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
            "FROM Category c " +
            "LEFT JOIN c.posts p " +
-           "WHERE c.name LIKE %:name% " +
+           "WHERE c.name LIKE %:query% " +
            "GROUP BY c.id")
-    Page<CategoryWithPostsCount> findAllWithPostsCountWhereNameLike(@Param("name") String name, Pageable pageable);
+    Page<CategoryWithPostsCount> findAllWithPostsCount(String query, Pageable pageable);
 }

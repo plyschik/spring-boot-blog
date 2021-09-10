@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT new io.plyschik.springbootblog.dto.TagWithPostsCount(t.id, t.name, COUNT(p.id) AS postsCount) " +
            "FROM Tag t " +
            "LEFT JOIN t.posts p " +
-           "WHERE t.name LIKE %:name% " +
+           "WHERE t.name LIKE %:query% " +
            "GROUP BY t.id")
-    Page<TagWithPostsCount> findAllWithPostsCountWhereNameLike(@Param("name") String name, Pageable pageable);
+    Page<TagWithPostsCount> findAllWithPostsCount(String query, Pageable pageable);
 }
