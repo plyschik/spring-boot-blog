@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -42,18 +41,21 @@ public class PostController {
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
         @RequestParam(required = false, defaultValue = "") String query,
+        @RequestParam(name = "user", required = false) Long userId,
         @RequestParam(name = "category", required = false) Long categoryId,
         @RequestParam(name = "tag", required = false) Long tagId,
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, categoryId, tagId, pageable);
+        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, userId, categoryId, tagId, pageable);
+        List<UserWithPostsCount> users = userService.getUsersWithPostsCount(Sort.by("fullName").ascending());
         List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCountDashboard(
-            Sort.by("id").descending()
+            Sort.by("name").ascending()
         );
-        List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("id").descending());
+        List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("name").ascending());
 
         ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
         modelAndView.addObject("posts", posts);
+        modelAndView.addObject("users", users);
         modelAndView.addObject("categories", categories);
         modelAndView.addObject("tags", tags);
 

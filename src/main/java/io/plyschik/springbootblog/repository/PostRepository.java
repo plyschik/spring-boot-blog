@@ -38,6 +38,20 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "LEFT JOIN p.category ca " +
             "LEFT JOIN p.tags t " +
             "LEFT JOIN p.comments co " +
+            "WHERE p.title LIKE %:query% AND u.id = :userId " +
+            "GROUP BY p.id")
+    Page<PostWithRelationshipsCount> findAllByTitleContainsAndUserIdEquals(
+        String query,
+        Long userId,
+        Pageable pageable
+    );
+
+    @Query("SELECT new io.plyschik.springbootblog.dto.PostWithRelationshipsCount(p.id, p.title, CONCAT(u.firstName, ' ', u.lastName) AS author, ca.name AS category, COUNT(DISTINCT t.id) AS tagsCount, COUNT(DISTINCT co.id) AS commentsCount, p.createdAt) " +
+            "FROM Post p " +
+            "LEFT JOIN p.user u " +
+            "LEFT JOIN p.category ca " +
+            "LEFT JOIN p.tags t " +
+            "LEFT JOIN p.comments co " +
             "WHERE p.title LIKE %:query% AND ca.id = :categoryId " +
             "GROUP BY p.id")
     Page<PostWithRelationshipsCount> findAllByTitleContainsAndCategoryIdEquals(

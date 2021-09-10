@@ -53,10 +53,15 @@ public class PostService {
 
     public Page<PostWithRelationshipsCount> getPostsWithCategory(
         String query,
+        Long userId,
         Long categoryId,
         Long tagId,
         Pageable pageable
     ) {
+        if (userId != null) {
+            return postRepository.findAllByTitleContainsAndUserIdEquals(query, userId, pageable);
+        }
+
         if (categoryId != null) {
             return postRepository.findAllByTitleContainsAndCategoryIdEquals(query, categoryId, pageable);
         }
