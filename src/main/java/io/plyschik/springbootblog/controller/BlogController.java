@@ -3,30 +3,25 @@ package io.plyschik.springbootblog.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
-import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.dto.YearArchiveEntry;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
-import io.plyschik.springbootblog.exception.*;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.TagService;
 import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -35,6 +30,7 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,220 +43,197 @@ class BlogController {
     private final TagService tagService;
 
     @GetMapping("/")
-    public ModelAndView index(
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.post.blog}") int itemsPerPage
-    ) {
-        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTags(PageRequest.of(page, itemsPerPage));
-        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
+    public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int page) {
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTags(
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
         List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-        ModelAndView modelAndView = new ModelAndView("blog/index");
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categories);
-        modelAndView.addObject("archive", archive);
-
-        return modelAndView;
+        return new ModelAndView("blog/index")
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 
-    @GetMapping("/posts/{id}")
-    public ModelAndView singlePost(@PathVariable Long id, Model model) {
-        try {
-            Post post = postService.getPostByIdWithAuthorCategoryAndTags(id);
-            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
-            List<YearArchiveEntry> archive = postService.getPostsArchive();
+    @GetMapping("/posts/{id:^[1-9][0-9]*$}")
+    public ModelAndView singlePost(@PathVariable long id) throws JsonProcessingException {
+        Post post = postService.getPostWithAuthorCategoryAndTags(id);
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
+        List<YearArchiveEntry> archive = postService.getPostsArchive();
+        Map<String, String> i18n = new HashMap<>() {{
+            put("loading", messageSource.getMessage(
+                "message.comments.loading",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("only_authenticated_users_can_create_comments", messageSource.getMessage(
+                "message.only_authenticated_users_can_create_comments",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("empty_list", messageSource.getMessage(
+                "message.comments.empty_list",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("comments", messageSource.getMessage(
+                "header.comments",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("comment", messageSource.getMessage(
+                "label.comment",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("create", messageSource.getMessage(
+                "label.create",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("comment_edit", messageSource.getMessage(
+                "header.comment_edit",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("update", messageSource.getMessage(
+                "label.update",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("cancel", messageSource.getMessage(
+                "label.cancel",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("confirmation", messageSource.getMessage(
+                "label.confirmation",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("delete_message", messageSource.getMessage(
+                "header.comment.delete",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("confirm", messageSource.getMessage(
+                "label.confirm",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("page", messageSource.getMessage(
+                "label.pagination.page",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("of", messageSource.getMessage(
+                "label.pagination.of",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("edit", messageSource.getMessage(
+                "label.edit",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+            put("delete", messageSource.getMessage(
+                "label.delete",
+                null,
+                LocaleContextHolder.getLocale()
+            ));
+        }};
 
-            ModelAndView modelAndView = new ModelAndView("blog/single");
-            modelAndView.addObject("post", post);
-            modelAndView.addObject("categories", categories);
-            modelAndView.addObject("archive", archive);
-            modelAndView.addObject("i18n", objectMapper.writeValueAsString(new HashMap<String, String>() {{
-                put("loading", messageSource.getMessage(
-                    "message.comments.loading",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("only_authenticated_users_can_create_comments", messageSource.getMessage(
-                    "message.only_authenticated_users_can_create_comments",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("empty_list", messageSource.getMessage(
-                    "message.comments.empty_list",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("comments", messageSource.getMessage(
-                    "header.comments",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("comment", messageSource.getMessage(
-                    "label.comment",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("create", messageSource.getMessage(
-                    "label.create",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("comment_edit", messageSource.getMessage(
-                    "header.comment_edit",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("update", messageSource.getMessage(
-                    "label.update",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("cancel", messageSource.getMessage(
-                    "label.cancel",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("confirmation", messageSource.getMessage(
-                    "label.confirmation",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("delete_message", messageSource.getMessage(
-                    "header.comment.delete",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("confirm", messageSource.getMessage(
-                    "label.confirm",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("page", messageSource.getMessage(
-                    "label.pagination.page",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("of", messageSource.getMessage(
-                    "label.pagination.of",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("edit", messageSource.getMessage(
-                    "label.edit",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-                put("delete", messageSource.getMessage(
-                    "label.delete",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ));
-            }}));
-
-            if (!model.containsAttribute("comment")) {
-                modelAndView.addObject("comment", new CommentDto());
-            }
-
-            return modelAndView;
-        } catch (PostNotFoundException | PostIsNotPublishedException | JsonProcessingException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return new ModelAndView("blog/single")
+            .addObject("post", post)
+            .addObject("categories", categories)
+            .addObject("archive", archive)
+            .addObject("i18n", objectMapper.writeValueAsString(i18n));
     }
 
-    @GetMapping("/authors/{id}/posts")
+    @GetMapping("/authors/{id:^[1-9][0-9]*$}/posts")
     public ModelAndView postsFromAuthor(
-        @PathVariable Long id,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.post.blog}") int itemsPerPage
+        @PathVariable long id,
+        @RequestParam(required = false, defaultValue = "0") int page
     ) {
-        try {
-            User author = userService.getUserById(id);
-            Page<Post> posts = postService.getPostsByUserId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
-            List<YearArchiveEntry> archive = postService.getPostsArchive();
+        User author = userService.getUserById(id);
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsByUserId(
+            id,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
+        List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-            ModelAndView modelAndView = new ModelAndView("blog/posts_by_author");
-            modelAndView.addObject("author", author);
-            modelAndView.addObject("posts", posts);
-            modelAndView.addObject("categories", categories);
-            modelAndView.addObject("archive", archive);
-
-            return modelAndView;
-        } catch (UserNotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return new ModelAndView("blog/posts_by_author")
+            .addObject("author", author)
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 
-    @GetMapping("/categories/{id}/posts")
+    @GetMapping("/categories/{id:^[1-9][0-9]*$}/posts")
     public ModelAndView postsFromCategory(
-        @PathVariable Long id,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.post.blog}") int itemsPerPage
+        @PathVariable long id,
+        @RequestParam(required = false, defaultValue = "0") int page
     ) {
-        try {
-            Category category = categoryService.getCategoryById(id);
-            Page<Post> posts = postService.getPostsByCategoryId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
-            List<YearArchiveEntry> archive = postService.getPostsArchive();
+        Category category = categoryService.getCategoryById(id);
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsByCategoryId(
+            id,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
+        List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-            ModelAndView modelAndView = new ModelAndView("blog/posts_by_category");
-            modelAndView.addObject("category", category);
-            modelAndView.addObject("posts", posts);
-            modelAndView.addObject("categories", categories);
-            modelAndView.addObject("archive", archive);
-
-            return modelAndView;
-        } catch (CategoryNotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return new ModelAndView("blog/posts_by_category")
+            .addObject("category", category)
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 
-    @GetMapping("/tags/{id}/posts")
+    @GetMapping("/tags/{id:^[1-9][0-9]*$}/posts")
     public ModelAndView postsFromTag(
-        @PathVariable Long id,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.post.blog}") int itemsPerPage
+        @PathVariable long id,
+        @RequestParam(required = false, defaultValue = "0") int page
     ) {
-        try {
-            Tag tag = tagService.getTagById(id);
-            Page<Post> posts = postService.getPostsByTagId(id, PageRequest.of(page, itemsPerPage));
-            List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
-            List<YearArchiveEntry> archive = postService.getPostsArchive();
+        Tag tag = tagService.getTagById(id);
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsByTagId(
+            id,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
+        List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-            ModelAndView modelAndView = new ModelAndView("blog/posts_by_tag");
-            modelAndView.addObject("tag", tag);
-            modelAndView.addObject("posts", posts);
-            modelAndView.addObject("categories", categories);
-            modelAndView.addObject("archive", archive);
-
-            return modelAndView;
-        } catch (TagNotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return new ModelAndView("blog/posts_by_tag")
+            .addObject("tag", tag)
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 
     @GetMapping("/archive/{year:^[12][0-9]{3}$}/{month:^[2-9]|1[0-2]?$}")
-    public ModelAndView postsFromMonth(
-        @PathVariable Integer year,
-        @PathVariable Integer month,
-        @RequestParam(defaultValue = "0") int page,
-        @Value("${pagination.post.blog}") int itemsPerPage
+    public ModelAndView postsFromDataRange(
+        @PathVariable int year,
+        @PathVariable int month,
+        @RequestParam(required = false, defaultValue = "0") int page
     ) {
         LocalDate initialDate = LocalDate.of(year, month, 1);
-        LocalDateTime startDate = initialDate.atTime(LocalTime.MIN).with(TemporalAdjusters.firstDayOfMonth());
-        LocalDateTime endDate = initialDate.atTime(LocalTime.MAX).with(TemporalAdjusters.lastDayOfMonth());
+        LocalDateTime startDate = initialDate.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
+        LocalDateTime endDate = initialDate.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
 
-        Page<Post> posts = postService.getPostsFromDateRange(startDate, endDate, PageRequest.of(page, itemsPerPage));
-        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsFromDateRange(
+            startDate,
+            endDate,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
         List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-        ModelAndView modelAndView = new ModelAndView("blog/posts_from_month");
-        modelAndView.addObject("startDate", startDate);
-        modelAndView.addObject("endDate", endDate);
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categories);
-        modelAndView.addObject("archive", archive);
-
-        return modelAndView;
+        return new ModelAndView("blog/posts_from_month")
+            .addObject("startDate", startDate)
+            .addObject("endDate", endDate)
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 }

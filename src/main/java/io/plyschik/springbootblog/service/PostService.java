@@ -9,7 +9,6 @@ import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
 import io.plyschik.springbootblog.exception.CategoryNotFoundException;
-import io.plyschik.springbootblog.exception.PostIsNotPublishedException;
 import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.repository.CategoryRepository;
@@ -18,6 +17,7 @@ import io.plyschik.springbootblog.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -41,14 +41,9 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public Post getPostByIdWithAuthorCategoryAndTags(long id) {
-        Post post = postRepository.findWithUserCategoryAndTagsById(id).orElseThrow(PostNotFoundException::new);
-
-        if (!post.isPublished()) {
-            throw new PostIsNotPublishedException();
-        }
-
-        return post;
+    public Post getPostWithAuthorCategoryAndTags(long id) {
+        return postRepository.findWithUserCategoryAndTagsByIdAndPublishedIsTrue(id)
+            .orElseThrow(PostNotFoundException::new);
     }
 
     public Page<PostWithRelationshipsCount> getPostsWithCategory(
@@ -74,40 +69,65 @@ public class PostService {
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTags(Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByPublishedIsTrueOrderByCreatedAtDesc(pageable);
+        Page<Long> publishedPostIds = postRepository.findAllPublishedIds(pageable);
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
+        );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(String query, Pageable pageable) {
         return postRepository.findByTitleOrContentContainsWithUserCategoryAndTags(query, pageable);
     }
 
-    public Page<Post> getPostsByUserId(long userId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByUserIdAndPublishedIsTrueOrderByCreatedAtDesc(
-            userId,
-            pageable
+    public Page<Post> getPostsWithAuthorCategoryAndTagsByUserId(long userId, Pageable pageable) {
+        Page<Long> publishedPostIds = postRepository.findAllPublishedByUserIds(userId, pageable);
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
         );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
-    public Page<Post> getPostsByCategoryId(long categoryId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByCategoryIdAndPublishedIsTrueOrderByCreatedAtDesc(
-            categoryId,
-            pageable
+    public Page<Post> getPostsWithAuthorCategoryAndTagsByCategoryId(long categoryId, Pageable pageable) {
+        Page<Long> publishedPostIds = postRepository.findAllPublishedByCategoryIds(categoryId, pageable);
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
         );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
-    public Page<Post> getPostsByTagId(long tagId, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByIdInAndPublishedIsTrueOrderByCreatedAtDesc(
-            postRepository.findPostIdsByTagId(tagId),
-            pageable
+    public Page<Post> getPostsWithAuthorCategoryAndTagsByTagId(long tagId, Pageable pageable) {
+        Page<Long> publishedPostIds = postRepository.findAllPublishedByTagIds(tagId, pageable);
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
         );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
-    public Page<Post> getPostsFromDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return postRepository.findAllWithAuthorCategoryAndTagsByCreatedAtBetweenAndPublishedIsTrueOrderByCreatedAtDesc(
+    public Page<Post> getPostsWithAuthorCategoryAndTagsFromDateRange(
+        LocalDateTime startDate,
+        LocalDateTime endDate,
+        Pageable pageable
+    ) {
+        Page<Long> publishedPostIds = postRepository.findAllPublishedFromDateRangeIds(
             startDate,
             endDate,
             pageable
         );
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
+        );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
     public List<YearArchiveEntry> getPostsArchive() {
@@ -117,8 +137,7 @@ public class PostService {
                 PostCountByYearAndMonthDto::getYear,
                 LinkedHashMap::new,
                 Collectors.toList()
-            )
-        );
+            ));
 
         List<YearArchiveEntry> yearArchiveEntries = new ArrayList<>();
         for (Map.Entry<Integer, List<PostCountByYearAndMonthDto>> entry: years.entrySet()) {

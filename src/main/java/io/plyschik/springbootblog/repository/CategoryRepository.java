@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,12 +23,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
            "GROUP BY c.id")
     List<CategoryWithPostsCount> findAllWithPostsCount(Sort sort);
 
-    @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
-           "FROM Category c " +
-           "LEFT JOIN c.posts p " +
-           "GROUP BY c.id " +
-           "ORDER BY postsCount DESC")
-    List<CategoryWithPostsCount> findCategoriesWithPostsCountOrderedByPostsCount(Pageable pageable);
+    @Query(name = "Category.findTop5WithPostsCount", nativeQuery = true)
+    List<CategoryWithPostsCount> findTop5WithPostsCount();
 
     @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
            "FROM Category c " +

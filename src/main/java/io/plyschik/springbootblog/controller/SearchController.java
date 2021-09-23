@@ -34,7 +34,7 @@ public class SearchController {
         }
 
         Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(query, pageable);
-        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount();
+        List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
         List<YearArchiveEntry> archive = postService.getPostsArchive();
 
         ModelAndView modelAndView = new ModelAndView("blog/search");

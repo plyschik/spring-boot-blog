@@ -34,8 +34,8 @@ public class CategoryService {
         return categoryRepository.findAllWithPostsCount(query, pageable);
     }
 
-    public List<CategoryWithPostsCount> getCategoriesWithPostsCount() {
-        return categoryRepository.findCategoriesWithPostsCountOrderedByPostsCount(PageRequest.of(0, 5));
+    public List<CategoryWithPostsCount> getTop5CategoriesWithPostsCount() {
+        return categoryRepository.findTop5WithPostsCount();
     }
 
     public List<CategoryWithPostsCount> getCategoriesWithPostsCountDashboard(Sort sort) {
