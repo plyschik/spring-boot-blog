@@ -15,8 +15,6 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findAllByOrderByName();
 
-    boolean existsByName(String name);
-
     @Query("SELECT new io.plyschik.springbootblog.dto.TagWithPostsCount(t.id, t.name, COUNT(p.id) AS postsCount) " +
            "FROM Tag t " +
            "LEFT JOIN t.posts p " +
@@ -26,7 +24,15 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT new io.plyschik.springbootblog.dto.TagWithPostsCount(t.id, t.name, COUNT(p.id) AS postsCount) " +
            "FROM Tag t " +
            "LEFT JOIN t.posts p " +
+           "GROUP BY t.id")
+    Page<TagWithPostsCount> findAllWithPostsCount(Pageable pageable);
+
+    @Query("SELECT new io.plyschik.springbootblog.dto.TagWithPostsCount(t.id, t.name, COUNT(p.id) AS postsCount) " +
+           "FROM Tag t " +
+           "LEFT JOIN t.posts p " +
            "WHERE t.name LIKE %:query% " +
            "GROUP BY t.id")
     Page<TagWithPostsCount> findAllWithPostsCount(String query, Pageable pageable);
+
+    boolean existsByName(String name);
 }

@@ -5,7 +5,6 @@ import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.dto.TagWithPostsCount;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
-import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -36,12 +35,14 @@ public class TagController {
     ) {
         Page<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(query, pageable);
 
-        return new ModelAndView("dashboard/tag/list", "tags", tags);
+        return new ModelAndView("dashboard/tag/list")
+            .addObject("tags", tags);
     }
 
     @GetMapping("/dashboard/tags/create")
     public ModelAndView showCreateForm() {
-        return new ModelAndView("dashboard/tag/create", "tag", new TagDto());
+        return new ModelAndView("dashboard/tag/create")
+            .addObject("tag", new TagDto());
     }
 
     @PostMapping("/dashboard/tags/create")
@@ -83,27 +84,12 @@ public class TagController {
     }
 
     @GetMapping("/dashboard/tags/{id}/edit")
-    public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            TagDto tag = tagService.getTagForEdit(id);
+    public ModelAndView showEditForm(@PathVariable long id) {
+        TagDto tag = tagService.getTagForEdit(id);
 
-            ModelAndView modelAndView = new ModelAndView("dashboard/tag/edit");
-            modelAndView.addObject("id", id);
-            modelAndView.addObject("tag", tag);
-
-            return modelAndView;
-        } catch (TagNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.tag_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/tags");
-        }
+        return new ModelAndView("dashboard/tag/edit")
+            .addObject("id", id)
+            .addObject("tag", tag);
     }
 
     @PostMapping("/dashboard/tags/{id}/edit")
@@ -130,17 +116,6 @@ public class TagController {
             );
 
             return new ModelAndView("redirect:/dashboard/tags");
-        } catch (TagNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.tag_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/tags");
         } catch (TagAlreadyExistsException exception) {
             bindingResult.rejectValue(
                 "name",
@@ -157,23 +132,11 @@ public class TagController {
     }
 
     @GetMapping("/dashboard/tags/{id}/delete")
-    public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            Tag tag = tagService.getTagById(id);
+    public ModelAndView deleteConfirmation(@PathVariable long id) {
+        Tag tag = tagService.getTagById(id);
 
-            return new ModelAndView("dashboard/tag/delete", "tag", tag);
-        } catch (TagNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.tag_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/tags");
-        }
+        return new ModelAndView("dashboard/tag/delete")
+            .addObject("tag", tag);
     }
 
     @PostMapping("/dashboard/tags/{id}/delete")

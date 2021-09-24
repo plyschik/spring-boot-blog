@@ -30,7 +30,11 @@ public class TagService {
     }
 
     public Page<TagWithPostsCount> getTagsWithPostsCount(String query, Pageable pageable) {
-        return tagRepository.findAllWithPostsCount(query, pageable);
+        if (!query.isBlank()) {
+            return tagRepository.findAllWithPostsCount(query, pageable);
+        }
+
+        return tagRepository.findAllWithPostsCount(pageable);
     }
 
     public List<TagWithPostsCount> getTagsWithPostsCount(Sort sort) {

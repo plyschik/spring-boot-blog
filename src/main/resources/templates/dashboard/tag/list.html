@@ -10,21 +10,21 @@
                 <h3 class="mb-3 mb-md-0" th:text="#{header.tag.list}"></h3>
                 <form class="mt-0 row g-2" th:action="@{/dashboard/tags}" method="GET">
                     <div class="mt-0 col-auto">
-                        <input class="form-control" type="text" name="name" th:value="${#request.getParameter('name')}">
+                        <input class="form-control" type="text" name="query" th:value="${#request.getParameter('query')}" th:placeholder="#{placeholder.query}">
                     </div>
                     <div class="mt-0 col-auto">
                         <input class="btn btn-primary" type="submit" th:value="#{label.search}">
                     </div>
-                    <div class="mt-0 col-auto" th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
+                    <div class="mt-0 col-auto" th:unless="${#strings.isEmpty(#request.getParameter('query'))}">
                         <a class="btn btn-danger" th:href="@{/dashboard/tags}">✕</a>
                     </div>
                 </form>
             </div>
             <th:block th:if="${tags.getTotalElements() == 0}">
-                <th:block th:if="${#strings.isEmpty(#request.getParameter('name'))}">
+                <th:block th:if="${#strings.isEmpty(#request.getParameter('query'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.tags_list_is_empty})"></div>
                 </th:block>
-                <th:block th:unless="${#strings.isEmpty(#request.getParameter('name'))}">
+                <th:block th:unless="${#strings.isEmpty(#request.getParameter('query'))}">
                     <div th:replace="fragments/fragments :: alert('info', #{message.search.no_results})"></div>
                 </th:block>
             </th:block>
@@ -33,13 +33,13 @@
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center" style="width: 1%;">
-                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('id')?.isAscending()} ? 'id,desc' : 'id,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.id}${tags.getSort().getOrderFor('id') == null ? '' : tags.getSort().getOrderFor('id').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('id')?.isAscending()} ? 'id,desc' : 'id,asc'), query=${#request.getParameter('query')})}" th:text="|#{label.id}${tags.getSort().getOrderFor('id') == null ? '' : tags.getSort().getOrderFor('id').isDescending() ? ' ▼' : ' ▲'}|"></a>
                             </th>
                             <th style="width: 100%;">
-                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('name')?.isAscending()} ? 'name,desc' : 'name,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.name}${tags.getSort().getOrderFor('name') == null ? '' : tags.getSort().getOrderFor('name').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('name')?.isAscending()} ? 'name,desc' : 'name,asc'), query=${#request.getParameter('query')})}" th:text="|#{label.name}${tags.getSort().getOrderFor('name') == null ? '' : tags.getSort().getOrderFor('name').isDescending() ? ' ▼' : ' ▲'}|"></a>
                             </th>
                             <th style="width: 1%;">
-                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('postsCount')?.isAscending()} ? 'postsCount,desc' : 'postsCount,asc'), name=${#request.getParameter('name')})}" th:text="|#{label.posts_count}${tags.getSort().getOrderFor('postsCount') == null ? '' : tags.getSort().getOrderFor('postsCount').isDescending() ? ' ▼' : ' ▲'}|"></a>
+                                <a class="text-decoration-none text-white" th:href="@{/dashboard/tags(sort=(${tags.getSort().getOrderFor('postsCount')?.isAscending()} ? 'postsCount,desc' : 'postsCount,asc'), query=${#request.getParameter('query')})}" th:text="|#{label.posts_count}${tags.getSort().getOrderFor('postsCount') == null ? '' : tags.getSort().getOrderFor('postsCount').isDescending() ? ' ▼' : ' ▲'}|"></a>
                             </th>
                             <th class="text-center" style="width: 1%;" th:text="#{label.actions}"></th>
                         </tr>
@@ -61,7 +61,7 @@
                     </tbody>
                 </table>
             </div>
-            <div th:insert="fragments/fragments :: advanced_pagination(${tags}, @{/dashboard/tags(sort=${#request.getParameter('sort')}, name=${#request.getParameter('name')})})"></div>
+            <div th:insert="fragments/fragments :: advanced_pagination(${tags}, @{/dashboard/tags(sort=${#request.getParameter('sort')}, query=${#request.getParameter('query')})})"></div>
         </th:block>
     </body>
 </html>
