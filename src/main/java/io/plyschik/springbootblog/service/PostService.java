@@ -79,7 +79,13 @@ public class PostService {
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(String query, Pageable pageable) {
-        return postRepository.findByTitleOrContentContainsWithUserCategoryAndTags(query, pageable);
+        Page<Long> publishedPostIds = postRepository.findAllPublishedWhereTitleOrContentContainsIds(query, pageable);
+        List<Post> postsWithAuthorCategoryAndTags = postRepository.findAllPublishedWithAuthorCategoryAndTagsByIdIn(
+            publishedPostIds.getContent(),
+            pageable.getSort()
+        );
+
+        return new PageImpl<>(postsWithAuthorCategoryAndTags, pageable, publishedPostIds.getTotalElements());
     }
 
     public Page<Post> getPostsWithAuthorCategoryAndTagsByUserId(long userId, Pageable pageable) {

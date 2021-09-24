@@ -7,10 +7,8 @@ import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,21 +25,22 @@ public class SearchController {
     @GetMapping("/search")
     private ModelAndView search(
         @RequestParam String query,
-        @PageableDefault(size = 5) @SortDefault(value = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+        @RequestParam(required = false, defaultValue = "0") int page
     ) {
         if (query.isBlank()) {
             return new ModelAndView("redirect:/");
         }
 
-        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(query, pageable);
+        Page<Post> posts = postService.getPostsWithAuthorCategoryAndTagsWhereTitleOrContentContains(
+            query,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id")))
+        );
         List<CategoryWithPostsCount> categories = categoryService.getTop5CategoriesWithPostsCount();
         List<YearArchiveEntry> archive = postService.getPostsArchive();
 
-        ModelAndView modelAndView = new ModelAndView("blog/search");
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("categories", categories);
-        modelAndView.addObject("archive", archive);
-
-        return modelAndView;
+        return new ModelAndView("blog/search")
+            .addObject("posts", posts)
+            .addObject("categories", categories)
+            .addObject("archive", archive);
     }
 }

@@ -103,21 +103,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         "WHERE p.published = true AND p.createdAt BETWEEN :startDate AND :endDate")
     Page<Long> findAllPublishedFromDateRangeIds(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
+    @Query("SELECT p.id " +
+        "FROM Post p " +
+        "WHERE p.published = TRUE AND (p.title LIKE %:query% OR p.content LIKE %:query%)")
+    Page<Long> findAllPublishedWhereTitleOrContentContainsIds(String query, Pageable pageable);
+
     @EntityGraph(attributePaths = {"user", "category", "tags"})
     List<Post> findAllPublishedWithAuthorCategoryAndTagsByIdIn(List<Long> ids, Sort sort);
-
-    @Query("SELECT DISTINCT p FROM Post p " +
-           "LEFT JOIN p.user u " +
-           "LEFT JOIN p.category c " +
-           "LEFT JOIN p.tags t " +
-           "WHERE p.published = TRUE AND (p.title LIKE %:query% OR p.content LIKE %:query%)")
-    Page<Post> findByTitleOrContentContainsWithUserCategoryAndTags(String query, Pageable pageable);
-
-    @Query("SELECT p.id " +
-           "FROM Post p " +
-           "JOIN p.tags t " +
-           "WHERE t.id = ?1")
-    List<Long> findPostIdsByTagId(Long tagId);
 
     @Query(name = "Post.countPostsByYearAndMonth", nativeQuery = true)
     List<PostCountByYearAndMonthDto> findPostsCountByYearAndMonthDto();
