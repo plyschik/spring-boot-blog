@@ -15,7 +15,8 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByOrderByName();
 
-    boolean existsByName(String name);
+    @Query(name = "Category.findTop5WithPostsCount", nativeQuery = true)
+    List<CategoryWithPostsCount> findTop5WithPostsCount();
 
     @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
            "FROM Category c " +
@@ -23,8 +24,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
            "GROUP BY c.id")
     List<CategoryWithPostsCount> findAllWithPostsCount(Sort sort);
 
-    @Query(name = "Category.findTop5WithPostsCount", nativeQuery = true)
-    List<CategoryWithPostsCount> findTop5WithPostsCount();
+    @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
+           "FROM Category c " +
+           "LEFT JOIN c.posts p " +
+           "GROUP BY c.id")
+    Page<CategoryWithPostsCount> findAllWithPostsCount(Pageable pageable);
 
     @Query("SELECT new io.plyschik.springbootblog.dto.CategoryWithPostsCount(c.id, c.name, COUNT(p.id) AS postsCount) " +
            "FROM Category c " +
@@ -32,4 +36,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
            "WHERE c.name LIKE %:query% " +
            "GROUP BY c.id")
     Page<CategoryWithPostsCount> findAllWithPostsCount(String query, Pageable pageable);
+
+    boolean existsByName(String name);
 }

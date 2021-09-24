@@ -10,7 +10,7 @@
                 <h3 class="mb-3 mb-md-0" th:text="#{header.category.list}"></h3>
                 <form class="mt-0 row g-2" th:action="@{/dashboard/categories}" method="GET">
                     <div class="mt-0 col-auto">
-                        <input class="form-control" type="text" name="query" th:value="${#request.getParameter('query')}">
+                        <input class="form-control" type="text" name="query" th:value="${#request.getParameter('query')}" th:placeholder="#{placeholder.query}">
                     </div>
                     <div class="mt-0 col-auto">
                         <input class="btn btn-primary" type="submit" th:value="#{label.search}">

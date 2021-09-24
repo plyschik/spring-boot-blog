@@ -64,7 +64,7 @@ public class PostController {
 
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
-        List<Category> categories = categoryService.getCategories();
+        List<Category> categories = categoryService.getCategoriesWithPostCount();
         List<Tag> tags = tagService.getTagsWithPostsCount();
 
         ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
@@ -130,7 +130,7 @@ public class PostController {
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
             PostDto post = postService.getPostByIdForEdit(id);
-            List<Category> categories = categoryService.getCategories();
+            List<Category> categories = categoryService.getCategoriesWithPostCount();
             List<Tag> tags = tagService.getTagsWithPostsCount();
 
             ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");

@@ -9,7 +9,6 @@ import io.plyschik.springbootblog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,12 +25,16 @@ public class CategoryService {
         return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 
-    public List<Category> getCategories() {
+    public List<Category> getCategoriesWithPostCount() {
         return categoryRepository.findAllByOrderByName();
     }
 
-    public Page<CategoryWithPostsCount> getCategories(String query, Pageable pageable) {
-        return categoryRepository.findAllWithPostsCount(query, pageable);
+    public Page<CategoryWithPostsCount> getCategoriesWithPostCount(String query, Pageable pageable) {
+        if (!query.isBlank()) {
+            return categoryRepository.findAllWithPostsCount(query, pageable);
+        }
+
+        return categoryRepository.findAllWithPostsCount(pageable);
     }
 
     public List<CategoryWithPostsCount> getTop5CategoriesWithPostsCount() {
@@ -48,7 +51,6 @@ public class CategoryService {
         }
 
         Category category = modelMapper.map(categoryDto, Category.class);
-
         categoryRepository.save(category);
     }
 
