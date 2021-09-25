@@ -2,18 +2,14 @@ package io.plyschik.springbootblog.controller;
 
 import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.dto.PostsCommentApiResponse;
-import io.plyschik.springbootblog.exception.CommentNotFoundException;
 import io.plyschik.springbootblog.exception.PostNotFoundException;
 import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.service.CommentService;
 import io.plyschik.springbootblog.service.PostService;
-import io.plyschik.springbootblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,84 +21,79 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 public class CommentController {
-    private final UserService userService;
     private final PostService postService;
     private final CommentService commentService;
-    private final MessageSource messageSource;
 
-    @GetMapping("/api/posts/{id}/comments")
+    @GetMapping("/api/posts/{postId:^[1-9][0-9]*$}/comments")
     public ResponseEntity<PostsCommentApiResponse> getPostComments(
-        @PathVariable Long id,
-        @PageableDefault(size = 5) @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+        @PathVariable long postId,
+        @RequestParam(required = false, defaultValue = "0") int page,
         Authentication authentication
     ) {
-        try {
-            PostsCommentApiResponse response = commentService.getCommentsByPostId(id, pageable, authentication);
+        PostsCommentApiResponse response = commentService.getCommentsByPostId(
+            postId,
+            PageRequest.of(page, 5, Sort.by(Sort.Order.desc("id"))),
+            authentication
+        );
 
-            return ResponseEntity.ok(response);
-        } catch (PostNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/posts/{postId}/comments")
+    @PostMapping("/api/posts/{postId:^[1-9][0-9]*$}/comments")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostsCommentApiResponse.Comment> createComment(
-        Authentication authentication,
         @PathVariable long postId,
-        @Valid @RequestBody CommentDto commentDto
+        @Valid @RequestBody CommentDto commentDto,
+        Authentication authentication
     ) {
-        try {
-            PostsCommentApiResponse.Comment comment = commentService.createComment(
-                authentication,
-                postId,
-                commentDto
-            );
+        PostsCommentApiResponse.Comment response = commentService.createComment(
+            postId,
+            commentDto,
+            authentication
+        );
 
-            return ResponseEntity.ok(comment);
-        } catch (UserNotFoundException | PostNotFoundException exception) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasPermission(#commentId, 'Comment', 'edit')")
     @PatchMapping("/api/posts/{postId}/comments/{commentId}")
     public ResponseEntity<PostsCommentApiResponse.Comment> updateComment(
-        Authentication authentication,
-        @PathVariable Long postId,
-        @PathVariable Long commentId,
-        @Valid @RequestBody CommentDto commentDto
+        @PathVariable long postId,
+        @PathVariable long commentId,
+        @Valid @RequestBody CommentDto commentDto,
+        Authentication authentication
     ) {
-        try {
-            if (!postService.existsById(postId)) {
-                throw new PostNotFoundException();
-            }
-
-            PostsCommentApiResponse.Comment comment = commentService.updateComment(
-                authentication,
-                commentId,
-                commentDto
-            );
-
-            return ResponseEntity.ok(comment);
-        } catch (PostNotFoundException | CommentNotFoundException exception) {
-            return ResponseEntity.notFound().build();
+        if (!postService.existsById(postId)) {
+            throw new PostNotFoundException();
         }
+
+        PostsCommentApiResponse.Comment response = commentService.updateComment(
+            commentId,
+            commentDto,
+            authentication
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasPermission(#commentId, 'Comment', 'delete')")
     @DeleteMapping("/api/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<Void> delete(@PathVariable Long postId, @PathVariable Long commentId) {
-        try {
-            if (!postService.existsById(postId)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            commentService.deleteComment(commentId);
-
-            return ResponseEntity.noContent().build();
-        } catch (PostNotFoundException | CommentNotFoundException exception) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteComment(@PathVariable long postId, @PathVariable long commentId) {
+        if (!postService.existsById(postId)) {
+            throw new PostNotFoundException();
         }
+
+        commentService.deleteCommentById(commentId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler({
+        UserNotFoundException.class,
+        PostNotFoundException.class,
+        EmptyResultDataAccessException.class
+    })
+    public ResponseEntity<?> handleResourceNotFoundException() {
+        return ResponseEntity.notFound().build();
     }
 }
