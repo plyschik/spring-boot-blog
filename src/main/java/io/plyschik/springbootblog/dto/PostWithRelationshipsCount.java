@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class PostWithRelationshipsCount {
     private Long id;
     private String title;
+    private boolean published;
     private String author;
     private String category;
     private Long tagsCount;

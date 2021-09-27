@@ -40,39 +40,41 @@ public class PostController {
 
     @GetMapping("/dashboard/posts")
     public ModelAndView showList(
-        @RequestParam(required = false, defaultValue = "") String query,
         @RequestParam(name = "user", required = false) Long userId,
         @RequestParam(name = "category", required = false) Long categoryId,
         @RequestParam(name = "tag", required = false) Long tagId,
+        @RequestParam(required = false, defaultValue = "") String query,
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(query, userId, categoryId, tagId, pageable);
         List<UserWithPostsCount> users = userService.getUsersWithPostsCount(Sort.by("fullName").ascending());
         List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCountDashboard(
             Sort.by("name").ascending()
         );
         List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("name").ascending());
+        Page<PostWithRelationshipsCount> posts = postService.getPostsWithCategory(
+            userId,
+            categoryId,
+            tagId,
+            query,
+            pageable
+        );
 
-        ModelAndView modelAndView = new ModelAndView("dashboard/post/list");
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("users", users);
-        modelAndView.addObject("categories", categories);
-        modelAndView.addObject("tags", tags);
-
-        return modelAndView;
+        return new ModelAndView("dashboard/post/list")
+            .addObject("users", users)
+            .addObject("categories", categories)
+            .addObject("tags", tags)
+            .addObject("posts", posts);
     }
 
     @GetMapping("/dashboard/posts/create")
     public ModelAndView showCreateForm() {
-        List<Category> categories = categoryService.getCategoriesWithPostCount();
-        List<Tag> tags = tagService.getTagsWithPostsCount();
+        List<Category> categories = categoryService.getCategories(Sort.by("name").ascending());
+        List<Tag> tags = tagService.getTags(Sort.by("name").ascending());
 
-        ModelAndView modelAndView = new ModelAndView("dashboard/post/create");
-        modelAndView.addObject("post", new PostDto());
-        modelAndView.addObject("categories", categories);
-        modelAndView.addObject("tags", tags);
-
-        return modelAndView;
+        return new ModelAndView("dashboard/post/create")
+            .addObject("post", new PostDto())
+            .addObject("categories", categories)
+            .addObject("tags", tags);
     }
 
     @PostMapping("/dashboard/posts/create")
@@ -126,35 +128,20 @@ public class PostController {
         return new ModelAndView("redirect:/dashboard/posts");
     }
 
-    @GetMapping("/dashboard/posts/{id}/edit")
+    @GetMapping("/dashboard/posts/{id:^[1-9][0-9]*$}/edit")
     public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            PostDto post = postService.getPostByIdForEdit(id);
-            List<Category> categories = categoryService.getCategoriesWithPostCount();
-            List<Tag> tags = tagService.getTagsWithPostsCount();
+        PostDto post = postService.getPostByIdForEdit(id);
+        List<Category> categories = categoryService.getCategories(Sort.by("name").ascending());
+        List<Tag> tags = tagService.getTags(Sort.by("name").ascending());
 
-            ModelAndView modelAndView = new ModelAndView("dashboard/post/edit");
-            modelAndView.addObject("id", id);
-            modelAndView.addObject("post", post);
-            modelAndView.addObject("categories", categories);
-            modelAndView.addObject("tags", tags);
-
-            return modelAndView;
-        } catch (PostNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.post_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/posts");
-        }
+        return new ModelAndView("dashboard/post/edit")
+            .addObject("id", id)
+            .addObject("post", post)
+            .addObject("categories", categories)
+            .addObject("tags", tags);
     }
 
-    @PostMapping("/dashboard/posts/{id}/edit")
+    @PostMapping("/dashboard/posts/{id:^[1-9][0-9]*$}/edit")
     public ModelAndView processEditForm(
         @PathVariable long id,
         @ModelAttribute("post") @Valid PostDto postDto,
@@ -178,17 +165,6 @@ public class PostController {
             );
 
             return new ModelAndView("redirect:/dashboard/posts");
-        } catch (PostNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.post_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/posts");
         } catch (CategoryNotFoundException exception) {
             bindingResult.rejectValue(
                 "categoryId",
@@ -204,27 +180,15 @@ public class PostController {
         }
     }
 
-    @GetMapping("/dashboard/posts/{id}/delete")
-    public ModelAndView deleteConfirmation(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            Post post = postService.getPostById(id);
+    @GetMapping("/dashboard/posts/{id:^[1-9][0-9]*$}/delete")
+    public ModelAndView deleteConfirmation(@PathVariable long id) {
+        Post post = postService.getPostById(id);
 
-            return new ModelAndView("dashboard/post/delete", "post", post);
-        } catch (PostNotFoundException exception) {
-            redirectAttributes.addFlashAttribute(
-                "alert",
-                new Alert("danger", messageSource.getMessage(
-                    "message.post_not_found",
-                    null,
-                    LocaleContextHolder.getLocale()
-                ))
-            );
-
-            return new ModelAndView("redirect:/dashboard/posts");
-        }
+        return new ModelAndView("dashboard/post/delete")
+            .addObject("post", post);
     }
 
-    @PostMapping("/dashboard/posts/{id}/delete")
+    @PostMapping("/dashboard/posts/{id:^[1-9][0-9]*$}/delete")
     public ModelAndView delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
             postService.deletePost(id);

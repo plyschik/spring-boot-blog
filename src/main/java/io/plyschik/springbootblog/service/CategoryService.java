@@ -25,8 +25,12 @@ public class CategoryService {
         return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 
-    public List<Category> getCategoriesWithPostCount() {
-        return categoryRepository.findAllByOrderByName();
+    public List<Category> getCategories(Sort sort) {
+        return categoryRepository.findAll(sort);
+    }
+
+    public List<Category> getCategoriesWithPostCount(Sort sort) {
+        return categoryRepository.findAll(sort);
     }
 
     public Page<CategoryWithPostsCount> getCategoriesWithPostCount(String query, Pageable pageable) {

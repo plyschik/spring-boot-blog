@@ -47,10 +47,10 @@ public class PostService {
     }
 
     public Page<PostWithRelationshipsCount> getPostsWithCategory(
-        String query,
         Long userId,
         Long categoryId,
         Long tagId,
+        String query,
         Pageable pageable
     ) {
         if (userId != null) {
@@ -176,7 +176,6 @@ public class PostService {
 
         for (Long tagId: postDto.getTagIds()) {
             Tag tag = tagRepository.findById(tagId).orElseThrow(TagNotFoundException::new);
-
             post.addTag(tag);
         }
 

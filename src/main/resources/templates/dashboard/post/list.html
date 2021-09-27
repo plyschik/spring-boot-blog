@@ -103,9 +103,18 @@
                     <tbody>
                         <tr th:each="post: ${posts}">
                             <td class="text-center align-middle" th:text="${post.id}"></td>
-                            <td class="align-middle text-truncate " style="max-width: 85%;" th:text="${post.title}"></td>
+                            <td class="align-middle text-truncate" style="max-width: 85%;">
+                                <a th:if="${post.published}" th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}" target="_blank"></a>
+                                <th:block th:if="${!post.published}">
+                                    <span th:text="${post.title}"></span>
+                                    <span class="fst-italic" th:text="|(${#messages.msg('label.draft')})|"></span>
+                                </th:block>
+                            </td>
                             <td class="align-middle" th:text="${post.author}"></td>
-                            <td class="align-middle text-truncate" th:text="${#objects.nullSafe(post.category, '-')}"></td>
+                            <td class="align-middle text-truncate">
+                                <span class="fst-italic" th:if="${post.category == null}" th:text="#{label.no_category}"></span>
+                                <span th:if="${post.category}" th:text="${post.category}"></span>
+                            </td>
                             <td class="text-center align-middle">
                                 <span class="badge rounded-pill bg-secondary" th:text="${post.tagsCount}"></span>
                             </td>

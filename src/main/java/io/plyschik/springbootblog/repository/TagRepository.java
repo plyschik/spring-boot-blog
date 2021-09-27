@@ -13,8 +13,6 @@ import java.util.List;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    List<Tag> findAllByOrderByName();
-
     @Query("SELECT new io.plyschik.springbootblog.dto.TagWithPostsCount(t.id, t.name, COUNT(p.id) AS postsCount) " +
            "FROM Tag t " +
            "LEFT JOIN t.posts p " +

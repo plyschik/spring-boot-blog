@@ -13,8 +13,6 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findAllByOrderByName();
-
     @Query(name = "Category.findTop5WithPostsCount", nativeQuery = true)
     List<CategoryWithPostsCount> findTop5WithPostsCount();
 
