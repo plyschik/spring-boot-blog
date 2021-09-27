@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.entity;
 
+import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,27 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedNativeQuery(
+    name = "Category.findTop5WithPostsCount",
+    query = "SELECT c.id, c.name, COUNT(p.id) AS postsCount " +
+            "FROM categories c " +
+            "LEFT JOIN posts p ON c.id = p.category_id " +
+            "GROUP BY c.id " +
+            "ORDER BY postsCount DESC " +
+            "LIMIT 5",
+    resultSetMapping = "Category.findTop5WithPostsCountMapping"
+)
+@SqlResultSetMapping(
+    name = "Category.findTop5WithPostsCountMapping",
+    classes = @ConstructorResult(
+        targetClass = CategoryWithPostsCount.class,
+        columns = {
+            @ColumnResult(name = "id", type = Long.class),
+            @ColumnResult(name = "name", type = String.class),
+            @ColumnResult(name = "postsCount", type = Long.class)
+        }
+    )
+)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

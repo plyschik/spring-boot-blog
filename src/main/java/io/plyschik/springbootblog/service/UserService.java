@@ -42,7 +42,7 @@ public class UserService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public User getUserById(Long id) {
+    public User getUserById(long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 

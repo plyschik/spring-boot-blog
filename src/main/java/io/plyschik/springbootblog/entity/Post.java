@@ -23,15 +23,16 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @NamedNativeQuery(
-    name = "count_posts_by_year_and_month",
+    name = "Post.countPostsByYearAndMonth",
     query = "SELECT YEAR(p.created_at) AS year, MONTH(p.created_at) AS month, COUNT(*) AS count " +
             "FROM posts p " +
+            "WHERE p.published = true " +
             "GROUP BY year, month " +
             "ORDER BY year DESC, month DESC",
-    resultSetMapping = "count_posts_by_year_and_month_mapping"
+    resultSetMapping = "Post.countPostsByYearAndMonthMapping"
 )
 @SqlResultSetMapping(
-    name = "count_posts_by_year_and_month_mapping",
+    name = "Post.countPostsByYearAndMonthMapping",
     classes = @ConstructorResult(
         targetClass = PostCountByYearAndMonthDto.class,
         columns = {

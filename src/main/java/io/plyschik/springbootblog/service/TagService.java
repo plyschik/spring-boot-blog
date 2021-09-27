@@ -25,12 +25,16 @@ public class TagService {
         return tagRepository.findById(id).orElseThrow(TagNotFoundException::new);
     }
 
-    public List<Tag> getTagsWithPostsCount() {
-        return tagRepository.findAllByOrderByName();
+    public List<Tag> getTags(Sort sort) {
+        return tagRepository.findAll(sort);
     }
 
     public Page<TagWithPostsCount> getTagsWithPostsCount(String query, Pageable pageable) {
-        return tagRepository.findAllWithPostsCount(query, pageable);
+        if (!query.isBlank()) {
+            return tagRepository.findAllWithPostsCount(query, pageable);
+        }
+
+        return tagRepository.findAllWithPostsCount(pageable);
     }
 
     public List<TagWithPostsCount> getTagsWithPostsCount(Sort sort) {
