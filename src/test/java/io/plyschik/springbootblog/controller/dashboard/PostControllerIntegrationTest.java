@@ -214,7 +214,8 @@ class PostControllerIntegrationTest {
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldRedirectToPostsListWhenPostNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/posts/{id}/edit", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/dashboard/posts"));
     }
 
     @Test
@@ -350,7 +351,8 @@ class PostControllerIntegrationTest {
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldRedirectToPostListWhenPostNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/posts/{id}/delete", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/dashboard/posts"));
     }
 
     @Test

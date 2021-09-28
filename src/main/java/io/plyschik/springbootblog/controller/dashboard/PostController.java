@@ -216,4 +216,18 @@ public class PostController {
             return new ModelAndView("redirect:/dashboard/posts");
         }
     }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ModelAndView handlePostNotFoundException(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(
+            "alert",
+            new Alert("danger", messageSource.getMessage(
+                "message.resource_not_found",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
+        );
+
+        return new ModelAndView("redirect:/dashboard/posts");
+    }
 }

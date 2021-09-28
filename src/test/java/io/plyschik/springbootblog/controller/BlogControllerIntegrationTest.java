@@ -40,7 +40,8 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenPostNotFound() throws Exception {
         mockMvc.perform(get("/posts/{id}", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/"));
     }
 
     @Test
@@ -87,7 +88,8 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenAuthorNotFound() throws Exception {
         mockMvc.perform(get("/authors/{id}/posts", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/"));
     }
 
     @Test
@@ -103,7 +105,8 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenCategoryNotFound() throws Exception {
         mockMvc.perform(get("/categories/{id}/posts", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/"));;
     }
 
     @Test
@@ -119,6 +122,7 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenTagNotFound() throws Exception {
         mockMvc.perform(get("/tags/{id}/posts", 1))
-            .andExpect(view().name("errors/resource_not_found"));
+            .andExpect(flash().attributeExists("alert"))
+            .andExpect(redirectedUrl("/"));
     }
 }

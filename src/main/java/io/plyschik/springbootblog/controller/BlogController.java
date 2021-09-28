@@ -2,12 +2,17 @@ package io.plyschik.springbootblog.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.plyschik.springbootblog.dto.Alert;
 import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.dto.YearArchiveEntry;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.entity.Post;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.entity.User;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
+import io.plyschik.springbootblog.exception.PostNotFoundException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
+import io.plyschik.springbootblog.exception.UserNotFoundException;
 import io.plyschik.springbootblog.service.CategoryService;
 import io.plyschik.springbootblog.service.PostService;
 import io.plyschik.springbootblog.service.TagService;
@@ -19,10 +24,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -235,5 +242,24 @@ class BlogController {
             .addObject("posts", posts)
             .addObject("categories", categories)
             .addObject("archive", archive);
+    }
+
+    @ExceptionHandler({
+        UserNotFoundException.class,
+        PostNotFoundException.class,
+        CategoryNotFoundException.class,
+        TagNotFoundException.class
+    })
+    public ModelAndView handleResourceNotFound(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("alert", new Alert(
+            "danger",
+            messageSource.getMessage(
+                "message.resource_not_found",
+                null,
+                LocaleContextHolder.getLocale()
+            )
+        ));
+
+        return new ModelAndView("redirect:/");
     }
 }

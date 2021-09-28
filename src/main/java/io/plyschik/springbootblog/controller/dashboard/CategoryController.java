@@ -5,6 +5,7 @@ import io.plyschik.springbootblog.dto.CategoryDto;
 import io.plyschik.springbootblog.dto.CategoryWithPostsCount;
 import io.plyschik.springbootblog.entity.Category;
 import io.plyschik.springbootblog.exception.CategoryAlreadyExistsException;
+import io.plyschik.springbootblog.exception.CategoryNotFoundException;
 import io.plyschik.springbootblog.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -166,5 +167,19 @@ public class CategoryController {
 
             return new ModelAndView("redirect:/dashboard/categories");
         }
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ModelAndView handleCategoryNotFoundException(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(
+            "alert",
+            new Alert("danger", messageSource.getMessage(
+                "message.resource_not_found",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
+        );
+
+        return new ModelAndView("redirect:/dashboard/categories");
     }
 }

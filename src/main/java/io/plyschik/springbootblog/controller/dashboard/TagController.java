@@ -5,6 +5,7 @@ import io.plyschik.springbootblog.dto.TagDto;
 import io.plyschik.springbootblog.dto.TagWithPostsCount;
 import io.plyschik.springbootblog.entity.Tag;
 import io.plyschik.springbootblog.exception.TagAlreadyExistsException;
+import io.plyschik.springbootblog.exception.TagNotFoundException;
 import io.plyschik.springbootblog.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -166,5 +167,19 @@ public class TagController {
 
             return new ModelAndView("redirect:/dashboard/tags");
         }
+    }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ModelAndView handleTagNotFoundException(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(
+            "alert",
+            new Alert("danger", messageSource.getMessage(
+                "message.resource_not_found",
+                null,
+                LocaleContextHolder.getLocale()
+            ))
+        );
+
+        return new ModelAndView("redirect:/dashboard/tags");
     }
 }
