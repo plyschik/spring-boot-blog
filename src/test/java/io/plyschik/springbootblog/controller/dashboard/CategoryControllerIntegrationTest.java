@@ -174,8 +174,7 @@ class CategoryControllerIntegrationTest {
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldRedirectToCategoriesListWhenCategoryNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/categories/{id}/edit", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/categories"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -260,8 +259,7 @@ class CategoryControllerIntegrationTest {
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldRedirectToCategoriesListWhenCategoryNotExistsAfterDeleteAttempt() throws Exception {
         mockMvc.perform(get("/dashboard/categories/{id}/delete", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/categories"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test

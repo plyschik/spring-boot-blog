@@ -16,7 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -133,36 +133,36 @@ class PostControllerIntegrationTest {
 
     @Test
     @WithMockUser(value = "test", roles = {"ADMINISTRATOR"})
-    public void shouldReturnFormValidationErrorWhenContentFieldIsInvalid() throws Exception {
+    public void shouldReturnFormValidationErrorWhenContentRawFieldIsInvalid() throws Exception {
         mockMvc.perform(post("/dashboard/posts/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "") // can not be blank
+            .param("contentRaw", "") // can not be blank
             .sessionAttr("post", new PostDto())
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/create"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
 
         mockMvc.perform(post("/dashboard/posts/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "aaa") // minimum 4 characters
+            .param("contentRaw", "aaa") // minimum 4 characters
             .sessionAttr("post", new PostDto())
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/create"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
 
         mockMvc.perform(post("/dashboard/posts/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "a".repeat(65536)) // maximum 65535 characters
+            .param("contentRaw", "a".repeat(65536)) // maximum 65535 characters
             .sessionAttr("post", new PostDto())
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/create"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
     }
 
     @Test
@@ -180,7 +180,7 @@ class PostControllerIntegrationTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
             .param("title", "Title")
-            .param("content", "Content")
+            .param("contentRaw", "Content")
             .sessionAttr("post", new PostDto())
         )
             .andExpect(flash().attributeExists("alert"))
@@ -189,7 +189,7 @@ class PostControllerIntegrationTest {
         Post post = postRepository.findAll().stream().findFirst().orElseThrow();
 
         assertEquals("Title", post.getTitle());
-        assertEquals("Content", post.getContent());
+        assertEquals("Content", post.getContentRaw());
     }
 
     @Test
@@ -203,7 +203,7 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(get("/dashboard/posts/{id}/edit", post.getId()))
             .andExpect(status().isOk())
@@ -214,8 +214,7 @@ class PostControllerIntegrationTest {
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldRedirectToPostsListWhenPostNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/posts/{id}/edit", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/posts"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -229,7 +228,7 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -270,34 +269,34 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "") // can not be blank
+            .param("contentRaw", "") // can not be blank
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/edit"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "aaa") // minimum 4 characters
+            .param("contentRaw", "aaa") // minimum 4 characters
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/edit"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
-            .param("content", "a".repeat(65536)) // maximum 65535 characters
+            .param("contentRaw", "a".repeat(65536)) // maximum 65535 characters
         )
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard/post/edit"))
-            .andExpect(model().attributeHasFieldErrors("post", "content"));
+            .andExpect(model().attributeHasFieldErrors("post", "contentRaw"));
     }
 
     @Test
@@ -311,13 +310,13 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/edit", post.getId())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
             .param("title", "Updated title")
-            .param("content", "Updated content")
+            .param("contentRaw", "Updated content")
         )
             .andExpect(flash().attributeExists("alert"))
             .andExpect(redirectedUrl("/dashboard/posts"));
@@ -325,7 +324,7 @@ class PostControllerIntegrationTest {
         Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
 
         assertEquals("Updated title", updatedPost.getTitle());
-        assertEquals("Updated content", updatedPost.getContent());
+        assertEquals("Updated content", updatedPost.getContentRaw());
     }
 
     @Test
@@ -339,7 +338,7 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(get("/dashboard/posts/{id}/delete", post.getId()))
             .andExpect(status().isOk())
@@ -351,8 +350,7 @@ class PostControllerIntegrationTest {
     @WithMockUser(value = "administrator@sbb.net", roles = {"ADMINISTRATOR"})
     public void shouldRedirectToPostListWhenPostNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/posts/{id}/delete", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/posts"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -374,7 +372,7 @@ class PostControllerIntegrationTest {
             Role.ADMINISTRATOR
         );
 
-        Post post = testUtils.createPost("Title", "Content", new Date(), user);
+        Post post = testUtils.createPost("Title", "Content", LocalDateTime.now(), user);
 
         mockMvc.perform(post("/dashboard/posts/{id}/delete", post.getId()).with(csrf()))
             .andExpect(flash().attributeExists("alert"))

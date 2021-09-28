@@ -39,8 +39,3 @@ security:
   remember-me:
     key: ${SECURITY_REMEMBER_ME_KEY}
     token-validity-seconds: 604800
-pagination:
-  post:
-    blog: 5
-  comments: 5
-  items-per-page: 10

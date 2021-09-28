@@ -174,8 +174,7 @@ class TagControllerIntegrationTest {
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldRedirectToTagsListWhenTagNotExists() throws Exception {
         mockMvc.perform(get("/dashboard/tags/{id}/edit", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/tags"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -260,8 +259,7 @@ class TagControllerIntegrationTest {
     @WithMockUser(roles = {"ADMINISTRATOR"})
     public void shouldRedirectToTagsListWhenTagNotExistsAfterDeleteAttempt() throws Exception {
         mockMvc.perform(get("/dashboard/tags/{id}/delete", 1))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/dashboard/tags"));
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test

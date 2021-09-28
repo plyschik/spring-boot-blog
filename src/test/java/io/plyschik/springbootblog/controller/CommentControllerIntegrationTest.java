@@ -1,5 +1,6 @@
 package io.plyschik.springbootblog.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.plyschik.springbootblog.TestUtils;
 import io.plyschik.springbootblog.dto.CommentDto;
 import io.plyschik.springbootblog.entity.Comment;
@@ -17,14 +18,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CommentControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestUtils testUtils;
@@ -53,7 +56,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             user
         );
 
@@ -65,38 +68,20 @@ class CommentControllerIntegrationTest {
             Role.USER
         );
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "") // can not be blank
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate("/posts/{id}", post.getId()));
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto(""))) // can not be blank
+        ).andExpect(status().isBadRequest());
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "a") // should be minimum 2 characters
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate("/posts/{id}", post.getId()));
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("a"))) // should be minimum 2 characters
+        ).andExpect(status().isBadRequest());
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "a".repeat(65536)) // max 65535 characters
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate("/posts/{id}", post.getId()));
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("a".repeat(65536)))) // max 65535 characters
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -113,7 +98,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             user
         );
 
@@ -125,14 +110,10 @@ class CommentControllerIntegrationTest {
             Role.USER
         );
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "Test comment")
-            .sessionAttr("comment", new CommentDto())
-        )
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrlTemplate("/posts/{id}", post.getId()));
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("Test comment")))
+        ).andExpect(status().isOk());
 
         Comment comment = commentRepository.findAll().stream().findFirst().orElseThrow();
 
@@ -153,7 +134,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             user
         );
 
@@ -183,7 +164,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             johnDoe
         );
 
@@ -202,50 +183,20 @@ class CommentControllerIntegrationTest {
             post
         );
 
-        mockMvc.perform(post("/posts/{postId}/comments/{commentId}/edit", post.getId(), comment.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "") // can not be blank
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate(
-                "/posts/{postId}/comments/{commentId}/edit",
-                post.getId(),
-                comment.getId()
-            ));
+        mockMvc.perform(patch("/api/posts/{postId}/comments/{commentId}", post.getId(), comment.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto(""))) // can not be blank
+        ).andExpect(status().isBadRequest());
 
-        mockMvc.perform(post("/posts/{postId}/comments/{commentId}/edit", post.getId(), comment.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "a") // should be minimum 2 characters
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate(
-                "/posts/{postId}/comments/{commentId}/edit",
-                post.getId(),
-                comment.getId()
-            ));
+        mockMvc.perform(patch("/api/posts/{postId}/comments/{commentId}", post.getId(), comment.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("a"))) // should be minimum 2 characters
+        ).andExpect(status().isBadRequest());
 
-        mockMvc.perform(post("/posts/{postId}/comments/{commentId}/edit", post.getId(), comment.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "a".repeat(65536)) // max 65535 characters
-        )
-            .andExpect(flash().attributeExists(
-                "comment",
-                "org.springframework.validation.BindingResult.comment"
-            ))
-            .andExpect(redirectedUrlTemplate(
-                "/posts/{postId}/comments/{commentId}/edit",
-                post.getId(),
-                comment.getId()
-            ));
+        mockMvc.perform(patch("/api/posts/{postId}/comments/{commentId}", post.getId(), comment.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("a".repeat(65536)))) // max 65535 characters
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -262,7 +213,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             johnDoe
         );
 
@@ -281,13 +232,10 @@ class CommentControllerIntegrationTest {
             post
         );
 
-        mockMvc.perform(post("/posts/{postId}/comments/{commentId}/edit", post.getId(), comment.getId())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .with(csrf())
-            .param("content", "Updated comment")
-        )
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrlTemplate("/posts/{postId}", post.getId()));
+        mockMvc.perform(patch("/api/posts/{postId}/comments/{commentId}", post.getId(), comment.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(new CommentDto("Updated comment")))
+        ).andExpect(status().isOk());
 
         Comment updatedComment = commentRepository.findById(comment.getId()).orElseThrow(CommentNotFoundException::new);
 
@@ -308,13 +256,12 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             johnDoe
         );
 
-        mockMvc.perform(get("/posts/{postId}/comments/1/delete", post.getId()))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrlTemplate("/posts/{postId}", post.getId()));
+        mockMvc.perform(delete("/api/posts/{postId}/comments/1", post.getId()))
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -331,7 +278,7 @@ class CommentControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Post title",
             "Content",
-            new Date(),
+            LocalDateTime.now(),
             johnDoe
         );
 
@@ -350,9 +297,8 @@ class CommentControllerIntegrationTest {
             post
         );
 
-        mockMvc.perform(post("/posts/{postId}/comments/{commentId}/delete", post.getId(), comment.getId()).with(csrf()))
-            .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrlTemplate("/posts/{postId}", post.getId()));
+        mockMvc.perform(delete("/api/posts/{postId}/comments/{commentId}", post.getId(), comment.getId()))
+            .andExpect(status().isNoContent());
 
         assertFalse(commentRepository.existsById(comment.getId()));
     }

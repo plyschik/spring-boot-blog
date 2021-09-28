@@ -6,6 +6,7 @@ import io.plyschik.springbootblog.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -28,11 +29,13 @@ public class TestUtils {
         return userRepository.save(user);
     }
 
-    public Post createPost(String title, String content, Date date, User user) {
+    public Post createPost(String title, String content, LocalDateTime date, User user) {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
-//        post.setCreatedAt(date);
+        post.setContentRaw(content);
+        post.setPublished(true);
+        post.setCreatedAt(date);
         post.setUser(user);
 
         return postRepository.save(post);

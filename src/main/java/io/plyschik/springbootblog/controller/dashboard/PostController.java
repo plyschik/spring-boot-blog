@@ -129,7 +129,7 @@ public class PostController {
     }
 
     @GetMapping("/dashboard/posts/{id:^[1-9][0-9]*$}/edit")
-    public ModelAndView showEditForm(@PathVariable long id, RedirectAttributes redirectAttributes) {
+    public ModelAndView showEditForm(@PathVariable long id) {
         PostDto post = postService.getPostByIdForEdit(id);
         List<Category> categories = categoryService.getCategories(Sort.by("name").ascending());
         List<Tag> tags = tagService.getTags(Sort.by("name").ascending());

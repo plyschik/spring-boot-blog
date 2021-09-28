@@ -7,11 +7,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +33,9 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private TestUtils testUtils;
+
+    @MockBean
+    private JavaMailSender javaMailSender;
 
     @Test
     public void shouldReturnSignUpForm() throws Exception {
@@ -158,6 +168,9 @@ class AuthControllerIntegrationTest {
 
     @Test
     public void shouldRedirectToSignInFormWhenFormFieldsAreValid() throws Exception {
+        when(javaMailSender.createMimeMessage()).thenReturn(new MimeMessage((Session) null));
+        doNothing().when(javaMailSender).send(any(MimeMessage.class));
+
         mockMvc.perform(post("/auth/signup")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())

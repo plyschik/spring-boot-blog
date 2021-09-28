@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,7 +40,7 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenPostNotFound() throws Exception {
         mockMvc.perform(get("/posts/{id}", 1))
-            .andExpect(status().isNotFound());
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -56,7 +56,7 @@ class BlogControllerIntegrationTest {
         Post post = testUtils.createPost(
             "Test title",
             "Test content",
-            new Date(),
+            LocalDateTime.now(),
             user
         );
 
@@ -87,7 +87,7 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenAuthorNotFound() throws Exception {
         mockMvc.perform(get("/authors/{id}/posts", 1))
-            .andExpect(status().isNotFound());
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -103,7 +103,7 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenCategoryNotFound() throws Exception {
         mockMvc.perform(get("/categories/{id}/posts", 1))
-            .andExpect(status().isNotFound());
+            .andExpect(view().name("errors/resource_not_found"));
     }
 
     @Test
@@ -119,6 +119,6 @@ class BlogControllerIntegrationTest {
     @Test
     public void shouldReturnNotFoundStatusWhenTagNotFound() throws Exception {
         mockMvc.perform(get("/tags/{id}/posts", 1))
-            .andExpect(status().isNotFound());
+            .andExpect(view().name("errors/resource_not_found"));
     }
 }
