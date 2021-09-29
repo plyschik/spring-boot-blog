@@ -29,8 +29,8 @@ public class CategoryService {
         return categoryRepository.findAll(sort);
     }
 
-    public List<Category> getCategoriesWithPostCount(Sort sort) {
-        return categoryRepository.findAll(sort);
+    public List<CategoryWithPostsCount> getCategoriesWithPostsCount(Sort sort) {
+        return categoryRepository.findAllWithPostsCount(sort);
     }
 
     public Page<CategoryWithPostsCount> getCategoriesWithPostCount(String query, Pageable pageable) {
@@ -43,10 +43,6 @@ public class CategoryService {
 
     public List<CategoryWithPostsCount> getTop5CategoriesWithPostsCount() {
         return categoryRepository.findTop5WithPostsCount();
-    }
-
-    public List<CategoryWithPostsCount> getCategoriesWithPostsCountDashboard(Sort sort) {
-        return categoryRepository.findAllWithPostsCount(sort);
     }
 
     public void createCategory(CategoryDto categoryDto) throws CategoryAlreadyExistsException {
