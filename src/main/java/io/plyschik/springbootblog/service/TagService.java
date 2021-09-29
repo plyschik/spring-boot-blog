@@ -29,16 +29,16 @@ public class TagService {
         return tagRepository.findAll(sort);
     }
 
+    public List<TagWithPostsCount> getTagsWithPostsCount(Sort sort) {
+        return tagRepository.findAllWithPostsCount(sort);
+    }
+
     public Page<TagWithPostsCount> getTagsWithPostsCount(String query, Pageable pageable) {
         if (!query.isBlank()) {
             return tagRepository.findAllWithPostsCount(query, pageable);
         }
 
         return tagRepository.findAllWithPostsCount(pageable);
-    }
-
-    public List<TagWithPostsCount> getTagsWithPostsCount(Sort sort) {
-        return tagRepository.findAllWithPostsCount(sort);
     }
 
     public void createTag(TagDto tagDto) throws TagAlreadyExistsException {
