@@ -47,7 +47,7 @@ public class PostController {
         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         List<UserWithPostsCount> users = userService.getUsersWithPostsCount(Sort.by("fullName").ascending());
-        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCountDashboard(
+        List<CategoryWithPostsCount> categories = categoryService.getCategoriesWithPostsCount(
             Sort.by("name").ascending()
         );
         List<TagWithPostsCount> tags = tagService.getTagsWithPostsCount(Sort.by("name").ascending());

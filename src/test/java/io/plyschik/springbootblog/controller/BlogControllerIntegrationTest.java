@@ -106,7 +106,7 @@ class BlogControllerIntegrationTest {
     public void shouldReturnNotFoundStatusWhenCategoryNotFound() throws Exception {
         mockMvc.perform(get("/categories/{id}/posts", 1))
             .andExpect(flash().attributeExists("alert"))
-            .andExpect(redirectedUrl("/"));;
+            .andExpect(redirectedUrl("/"));
     }
 
     @Test
