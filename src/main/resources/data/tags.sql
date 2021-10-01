@@ -1,30 +1,31 @@
-INSERT INTO tags (id, name) VALUES (1, "Et");
-INSERT INTO tags (id, name) VALUES (2, "Ipsum");
-INSERT INTO tags (id, name) VALUES (3, "Adipiscing");
-INSERT INTO tags (id, name) VALUES (4, "Mauris");
-INSERT INTO tags (id, name) VALUES (5, "Fermentum");
-INSERT INTO tags (id, name) VALUES (6, "Dauris");
-INSERT INTO tags (id, name) VALUES (7, "Eu");
-INSERT INTO tags (id, name) VALUES (8, "Ad");
-INSERT INTO tags (id, name) VALUES (9, "Euismod");
-INSERT INTO tags (id, name) VALUES (10, "Ante");
-INSERT INTO tags (id, name) VALUES (11, "Magna");
-INSERT INTO tags (id, name) VALUES (12, "Dui");
-INSERT INTO tags (id, name) VALUES (13, "Nisl");
-INSERT INTO tags (id, name) VALUES (14, "Sed");
-INSERT INTO tags (id, name) VALUES (15, "Suspendisse");
-INSERT INTO tags (id, name) VALUES (16, "Aisl");
-INSERT INTO tags (id, name) VALUES (17, "Congue");
-INSERT INTO tags (id, name) VALUES (18, "Non");
-INSERT INTO tags (id, name) VALUES (19, "Facilisis");
-INSERT INTO tags (id, name) VALUES (20, "Auctor");
-INSERT INTO tags (id, name) VALUES (21, "Lorem");
-INSERT INTO tags (id, name) VALUES (22, "Commodo");
-INSERT INTO tags (id, name) VALUES (23, "Tagna");
-INSERT INTO tags (id, name) VALUES (24, "Sit");
-INSERT INTO tags (id, name) VALUES (25, "Nagta");
-INSERT INTO tags (id, name) VALUES (26, "Odio");
-INSERT INTO tags (id, name) VALUES (27, "Tellus");
-INSERT INTO tags (id, name) VALUES (28, "Suscipit");
-INSERT INTO tags (id, name) VALUES (29, "Duis");
-INSERT INTO tags (id, name) VALUES (30, "Nec");
+INSERT INTO tags (id, name)
+VALUES  (1, 'Ea'),
+        (2, 'Consequatur'),
+        (3, 'Aliquid'),
+        (4, 'Nobis'),
+        (5, 'Et'),
+        (6, 'Praesentium'),
+        (7, 'Maxime'),
+        (8, 'Voluptatem'),
+        (9, 'Aut'),
+        (10, 'Tempora'),
+        (11, 'Quo'),
+        (12, 'Impedit'),
+        (13, 'Veniam'),
+        (14, 'Modi'),
+        (15, 'Harum'),
+        (16, 'Sequi'),
+        (17, 'Enim'),
+        (18, 'Architecto'),
+        (19, 'Dolor'),
+        (20, 'Qui'),
+        (21, 'Debitis'),
+        (22, 'Animi'),
+        (23, 'Fuga'),
+        (24, 'Accusantium'),
+        (25, 'Quia'),
+        (26, 'Error'),
+        (27, 'Cumque'),
+        (28, 'Quisquam'),
+        (29, 'Non'),
+        (30, 'Omnis');
