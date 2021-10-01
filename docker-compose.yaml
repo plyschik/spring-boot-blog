@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=springbootblog
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=root
+      - SMTP_HOST=
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SMTP_PORT=
+      - SECURITY_REMEMBER_ME_KEY=ExwG9Am1
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-boot-blog
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.0
+    networks:
+      - spring-boot-blog
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=springbootblog
+networks:
+  spring-boot-blog:
+    driver: bridge

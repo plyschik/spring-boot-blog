@@ -1,50 +1,31 @@
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (1, "foo.qux@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Foo", "Qux", 2, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (2, "bar.qux@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Bar", "Qux", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (3, "baz.qux@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Baz", "Qux", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (4, "lewis.lloyd@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Lewis", "Lloyd", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (5, "colin.hendricks@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Colin", "Hendricks", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (6, "william.stokes@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "William", "Stokes", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (7, "kasimir.sweeney@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Kasimir", "Sweeney", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (8, "lee.valentine@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Lee", "Valentine", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (9, "maite.richard@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Maite", "Richard", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (10, "devin.schroeder@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Devin", "Schroeder", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (11, "winter.farrell@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Winter", "Farrell", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (12, "rudyard.dillard@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Rudyard", "Dillard", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (13, "hamish.terrell@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Hamish", "Terrell", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (14, "noelle.vinson@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Noelle", "Vinson", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (15, "holly.mcgowan@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Holly", "Mcgowan", 2, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (16, "armando.mosley@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Armando", "Mosley", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (17, "victoria.alvarez@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Victoria", "Alvarez", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (18, "guinevere.bridges@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Guinevere", "Bridges", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (19, "ivor.bridges@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Ivor", "Bridges", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (20, "logan.mann@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Logan", "Mann", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (21, "jordan.rogers@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Jordan", "Rogers", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (22, "vivien.mcfarland@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Vivien", "Mcfarland", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (23, "seth.velez@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Seth", "Velez", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (24, "bree.mathews@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Bree", "Mathews", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (25, "ferdinand.aguirre@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Ferdinand", "Aguirre", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (26, "tiger.lambert@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Tiger", "Lambert", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (27, "kareem.benson@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Kareem", "Benson", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (28, "dawn.battle@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Dawn", "Battle", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (29, "zahir.brennan@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Zahir", "Brennan", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (30, "kalia.whitney@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Kalia", "Whitney", 2, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (31, "holmes.banks@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Holmes", "Banks", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (32, "arden.bowman@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Arden", "Bowman", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (33, "jeanette.tate@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Jeanette", "Tate", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (34, "dexter.ramirez@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Dexter", "Ramirez", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (35, "connor.huber@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Connor", "Huber", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (36, "vincent.waters@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Vincent", "Waters", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (37, "blaze.gill@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Blaze", "Gill", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (38, "dana.hurst@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Dana", "Hurst", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (39, "timothy.sharpe@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Timothy", "Sharpe", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (40, "kasimir.irwin@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Kasimir", "Irwin", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (41, "quail.summers@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Quail", "Summers", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (42, "keane.stark@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Keane", "Stark", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (43, "abraham.jackson@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Abraham", "Jackson", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (44, "joel.shelton@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Joel", "Shelton", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (45, "conan.hahn@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Conan", "Hahn", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (46, "brynn.mcmillan@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Brynn", "Mcmillan", 1, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (47, "kaden.prince@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Kaden", "Prince", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (48, "reed.mcfadden@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Reed", "Mcfadden", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (49, "mariam.foster@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Mariam", "Foster", 0, 1);
-INSERT INTO users (id, email, password, first_name, last_name, role, activated) VALUES (50, "anastasia.odom@sbb.net", "$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi", "Anastasia", "Odom", 0, 1);
+INSERT INTO users (id, email, password, first_name, last_name, role, activated)
+VALUES  (1, 'administrator@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Foo', 'Qux', 2, b'1'),
+        (2, 'editor@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Bar', 'Qux', 1, b'1'),
+        (3, 'user@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Baz', 'Qux', 0, b'1'),
+        (4, 'dandre.price@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Dandre', 'Price', 0, b'1'),
+        (5, 'karina.wyman@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Karina', 'Wyman', 0, b'1'),
+        (6, 'ruby.bailey@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Ruby', 'Bailey', 0, b'1'),
+        (7, 'lazaro.thompson@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Lazaro', 'Thompson', 0, b'1'),
+        (8, 'sandy.murphy@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Sandy', 'Murphy', 0, b'1'),
+        (9, 'clara.roberts@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Clara', 'Roberts', 0, b'1'),
+        (10, 'liam.rutherford@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Liam', 'Rutherford', 0, b'1'),
+        (11, 'haylie.becker@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Haylie', 'Becker', 0, b'1'),
+        (12, 'shayne.mccullough@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Shayne', 'McCullough', 0, b'1'),
+        (13, 'tressa.harber@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Tressa', 'Harber', 0, b'1'),
+        (14, 'lillie.mitchell@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Lillie', 'Mitchell', 0, b'1'),
+        (15, 'barton.huels@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Barton', 'Huels', 0, b'1'),
+        (16, 'wayne.heathcote@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Wayne', 'Heathcote', 0, b'1'),
+        (17, 'mireille.hettinger@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Mireille', 'Hettinger', 0, b'1'),
+        (18, 'justus.donnelly@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Justus', 'Donnelly', 0, b'1'),
+        (19, 'rhiannon.leannon@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Rhiannon', 'Leannon', 0, b'1'),
+        (20, 'imogene.reinger@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Imogene', 'Reinger', 0, b'1'),
+        (21, 'elsie.hermiston@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Elsie', 'Hermiston', 0, b'1'),
+        (22, 'elisha.mcglynn@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Elisha', 'McGlynn', 0, b'1'),
+        (23, 'jazlyn.ratke@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Jazlyn', 'Ratke', 0, b'1'),
+        (24, 'daniella.stamm@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Daniella', 'Stamm', 0, b'1'),
+        (25, 'reggie.goldner@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Reggie', 'Goldner', 0, b'1'),
+        (26, 'christiana.senger@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Christiana', 'Senger', 0, b'1'),
+        (27, 'maritza.lueilwitz@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Maritza', 'Lueilwitz', 0, b'1'),
+        (28, 'lindsay.hoeger@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Lindsay', 'Hoeger', 0, b'1'),
+        (29, 'queen.flatley@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Queen', 'Flatley', 0, b'1'),
+        (30, 'reginald.hickle@sbb.net', '$2a$10$ApBHkxIAv1pFAjOGAICgFOn0XpLOC0aPndS.P/fj/BUAt5N2j6MRi', 'Reginald', 'Hickle', 0, b'1');

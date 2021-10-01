@@ -1,273 +1,274 @@
-INSERT INTO posts_tags (post_id, tag_id) VALUES (1, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (1, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (1, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (1, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (3, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (3, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (4, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (4, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (4, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (4, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (5, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (5, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (5, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (5, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (6, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (6, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (7, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (7, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (7, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (7, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (9, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (10, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (13, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (14, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (16, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (16, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (16, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (17, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (17, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (17, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (17, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (18, 2);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (18, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (18, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (18, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (19, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (20, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (20, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (20, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (20, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (22, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (22, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (22, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (22, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (24, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (24, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (24, 5);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (24, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (25, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (25, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (25, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (26, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (26, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (26, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (27, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (27, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (27, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (27, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (27, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (28, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (28, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (28, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (28, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (29, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (29, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (29, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (29, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (30, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (30, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (30, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (30, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (31, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (32, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (32, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (32, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (33, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (33, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (33, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (34, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (34, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (35, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (35, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (35, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (36, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (36, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (36, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (36, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (37, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (37, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (39, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (39, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (39, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (40, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (40, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (40, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (40, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (40, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (42, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (42, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (42, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (44, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (44, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (47, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (47, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (47, 2);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (47, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (48, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (48, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (48, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (49, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (49, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (49, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (49, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (50, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (50, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (50, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (51, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (51, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (51, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (52, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (52, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (52, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (53, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (53, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (54, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (54, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (54, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (55, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (55, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (56, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (57, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (57, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (57, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (57, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (57, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (59, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (59, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (59, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (59, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (60, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (60, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (61, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (61, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (61, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (61, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (62, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (62, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (62, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (62, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (64, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (64, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (64, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (64, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (65, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (67, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (67, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (67, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (67, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (68, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (68, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (68, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (68, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (68, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (70, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (70, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (70, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (70, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (71, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (72, 2);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (72, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (72, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (72, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (72, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (73, 8);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (73, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (73, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (73, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (74, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (74, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (74, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (74, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (75, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (76, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (76, 24);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (76, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (78, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (78, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (78, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (78, 2);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (78, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (79, 19);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (79, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (80, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (80, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (80, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (80, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (81, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (81, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (81, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (81, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (83, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (83, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (84, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (84, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (84, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (84, 2);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (85, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (85, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (85, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (85, 28);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (86, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (86, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (86, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (87, 6);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (87, 25);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (87, 27);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (88, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (88, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (88, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (88, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (89, 3);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (89, 12);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (90, 10);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (90, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (90, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (91, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (91, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (92, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (92, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (92, 21);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (92, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (92, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (93, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (93, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (93, 26);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 15);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 30);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 23);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 14);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (94, 20);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (96, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (96, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (96, 18);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (96, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (97, 1);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (97, 17);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (97, 11);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (97, 22);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (99, 7);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (99, 16);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (99, 4);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (99, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (100, 5);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (100, 29);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (100, 9);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (100, 13);
-INSERT INTO posts_tags (post_id, tag_id) VALUES (100, 21);
+INSERT INTO posts_tags (post_id, tag_id)
+VALUES  (1, 28),
+        (1, 7),
+        (1, 30),
+        (1, 17),
+        (3, 22),
+        (3, 27),
+        (4, 20),
+        (4, 14),
+        (4, 29),
+        (4, 26),
+        (5, 3),
+        (5, 22),
+        (5, 26),
+        (5, 18),
+        (6, 26),
+        (6, 3),
+        (7, 24),
+        (7, 9),
+        (7, 18),
+        (7, 23),
+        (9, 30),
+        (10, 17),
+        (10, 8),
+        (10, 10),
+        (10, 25),
+        (10, 4),
+        (10, 26),
+        (13, 15),
+        (14, 14),
+        (16, 29),
+        (16, 10),
+        (16, 19),
+        (17, 19),
+        (17, 13),
+        (17, 21),
+        (17, 12),
+        (18, 2),
+        (18, 19),
+        (18, 1),
+        (18, 13),
+        (19, 15),
+        (19, 3),
+        (19, 8),
+        (19, 26),
+        (19, 23),
+        (19, 21),
+        (20, 24),
+        (20, 8),
+        (20, 23),
+        (20, 9),
+        (22, 28),
+        (22, 10),
+        (22, 18),
+        (22, 13),
+        (24, 27),
+        (24, 28),
+        (24, 5),
+        (24, 24),
+        (25, 16),
+        (25, 4),
+        (25, 17),
+        (26, 12),
+        (26, 8),
+        (26, 28),
+        (27, 6),
+        (27, 17),
+        (27, 23),
+        (27, 8),
+        (27, 12),
+        (28, 29),
+        (28, 8),
+        (28, 26),
+        (28, 1),
+        (29, 30),
+        (29, 26),
+        (29, 17),
+        (29, 19),
+        (30, 3),
+        (30, 21),
+        (30, 29),
+        (30, 4),
+        (31, 14),
+        (32, 13),
+        (32, 24),
+        (32, 19),
+        (33, 8),
+        (33, 12),
+        (33, 16),
+        (34, 26),
+        (34, 8),
+        (35, 15),
+        (35, 29),
+        (35, 13),
+        (36, 18),
+        (36, 3),
+        (36, 7),
+        (36, 8),
+        (37, 20),
+        (37, 13),
+        (39, 6),
+        (39, 13),
+        (39, 21),
+        (40, 23),
+        (40, 24),
+        (40, 13),
+        (40, 7),
+        (40, 12),
+        (42, 3),
+        (42, 4),
+        (42, 28),
+        (44, 16),
+        (44, 11),
+        (47, 14),
+        (47, 20),
+        (47, 2),
+        (47, 24),
+        (48, 29),
+        (48, 6),
+        (48, 17),
+        (49, 4),
+        (49, 26),
+        (49, 30),
+        (49, 25),
+        (50, 14),
+        (50, 27),
+        (50, 4),
+        (51, 18),
+        (51, 29),
+        (51, 26),
+        (52, 4),
+        (52, 29),
+        (52, 21),
+        (53, 17),
+        (53, 1),
+        (54, 23),
+        (54, 18),
+        (54, 27),
+        (55, 15),
+        (55, 23),
+        (56, 19),
+        (56, 27),
+        (56, 26),
+        (56, 17),
+        (56, 22),
+        (56, 9),
+        (57, 15),
+        (57, 23),
+        (57, 18),
+        (57, 20),
+        (57, 10),
+        (59, 13),
+        (59, 18),
+        (59, 15),
+        (59, 28),
+        (60, 11),
+        (60, 4),
+        (61, 1),
+        (61, 11),
+        (61, 14),
+        (61, 25),
+        (62, 13),
+        (62, 22),
+        (62, 30),
+        (62, 14),
+        (64, 15),
+        (64, 18),
+        (64, 25),
+        (64, 24),
+        (65, 6),
+        (67, 27),
+        (67, 24),
+        (67, 28),
+        (67, 25),
+        (68, 19),
+        (68, 18),
+        (68, 14),
+        (68, 8),
+        (68, 12),
+        (70, 3),
+        (70, 30),
+        (70, 4),
+        (70, 23),
+        (71, 15),
+        (72, 2),
+        (72, 28),
+        (72, 16),
+        (72, 6),
+        (72, 26),
+        (73, 8),
+        (73, 18),
+        (73, 24),
+        (73, 1),
+        (74, 25),
+        (74, 7),
+        (74, 23),
+        (74, 21),
+        (75, 20),
+        (76, 16),
+        (76, 24),
+        (76, 29),
+        (78, 26),
+        (78, 30),
+        (78, 15),
+        (78, 2),
+        (78, 14),
+        (79, 19),
+        (79, 9),
+        (80, 6),
+        (80, 16),
+        (80, 27),
+        (80, 14),
+        (81, 11),
+        (81, 22),
+        (81, 17),
+        (81, 14),
+        (83, 3),
+        (83, 26),
+        (84, 1),
+        (84, 29),
+        (84, 27),
+        (84, 2),
+        (85, 20),
+        (85, 18),
+        (85, 13),
+        (85, 28),
+        (86, 29),
+        (86, 12),
+        (86, 10),
+        (87, 6),
+        (87, 25),
+        (87, 27),
+        (88, 20),
+        (88, 13),
+        (88, 3),
+        (88, 7),
+        (89, 3),
+        (89, 12),
+        (90, 10),
+        (90, 13),
+        (90, 30),
+        (91, 22),
+        (91, 30),
+        (92, 9),
+        (92, 20),
+        (92, 21),
+        (92, 15),
+        (92, 11),
+        (93, 29),
+        (93, 17),
+        (93, 26),
+        (94, 15),
+        (94, 30),
+        (94, 11),
+        (94, 23),
+        (94, 14),
+        (94, 20),
+        (96, 11),
+        (96, 4),
+        (96, 18),
+        (96, 13),
+        (97, 1),
+        (97, 17),
+        (97, 11),
+        (97, 22),
+        (99, 7),
+        (99, 16),
+        (99, 4),
+        (99, 29),
+        (100, 5),
+        (100, 29),
+        (100, 9),
+        (100, 13),
+        (100, 21);
