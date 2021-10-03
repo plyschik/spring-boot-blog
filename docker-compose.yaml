@@ -1,6 +1,8 @@
-version: "3.7"
+version: '3.7'
 services:
   application:
+    depends_on:
+      - mysql
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,21 +16,23 @@ services:
       - SMTP_USERNAME=
       - SMTP_PASSWORD=
       - SMTP_PORT=
-      - SECURITY_REMEMBER_ME_KEY=ExwG9Am1
-    ports:
-      - "8080:8080"
+      - SECURITY_REMEMBER_ME_KEY=example-key
     networks:
       - spring-boot-blog
-    depends_on:
-      - mysql
+    ports:
+      - '8080:8080'
   mysql:
     image: mysql:8.0
-    networks:
-      - spring-boot-blog
-    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=springbootblog
+    networks:
+      - spring-boot-blog
+    volumes:
+      - 'mysql:/var/lib/mysql'
 networks:
   spring-boot-blog:
     driver: bridge
+volumes:
+  mysql:
+    driver: local
